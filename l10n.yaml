@@ -1,0 +1,10 @@
+# File: l10n.yaml (ở thư mục gốc của dự án)
+
+# ĐƯỜNG DẪN MỚI BẠN MUỐN DÙNG
+arb-dir: lib/app/l10n
+
+# Tên tệp ngôn ngữ gốc/mẫu (thường là tiếng Anh hoặc tiếng Việt)
+template-arb-file: app_en.arb
+
+# Tên của tệp .dart sẽ được sinh ra
+output-localization-file: app_localizations.dart
