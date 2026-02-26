@@ -87,7 +87,7 @@ class FlightState {
       roundTrip: true,
       isLoading: true,
       isSearchingFlight: false,
-      isViewingReturnFlights: false,
+      isViewingReturnFlights: true,
       listCheapFlight: [],
       listAirport: [],
       outboundFlights: [],

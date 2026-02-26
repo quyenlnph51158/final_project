@@ -12,6 +12,7 @@ class TourState {
 
   final int currentPage;
   final int pageSize;
+  final int totalPages;
   final bool isLoading;
 
   const TourState({
@@ -22,6 +23,7 @@ class TourState {
     required this.tourDetail,
     required this.currentPage,
     required this.pageSize,
+    required this.totalPages,
     required this.isLoading,
   });
 
@@ -45,6 +47,7 @@ class TourState {
       ),
       currentPage: 1,
       pageSize: 5,
+      totalPages: 1,
       isLoading: true,
 
     );
@@ -58,6 +61,7 @@ class TourState {
     TourDetail? tourDetail,
     int? currentPage,
     int? pageSize,
+    int? totalPages,
     bool? isLoading,
   }) {
     return TourState(
@@ -68,6 +72,7 @@ class TourState {
       tourDetail: tourDetail ?? this.tourDetail,
       currentPage: currentPage ?? this.currentPage,
       pageSize: pageSize ?? this.pageSize,
+      totalPages: totalPages ?? this.totalPages,
       isLoading: isLoading ?? this.isLoading,
     );
   }

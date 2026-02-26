@@ -4,7 +4,7 @@ import 'package:final_project/core/constants/colors.dart';
 import 'package:final_project/core/design/tour/app_shape.dart';
 import 'package:final_project/core/design/tour/app_sizes.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/design/tour/app_layout_spacing.dart';
+import '../../../../../core/design/tour/app_layout_spacing.dart';
 
 class ImageCarousel extends StatefulWidget {
   final List<String> images;

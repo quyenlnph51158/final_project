@@ -2,7 +2,7 @@ import 'package:final_project/core/constants/app_icons.dart';
 import 'package:final_project/core/design/tour/app_layout_spacing.dart';
 import 'package:final_project/core/design/tour/app_styles.dart';
 import 'package:final_project/features/tour/data/models/tour_detail.dart';
-import '../../../../../../app/l10n/app_localizations.dart';
+import '../../../../../../../app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class HighlightSection extends StatelessWidget{

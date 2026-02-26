@@ -410,6 +410,114 @@ abstract class AppLocalizations {
   /// **'Searching...'**
   String get search_loading;
 
+  /// No description provided for @rating_great.
+  ///
+  /// In en, this message translates to:
+  /// **'Great'**
+  String get rating_great;
+
+  /// No description provided for @rating_good.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get rating_good;
+
+  /// No description provided for @rating_fine.
+  ///
+  /// In en, this message translates to:
+  /// **'Fine'**
+  String get rating_fine;
+
+  /// No description provided for @rating_bad.
+  ///
+  /// In en, this message translates to:
+  /// **'Bad'**
+  String get rating_bad;
+
+  /// No description provided for @rating_terrible.
+  ///
+  /// In en, this message translates to:
+  /// **'Terrible'**
+  String get rating_terrible;
+
+  /// No description provided for @sort_highestRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest rating'**
+  String get sort_highestRating;
+
+  /// No description provided for @sort_priceHighToLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Price high to low'**
+  String get sort_priceHighToLow;
+
+  /// No description provided for @sort_priveLowToHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Price low to high'**
+  String get sort_priveLowToHigh;
+
+  /// No description provided for @sort_durationShortToLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Tour duration (Short to long)'**
+  String get sort_durationShortToLong;
+
+  /// No description provided for @sort_durationLongToShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Tour duration (Long to short)'**
+  String get sort_durationLongToShort;
+
+  /// No description provided for @filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter;
+
+  /// No description provided for @sort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get sort;
+
+  /// No description provided for @review.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get review;
+
+  /// No description provided for @type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
+
+  /// No description provided for @apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get apply;
+
+  /// No description provided for @tour_screenTourTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tour'**
+  String get tour_screenTourTitle;
+
+  /// No description provided for @consultation_faqs.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently asked questions'**
+  String get consultation_faqs;
+
+  /// No description provided for @faqs_answerLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers loading....'**
+  String get faqs_answerLoading;
+
   /// No description provided for @policy_loadDataFailed.
   ///
   /// In en, this message translates to:
@@ -591,13 +699,13 @@ abstract class AppLocalizations {
   /// No description provided for @menu_flightTitle.
   ///
   /// In en, this message translates to:
-  /// **'FLIGHT TICKET'**
+  /// **'PLANE'**
   String get menu_flightTitle;
 
   /// No description provided for @menu_trainTitle.
   ///
   /// In en, this message translates to:
-  /// **'TRAIN TICKET'**
+  /// **'TRAIN'**
   String get menu_trainTitle;
 
   /// No description provided for @menu_blogTitle.

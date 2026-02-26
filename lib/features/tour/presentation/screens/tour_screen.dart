@@ -1,6 +1,6 @@
 import 'package:final_project/core/data/model/home_tour_model.dart';
 import 'package:final_project/core/design/tour/app_shape.dart';
-import 'package:final_project/features/tour/presentation/sections/list_tour_section.dart';
+import 'package:final_project/features/tour/presentation/sections/tour_screen/list_tour_section.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/core/constants/colors.dart';
 import 'package:final_project/shared/widgets/app_footer.dart';
@@ -10,8 +10,6 @@ import 'package:provider/provider.dart';
 import '../../../../core/design/tour/app_layout_spacing.dart';
 import '../booking/forms/tour_search_form.dart';
 import '../controller/travel_booking_controller.dart';
-import '../sections/featured_tour_section.dart';
-import '../state/travel_filter_state.dart';
 import '../widgets/header/booking_header.dart';
 import '../widgets/header/header_back_ground.dart';
 
@@ -35,7 +33,9 @@ class _TourScreen extends State<TourScreen> {
       final l10n = AppLocalizations.of(context);
       final controller = context.read<TravelBookingController>();
       controller.resetToInitial();
+
       // 1. Khởi tạo data cơ bản
+
       controller.initData(l10n!.form_defaultDeparture, l10n.form_defaultDestination);
 
       // 2. QUAN TRỌNG: Đảm bảo initialList đã được load từ Server/Local

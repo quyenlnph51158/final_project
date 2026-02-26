@@ -26,9 +26,10 @@ class AppIcons {
   );
   static const backReview = Icons.arrow_back_ios;
   static const forwardReview = Icons.arrow_forward_ios;
-  static const expandedDescriptionSchedule = Icon(
+  static const expandedIcon = Icon(
     Icons.keyboard_arrow_down,
-    color: Colors.black,
+    color: kTextColor,
+    size: 28,
   );
   static const iconCalenderToday = Icon(Icons.calendar_today, size: 16, color: kPrimaryColor);
   static const iconLocation = Icon(Icons.location_on, size: 16, color: kPrimaryColor);

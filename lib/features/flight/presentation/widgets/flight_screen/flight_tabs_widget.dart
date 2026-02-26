@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../app/l10n/app_localizations.dart';
-import '../../../../core/constants/colors.dart';
-import '../controller/flight_controller.dart';
+import '../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../controller/flight_controller.dart';
 
 class FlightTabsWidget extends StatelessWidget {
   const FlightTabsWidget({super.key});

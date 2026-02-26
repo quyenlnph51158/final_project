@@ -44,6 +44,8 @@ dependencies:
   flutter_widget_from_html: ^0.15.0
   flutter_localizations: # ✅ Cần thiết cho i18n
     sdk: flutter
+  dio: ^5.9.1
+  dotted_line: ^3.2.2
 
 dev_dependencies:
   flutter_test:

@@ -93,7 +93,7 @@ class ShowAirportList extends StatelessWidget {
 
                     return ListTile(
                       leading: Icon(icon, color: kPrimaryColor),
-                      title: Text(item.label),
+                      title: Text(item.label+" (${item.value})"),
                       trailing: isSelected
                           ? const Icon(Icons.check,
                           color: kPrimaryColor)

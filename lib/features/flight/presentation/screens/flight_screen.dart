@@ -1,3 +1,5 @@
+import 'package:final_project/core/data/constants/extra_service_data.dart';
+import 'package:final_project/core/data/constants/international_destination_data.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/core/constants/colors.dart';
 import 'package:final_project/shared/widgets/custom_app_bar.dart';
@@ -7,10 +9,10 @@ import 'package:final_project/app/l10n/app_localizations.dart';
 import '../../../tour/presentation/widgets/header/header_back_ground.dart';
 import '../controller/flight_controller.dart';
 import '../form/search_form.dart';
-import '../widgets/destination_item.dart';
-import '../widgets/extra_section.dart';
-import '../widgets/featured_list_cheap_flight_section.dart';
-import '../widgets/flight_feature_card.dart';
+import '../widgets/flight_screen/inter_destination_item.dart';
+import '../section/flight_screen/extra_service_section.dart';
+import '../section/flight_screen/featured_list_cheap_flight_section.dart';
+import '../widgets/flight_screen/flight_feature_card.dart';
 import 'package:provider/provider.dart';
 
 // =============================================================================
@@ -181,85 +183,6 @@ class FlightScreen extends StatefulWidget {
 // =============================================================================
 
 class _FlightScreen extends State<FlightScreen> {
-  // ----------------------- 5.1. Khai báo Controller & Service -----------------------
-  String DepartureCode = '';
-
-  String ArrivalCode = '';
-
-  DateTime? departureDate;
-  DateTime? returnDate;
-
-
-  // ✈️ Dữ liệu tĩnh (static const) cho các điểm đến
-  static const List<Map<String, dynamic>> destinations = [
-    {
-      'name': 'Bangkok',
-      'imageUrl': 'https://webservice.annguyen.vn/sites/default/files/styles/width_650/public/destination/bk12344.jpg?itok=XlV-k-kJ',
-      'type': 'normal',
-    },
-    {
-      'name': 'Siem Reap',
-      'imageUrl': 'https://webservice.annguyen.vn/sites/default/files/styles/width_650/public/destination/Hinh-anh-Siem-Reap-nhin-tu-tren-cao-dep.jpg?itok=Iq6cgnlI',
-      'type': 'normal',
-    },
-    {
-      'name': 'Sydney',
-      'imageUrl': 'https://webservice.annguyen.vn/sites/default/files/styles/width_650/public/destination/nha-hat-opera-sydney-2.jpeg?itok=UE5eLKeE',
-      'type': 'special',
-    },
-    {
-      'name': 'Singapore',
-      'imageUrl': 'https://webservice.annguyen.vn/sites/default/files/styles/width_650/public/destination/sing1.jpg?itok=2fPyDrgT',
-      'type': 'normal',
-    },
-    {
-      'name': 'Melbourne',
-      'imageUrl': 'https://webservice.annguyen.vn/sites/default/files/styles/width_650/public/destination/Mel.jpg?itok=zn7XNLgb',
-      'type': 'normal',
-    },
-    {
-      'name': 'London',
-      'imageUrl': 'https://webservice.annguyen.vn/sites/default/files/styles/width_650/public/destination/london_5.jpg?itok=UVzbEQH2',
-      'type': 'special',
-    },
-    {
-      'name': 'Paris',
-      'imageUrl': 'https://webservice.annguyen.vn/sites/default/files/styles/width_650/public/destination/pariii.jpg?itok=LzMY9Z2O',
-      'type': 'normal',
-    },
-    {
-      'name': 'Frankfurt',
-      'imageUrl': 'https://webservice.annguyen.vn/sites/default/files/styles/width_650/public/destination/frank.jpg?itok=As2mjFyW',
-      'type': 'normal',
-    },
-    {
-      'name': 'San Francisco',
-      'imageUrl': 'https://webservice.annguyen.vn/sites/default/files/styles/width_650/public/destination/10-dieu-thu-vi-khi-du-lich-san-francisco-1.jpg?itok=5js4ORbk',
-      'type': 'special',
-    },
-  ];
-  final List<Map<String, dynamic>> ExtraService =[
-    {
-      'title': 'Hành lý trả trước',
-      'subtitle': 'Tiết kiệm thời gian và tiền bạc - Vui lòng liên hệ với chúng tôi để mua hành lý quá cước trả trước',
-      'imageUrl': 'https://www.wonderingvietnam.com/assets/img/flight/service_1.png',
-    },
-    {
-      'title': 'Chọn món ăn yêu thích',
-      'subtitle': 'Thưởng thức bữa ăn hoàn hảo - Chúng tôi sẽ giúp bạn chọn món ăn yêu cầu với giá hợp lý',
-      'imageUrl': 'https://www.wonderingvietnam.com/assets/img/flight/service_2.png',
-    },
-    {
-      'title':'Làm thủ tục trực tuyến',
-      'subtitle':'Thủ tục check-in trở nên thuận tiện và dễ dàng hơn bao giờ hết với dịch vụ check-in trực tuyến của chúng tôi',
-      'imageUrl': 'https://www.wonderingvietnam.com/assets/img/flight/service_3.png',
-    },
-    {
-      'title': 'Đặt chỗ ngồi',
-      'subtitle':'Tận hưởng không gian thoải mái - Chúng tôi cung cấp dịch vụ chọn chỗ ngồi hạng cao cho hành khách',
-      'imageUrl':'https://www.wonderingvietnam.com/assets/img/flight/service_4.png',
-    }
-  ];
 
   // ----------------------- 5.4. Vòng đời -----------------------
   @override
@@ -394,7 +317,7 @@ class _FlightScreen extends State<FlightScreen> {
                   return Wrap(
                     spacing: 8.0, // Khoảng cách ngang
                     runSpacing: 8.0, // Khoảng cách dọc
-                    children: destinations.map((dest) {
+                    children: InternationalDestinationData.interDestination.map((dest) {
                       return DestinationItem(destination: dest, itemWidth: baseItemWidth);
                     }).toList(),
                   );
@@ -407,7 +330,7 @@ class _FlightScreen extends State<FlightScreen> {
               const SizedBox(height: 32.0),
 
               // --- Dịch vụ bổ sung ---
-              ExtraSection(ExtraService: ExtraService,),
+              ExtraSection(ExtraService: ExtraServiceData.extraServices,),
               const SizedBox(height: 20.0),
 
               // --- Footer ---

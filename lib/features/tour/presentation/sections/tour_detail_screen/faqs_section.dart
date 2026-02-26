@@ -1,7 +1,12 @@
+import 'package:final_project/core/constants/app_icons.dart';
+import 'package:final_project/core/constants/colors.dart';
+import 'package:final_project/core/design/tour/app_shape.dart';
+import 'package:final_project/core/design/tour/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import '../../../../core/design/tour/app_layout_spacing.dart';
-import '../../data/models/tour_detail_faqs.dart';
+import '../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/design/tour/app_layout_spacing.dart';
+import '../../../data/models/tour_detail_faqs.dart';
 
 class FaqSection extends StatefulWidget {
   final List<TourDetailFaqs> faqs;
@@ -18,6 +23,7 @@ class _FaqSectionState extends State<FaqSection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (widget.faqs.isEmpty) return const SizedBox.shrink();
 
     return Padding(
@@ -25,15 +31,12 @@ class _FaqSectionState extends State<FaqSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(bottom: 16.0),
+          Padding(
+            padding: AppLayoutSpacing.paddingFaqsTitleAndItem,
             child: Text(
-              "Câu hỏi thường gặp",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+              key: widget.key,
+              l10n.consultation_faqs,
+              style: AppStyles.faqTitle,
             ),
           ),
           // Danh sách các câu hỏi
@@ -49,15 +52,10 @@ class _FaqSectionState extends State<FaqSection> {
   }
 
   Widget _buildFaqItem(TourDetailFaqs faq, bool isExpanded, int index) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Color(0xFFEEEEEE),
-            width: 1,
-          ),
-        ),
-      ),
+      decoration: AppShape.decorationFaqItem,
       child: Column(
         children: [
           // Phần Header của FAQ (Câu hỏi)
@@ -69,31 +67,22 @@ class _FaqSectionState extends State<FaqSection> {
               });
             },
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              padding: AppLayoutSpacing.paddingFaqItem,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Text(
                       faq.question ?? "",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xFF333333),
-                        height: 1.4,
-                      ),
+                      style: AppStyles.faqQuestion,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  AppLayoutSpacing.iconAndValue,
                   // Icon xoay mượt mà giống NewsCard
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 250),
-                    child: const Icon(
-                      Icons.keyboard_arrow_down,
-                      color: Colors.black54,
-                      size: 28,
-                    ),
+                    child: AppIcons.expandedIcon,
                   ),
                 ],
               ),
@@ -108,12 +97,8 @@ class _FaqSectionState extends State<FaqSection> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: HtmlWidget(
-                  faq.answer ?? "Nội dung đang được cập nhật...",
-                  textStyle: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey[600],
-                    height: 1.5,
-                  ),
+                  faq.answer ?? l10n.faqs_answerLoading,
+                  textStyle: AppStyles.faqAnswer,
                 ),
               ),
             ),

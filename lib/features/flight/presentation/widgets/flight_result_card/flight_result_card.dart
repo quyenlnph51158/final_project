@@ -5,11 +5,10 @@ import 'package:final_project/features/flight/data/models/flight_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../app/l10n/app_localizations.dart';
-import '../../../../core/constants/colors.dart';
-import '../../data/models/inventory.dart';
-import '../controller/flight_controller.dart';
-import 'package:intl/intl.dart';
+import '../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../../data/models/inventory.dart';
+import '../../controller/flight_controller.dart';
 
 class FlightResultCard extends StatelessWidget{
   final FlightInfo flight;

@@ -1,14 +1,16 @@
+import 'package:final_project/core/constants/colors.dart';
 import 'package:final_project/core/design/tour/app_spacing.dart';
 import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/features/tour/presentation/widgets/widget_tour_screen.dart';
 import 'package:final_project/features/tour/presentation/widgets/pagination_control.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import '../../../../../../app/l10n/app_localizations.dart';
-import '../../../../core/design/tour/app_layout_spacing.dart';
-import '../controller/travel_booking_controller.dart';
-import '../state/travel_filter_state.dart';
-import '../widgets/tour_card_item.dart';
+import '../../../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/design/tour/app_layout_spacing.dart';
+import '../../controller/travel_booking_controller.dart';
+import '../../state/travel_filter_state.dart';
+import '../../widgets/tour_card_item.dart';
 
 class ListTourSection extends StatelessWidget{
   const ListTourSection({super.key});
@@ -25,7 +27,7 @@ class ListTourSection extends StatelessWidget{
             child: Text(
               controller.state.ui.isSearching
                   ? '${l10n.home_tourSectionTitleSearch} ${controller.state.form.destination}'
-                  : 'Tour du lịch',
+                  : l10n.tour_screenTourTitle,
               style: AppStyles.tourSectionTitle,
             ),
           ),
@@ -36,7 +38,7 @@ class ListTourSection extends StatelessWidget{
                 Expanded(
                   child: _buildFilterButton(
                     icon: Icons.tune, // Biểu tượng Lọc
-                    label: "Lọc",
+                    label: l10n.filter,
                     onTap: () => _showFilterBottomSheet(context),
                   ),
                 ),
@@ -44,7 +46,7 @@ class ListTourSection extends StatelessWidget{
                 Expanded(
                   child: _buildFilterButton(
                     icon: Icons.sort, // Biểu tượng Sắp xếp
-                    label: "Sắp xếp",
+                    label: l10n.sort,
                     onTap: () => _showSortBottomSheet(context),
                   ),
                 ),
@@ -107,6 +109,7 @@ class ListTourSection extends StatelessWidget{
     );
   }
   void _showSortBottomSheet(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -117,11 +120,11 @@ class ListTourSection extends StatelessWidget{
           builder: (context, controller, child) {
             // Định nghĩa danh sách option kèm theo Enum tương ứng
             final List<Map<String, dynamic>> sortOptions = [
-              {'label': 'Đánh giá cao nhất', 'value': SortOption.highestRating},
-              {'label': 'Giá cao đến thấp', 'value': SortOption.priceHighToLow},
-              {'label': 'Giá thấp đến cao', 'value': SortOption.priceLowToHigh},
-              {'label': 'Thời lượng tour (ngắn đến dài)', 'value': SortOption.durationShortToLong},
-              {'label': 'Thời lượng tour (dài đến ngắn)', 'value': SortOption.durationLongToShort},
+              {'label': l10n.sort_highestRating, 'value': SortOption.highestRating},
+              {'label': l10n.sort_priceHighToLow, 'value': SortOption.priceHighToLow},
+              {'label': l10n.sort_priveLowToHigh, 'value': SortOption.priceLowToHigh},
+              {'label': l10n.sort_durationShortToLong, 'value': SortOption.durationShortToLong},
+              {'label': l10n.sort_durationLongToShort, 'value': SortOption.durationLongToShort},
             ];
 
             return Container(
@@ -129,7 +132,7 @@ class ListTourSection extends StatelessWidget{
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text("Sắp xếp", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(l10n.sort, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   const Divider(),
                   ...sortOptions.map((option) {
                     final bool isSelected = controller.state.filter.sortBy == option['value'];
@@ -156,6 +159,7 @@ class ListTourSection extends StatelessWidget{
   }
   void _showFilterBottomSheet(BuildContext context) {
     // final categories= context.watch<TravelBookingController>().state.tour.categories;
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // Để sheet cao hơn
@@ -168,48 +172,26 @@ class ListTourSection extends StatelessWidget{
             return Column(
               children: [
                 // Header
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: Text("Lọc", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  child: Text(l10n.filter, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
                 Expanded(
                   child: ListView(
                     controller: scrollController,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     children: [
-                      _buildSectionTitle("Đánh giá"),
-                      _buildRatingFilter(context),
+                      FilterSectionTitle(title: l10n.review),
+                      RatingFilterGroup(),
 
                       // _buildSectionTitle("Khu vực"),
                       // const ExpansionTile(title: Text("Miền Bắc")),
                       // const ExpansionTile(title: Text("Miền Trung")),
                       // const ExpansionTile(title: Text("Miền Nam")),
-                      _buildSectionTitle("Loại hình"),
+
+                      FilterSectionTitle(title: l10n.sort),
                       // Sử dụng Consumer để tối ưu việc rebuild chỉ trong vùng này
-                      Consumer<TravelBookingController>(
-                        builder: (context, controller, child) {
-                          // Lấy danh sách ID hoặc tên đang được chọn từ state
-                          final selectedTypes = controller.state.filter.selectedTourTypes;
-
-                          return Column(
-                            children: controller.state.tour.categories.map((type) {
-                              // Kiểm tra xem loại hình này có nằm trong danh sách đã chọn không
-                              final isSelected = selectedTypes.contains(type.name);
-
-                              return CheckboxListTile(
-                                title: Text(type.name),
-                                value: isSelected, // Giá trị động theo State
-                                activeColor: Colors.teal,
-                                controlAffinity: ListTileControlAffinity.leading,
-                                onChanged: (bool? val) {
-                                  // Gọi hàm toggle đã viết ở Controller
-                                  controller.toggleTourTypeFilter(type.name);
-                                },
-                              );
-                            }).toList(),
-                          );
-                        },
-                      ),
+                      TourTypeFilterGroup(),
                     ],
                   ),
                 ),
@@ -227,7 +209,7 @@ class ListTourSection extends StatelessWidget{
                       context.read<TravelBookingController>().applyFilters(); // Thực thi lọc dữ liệu
                       Navigator.pop(context);    // Đóng BottomSheet
                     },
-                    child: const Text("Áp dụng", style: TextStyle(color: Colors.white, fontSize: 16)),
+                    child: Text(l10n.apply, style: TextStyle(color: Colors.white, fontSize: 16)),
                   ),
                 )
               ],
@@ -237,79 +219,4 @@ class ListTourSection extends StatelessWidget{
       },
     );
   }
-  Widget _buildRatingFilter(BuildContext context) {
-    // Danh sách các cấp độ đánh giá tương ứng với số sao và nhãn
-    final List<Map<String, dynamic>> ratings = [
-      {'stars': 5, 'label': 'Tuyệt vời'},
-      {'stars': 4, 'label': 'Tốt'},
-      {'stars': 3, 'label': 'Ổn'},
-      {'stars': 2, 'label': 'Không ổn'},
-      {'stars': 1, 'label': 'Tệ'},
-    ];
-
-    return Consumer<TravelBookingController>(
-      builder: (context, controller, child) {
-        return Column(
-          children: ratings.map((rating) {
-            final int starCount = rating['stars'];
-            final String label = rating['label'];
-            // Kiểm tra xem hạng mục này có đang được chọn hay không
-            final bool isSelected = controller.state.filter.selectedRatings.contains(starCount);
-
-            return InkWell(
-              onTap: () => controller.toggleRatingFilter(starCount),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Row(
-                  children: [
-                    // 1. Checkbox thủ công để giống ảnh mẫu
-                    SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: Checkbox(
-                        value: isSelected,
-                        activeColor: Colors.teal,
-                        onChanged: (bool? value) {
-                          controller.toggleRatingFilter(starCount);
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-
-                    // 2. Hệ thống sao (5 ngôi sao, tô màu dựa trên số lượng)
-                    Row(
-                      children: List.generate(5, (index) {
-                        return Icon(
-                          Icons.star,
-                          size: 20,
-                          color: index < starCount ? Colors.orange[300] : Colors.grey[300],
-                        );
-                      }),
-                    ),
-                    const SizedBox(width: 12),
-
-                    // 3. Nhãn văn bản
-                    Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }).toList(),
-        );
-      },
-    );
-  }
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15),
-      child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-    );
-  }
-
 }

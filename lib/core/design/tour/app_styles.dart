@@ -34,7 +34,22 @@ class AppStyles {
 
   //=====================================Tour Detail============================
   static const customerNameReview = TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
-
+  static const faqTitle = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: kTextColor,
+  );
+  static const faqQuestion = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: Color(0xFF333333),
+    height: 1.4,
+  );
+  static final faqAnswer = TextStyle(
+    fontSize: 15,
+    color: Colors.grey[600],
+    height: 1.5,
+  );
   //=====================================Review============================
   static const  commentReviewItem = TextStyle(fontWeight: FontWeight.bold);
   static const positiveReviewItem = TextStyle(fontSize: 14, color: Colors.black87);

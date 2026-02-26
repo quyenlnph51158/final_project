@@ -10,7 +10,8 @@ class PaginationControl extends StatelessWidget {
     // Sử dụng watch để UI tự động cập nhật khi trang thay đổi
     final controller = context.watch<TravelBookingController>();
     final state = controller.state;
-    final int totalPages = controller.totalPages;
+    // Trong build của PaginationControl
+    final int totalPages = state.tour.totalPages; // Lấy từ state sau khi loadTourPage chạy xong
 
     // Nếu chỉ có 1 trang thì không hiện phân trang
     if (totalPages <= 1) return const SizedBox.shrink();
@@ -26,9 +27,9 @@ class PaginationControl extends StatelessWidget {
           final bool isSelected = state.tour.currentPage == pageNumber;
 
           return InkWell(
-            onTap: () => {
-              controller.loadTourPage(pageNumber),
-              controller.scrollToTop(),
+            onTap: () async {
+              await controller.loadTourPage(pageNumber);
+              controller.scrollToTop();
             },
             borderRadius: BorderRadius.circular(8),
             child: AnimatedContainer(

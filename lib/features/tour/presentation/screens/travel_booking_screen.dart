@@ -5,13 +5,14 @@ import '../../../../core/constants/colors.dart';
 import 'package:final_project/shared/widgets/app_footer.dart';
 import 'package:final_project/shared/widgets/app_drawer.dart';
 import '../../../../core/design/tour/app_layout_spacing.dart';
+import '../../../flight/presentation/controller/flight_controller.dart';
 import '../booking/forms/search_form_container.dart';
 import '../controller/travel_booking_controller.dart';
-import '../sections/about_us_section.dart';
-import '../sections/featured_tour_section.dart';
-import '../sections/featured_destinations_section.dart';
-import '../sections/header_section.dart';
-import '../sections/promotion_section.dart';
+import '../sections/home_screen/about_us_section.dart';
+import '../sections/home_screen/featured_tour_section.dart';
+import '../sections/home_screen/featured_categories_section.dart';
+import '../sections/home_screen/header_section.dart';
+import '../sections/home_screen/promotion_section.dart';
 import '../widgets/header/header_back_ground.dart';
 
 class TravelBookingScreen extends StatefulWidget {
@@ -32,7 +33,7 @@ class _TravelBookingScreenState extends State<TravelBookingScreen> {
       final controller = context.read<TravelBookingController>();
       controller.resetToHome();
       context.read<TravelBookingController>().initData(l10n.form_defaultDeparture,l10n.form_defaultDestination);
-
+      context.read<FlightController>().initData();
     });
   }
 

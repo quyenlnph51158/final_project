@@ -1,6 +1,6 @@
 import 'package:final_project/core/design/tour/app_layout_spacing.dart';
+import 'package:final_project/features/flight/presentation/form/flight_form.dart';
 import 'package:final_project/features/tour/presentation/booking/forms/tour_search_form.dart';
-import 'package:final_project/features/tour/presentation/booking/forms/train_search_form.dart';
 import 'package:final_project/features/tour/presentation/controller/travel_booking_controller.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../core/constants/colors.dart';
@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../../app/l10n/app_localizations.dart';
 import '../widgets/travel_booking_tab.dart';
-import 'flight_search_form.dart';
 
 class SearchFormContainer extends StatelessWidget {
   final TravelTab selectedTab;
@@ -22,17 +21,12 @@ class SearchFormContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget currentForm;
-    final l10n = AppLocalizations.of(context)!;
     switch (selectedTab) {
       case TravelTab.flight:
-        currentForm = FlightSearchForm(
-          onSearch: () {
-            context.read<TravelBookingController>().performFlightSearch(l10n);
-          },
-        );
+        currentForm = FlightForm();
         break;
       case TravelTab.train:
-        currentForm = const TrainSearchForm();
+        currentForm = FlightForm();
         break;
       case TravelTab.tour:
         currentForm = TourSearchForm(

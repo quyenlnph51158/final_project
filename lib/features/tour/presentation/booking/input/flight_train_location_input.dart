@@ -21,7 +21,7 @@ class FlightTrainLocationInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasValue = value != null && value!.isNotEmpty;
+    final bool hasValue = value != " ()" && value!.isNotEmpty;
     return InkWell(
       onTap: onTap,
       child: InputDecorator(

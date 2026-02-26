@@ -48,6 +48,14 @@ class AppShape {
       color: Colors.grey.shade100,
       borderRadius: BorderRadius.circular(20),
   );
+  static final decorationFaqItem = BoxDecoration(
+    border: Border(
+      bottom: BorderSide(
+        color: kBorderColor,
+        width: 1,
+      ),
+    ),
+  );
   //==========================ShowList==============
  static final borderSearchBox = OutlineInputBorder(
      borderRadius: BorderRadius.circular(10),

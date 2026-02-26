@@ -9,7 +9,7 @@ enum SortOption {
 class TravelFilterState {
   final List<int> selectedRatings; // Lưu danh sách sao (ví dụ: [5, 4])
   final List<String> selectedAreas;  // Lưu khu vực (Miền Bắc, Trung, Nam)
-  final List<String> selectedTourTypes; // Lưu loại hình (Tour biển, Trekking...)
+  final List<int> selectedTourTypes; // Lưu loại hình (Tour biển, Trekking...)
   final SortOption sortBy; // Lưu tiêu chí sắp xếp hiện tại
   const TravelFilterState({
     required this.selectedRatings,
@@ -30,7 +30,7 @@ class TravelFilterState {
   TravelFilterState copyWith({
     List<int>? selectedRatings,
     List<String>? selectedAreas,
-    List<String>? selectedTourTypes,
+    List<int>? selectedTourTypes,
     SortOption? sortBy,
   }) {
     return TravelFilterState(

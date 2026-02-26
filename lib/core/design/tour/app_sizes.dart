@@ -3,7 +3,7 @@ class AppSizes {
 
   //========================================Height==========================
   static const searchButton = 50.0;
-  static const destinationListHeight =250.0;
+  static const destinationListHeight =200.0;
   //==================================TourDetail======================
   static const imageDescription=250.0;
   static const tabSection = 90.0;
@@ -27,8 +27,7 @@ class AppSizes {
 
   //===================================width=================================
   //===================================Categories===========================
-  static const imageCategory= 180.0;
-  static const DestinationCard =180.0;
+  static const imageCategory = 150.0;
   static const iconAboutUsItem = 40.0;
 
   //=================================Tour Category===========================

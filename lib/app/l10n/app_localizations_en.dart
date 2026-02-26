@@ -171,6 +171,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_loading => 'Searching...';
 
   @override
+  String get rating_great => 'Great';
+
+  @override
+  String get rating_good => 'Good';
+
+  @override
+  String get rating_fine => 'Fine';
+
+  @override
+  String get rating_bad => 'Bad';
+
+  @override
+  String get rating_terrible => 'Terrible';
+
+  @override
+  String get sort_highestRating => 'Highest rating';
+
+  @override
+  String get sort_priceHighToLow => 'Price high to low';
+
+  @override
+  String get sort_priveLowToHigh => 'Price low to high';
+
+  @override
+  String get sort_durationShortToLong => 'Tour duration (Short to long)';
+
+  @override
+  String get sort_durationLongToShort => 'Tour duration (Long to short)';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get sort => 'Sort';
+
+  @override
+  String get review => 'Review';
+
+  @override
+  String get type => 'Type';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String get tour_screenTourTitle => 'Tour';
+
+  @override
+  String get consultation_faqs => 'Frequently asked questions';
+
+  @override
+  String get faqs_answerLoading => 'Answers loading....';
+
+  @override
   String get policy_loadDataFailed => 'Load data failed:';
 
   @override
@@ -270,10 +324,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menu_tourTitle => 'TOUR';
 
   @override
-  String get menu_flightTitle => 'FLIGHT TICKET';
+  String get menu_flightTitle => 'PLANE';
 
   @override
-  String get menu_trainTitle => 'TRAIN TICKET';
+  String get menu_trainTitle => 'TRAIN';
 
   @override
   String get menu_blogTitle => 'BLOG';
