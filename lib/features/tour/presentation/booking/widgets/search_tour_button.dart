@@ -1,6 +1,6 @@
 import 'package:final_project/core/constants/app_icons.dart';
-import 'package:final_project/core/design/tour/app_sizes.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_sizes.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +16,7 @@ class SearchTourButton extends StatelessWidget{
     final controller=context.read<TravelBookingController>();
     return SizedBox(
       width: double.infinity,
-      height: AppSizes.searchButton,
+      height: AppSizes.searchButton(context),
       child: ElevatedButton.icon(
         style: AppStyles.searchButton,
         icon: AppIcons.iconSearch,

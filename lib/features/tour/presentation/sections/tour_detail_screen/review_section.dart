@@ -1,12 +1,12 @@
 import 'package:final_project/core/constants/app_icons.dart';
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/app_sizes.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_sizes.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:final_project/core/utils/calculate_average_star.dart';
 import 'package:final_project/features/tour/presentation/screens/review_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/tour/app_layout_spacing.dart';
+import '../../../../../core/design/tour/tour_layout_spacing.dart';
 import '../../../data/models/tour_detail.dart';
 import '../../widgets/review_card.dart';
 
@@ -34,7 +34,7 @@ class _ReviewSectionState extends State<ReviewSection> {
     final displayReviews = widget.detail.reviews.take(3).toList();
 
     return Padding(
-      padding: AppLayoutSpacing.reviewTourDetailSection,
+      padding: TourLayoutSpacing.reviewTourDetailSection(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -42,19 +42,19 @@ class _ReviewSectionState extends State<ReviewSection> {
           Text(
             key: widget.key,
             l10n.general_reviews,
-            style: AppStyles.titleReviewSection,
+            style: AppStyles.titleReviewSection(context),
           ),
-          AppLayoutSpacing.titleReviewAndContent,
+          TourLayoutSpacing.titleReviewAndContent,
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
                 '${CalculateAverageStar.average(widget.detail.reviews).toStringAsFixed(1)}',
-                style: AppStyles.averageRatingValue,
+                style: AppStyles.averageRatingValue(context),
               ),
               Text(
                 ' /5',
-                style: AppStyles.averageRatingSuffix,
+                style: AppStyles.averageRatingSuffix(context),
               ),
               const Spacer(),
               TextButton(
@@ -70,19 +70,19 @@ class _ReviewSectionState extends State<ReviewSection> {
                 },
                 child: Text(
                   l10n.tour_detail_read_all_reviews,
-                  style: AppStyles.textReadAllReviewSection,
+                  style: AppStyles.textReadAllReviewSection(context),
                 ),
               ),
             ],
           ),
           _buildStarRating(CalculateAverageStar.average(widget.detail.reviews)),
-          AppLayoutSpacing.iconStarAndInfoReview,
+          TourLayoutSpacing.iconStarAndInfoReview,
           Text(
             '${l10n.tour_detail_based_on} ${widget.detail.reviews.length} ${l10n.tour_detail_reviews_count}',
-            style: AppStyles.textBasedOn,
+            style: AppStyles.textBasedOn(context),
           ),
 
-          AppLayoutSpacing.reviewInfoAndReviewItem,
+          TourLayoutSpacing.reviewInfoAndReviewItem,
 
           // Danh sách Review hiển thị theo chiều dọc
           ListView.separated(
@@ -96,19 +96,19 @@ class _ReviewSectionState extends State<ReviewSection> {
               return ReviewCard(
                 width: double.infinity, // Chiều rộng full màn hình
                 child: Padding(
-                  padding: AppLayoutSpacing.contentInReviewCard,
+                  padding: TourLayoutSpacing.contentInReviewCard(context),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (review.name?.isNotEmpty ?? false)
                         Text(
                           review.name!,
-                          style: AppStyles.nameCustomerInCard,
+                          style: AppStyles.nameCustomerInCard(context),
                         ),
                       _buildStarRating(
                         double.tryParse(review.rating.toString()) ?? 0,
                       ),
-                      AppLayoutSpacing.starAndComment,
+                      TourLayoutSpacing.starAndComment,
                       Text(
                         review.positive ?? review.comment ?? '',
                         maxLines: 5,

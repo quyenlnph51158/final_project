@@ -1,40 +1,44 @@
 import 'package:final_project/core/data/model/extra_service_model.dart';
+import 'package:final_project/core/design/shared/app_layout_spacing.dart';
+import 'package:final_project/core/design/shared/app_style.dart';
 import 'package:final_project/features/flight/presentation/widgets/flight_screen/service_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/design/flight/flight_layout_spacing.dart';
 
-class ExtraSection extends StatelessWidget{
+class ExtraSection extends StatelessWidget {
   final List<ExtraServiceModel> ExtraService;
-  const ExtraSection({
-    super.key,
-    required this.ExtraService
-  });
+
+  const ExtraSection({super.key, required this.ExtraService});
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: FlightLayoutSpacing.screenHorizontalPadding,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SharedAppLayoutSpacing.section,
           Center(
             child: Text(
               l10n.flight_extraServices,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+              style: SharedAppStyle.titleSection(context),
             ),
           ),
-          const SizedBox(height: 16),
+          SharedAppLayoutSpacing.labelandCard,
           ...ExtraService.map((service) {
             return Padding(
-              padding: const EdgeInsets.only(bottom: 24.0),
-              child: ServiceCard(service: service,),
+              padding: const EdgeInsets.only(
+                bottom: FlightLayoutSpacing.gapBetweenCards,
+              ),
+              child: ServiceCard(service: service),
             );
           }).toList(),
+          SharedAppLayoutSpacing.footer,
         ],
       ),
     );

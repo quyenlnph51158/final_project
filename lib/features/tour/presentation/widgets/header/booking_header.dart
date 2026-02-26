@@ -1,9 +1,10 @@
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/shared/widgets/custom_app_bar.dart';
+import 'package:final_project/shared/header/custom_app_bar.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 
-import '../../../../../core/design/tour/app_styles.dart';
+import '../../../../../core/design/shared/app_style.dart';
+import '../../../../../core/design/tour/tour_styles.dart';
 
 class BookingHeader extends StatelessWidget {
   const BookingHeader({super.key});
@@ -23,11 +24,11 @@ class BookingHeader extends StatelessWidget {
               children: [
                 const CustomAppBar(),
                 Padding(
-                  padding: AppLayoutSpacing.titleHeader,
+                  padding: TourLayoutSpacing.titleHeader(context),
                   child: Text(
                     '${l10n.header_titleLine1} \n'
                         '${l10n.header_titleLine2}',
-                    style: AppStyles.titleHeader
+                    style: SharedAppStyle.titleHeader(context)
                   ),
                 ),
               ],

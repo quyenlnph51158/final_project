@@ -1,11 +1,11 @@
 import 'package:final_project/core/constants/app_icons.dart';
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/app_shape.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_shape.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import '../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/tour/app_layout_spacing.dart';
+import '../../../../../core/design/tour/tour_layout_spacing.dart';
 import '../../../data/models/tour_detail_faqs.dart';
 
 class FaqSection extends StatefulWidget {
@@ -27,16 +27,16 @@ class _FaqSectionState extends State<FaqSection> {
     if (widget.faqs.isEmpty) return const SizedBox.shrink();
 
     return Padding(
-      padding: AppLayoutSpacing.paddingFaqSection,
+      padding: TourLayoutSpacing.paddingFaqSection(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: AppLayoutSpacing.paddingFaqsTitleAndItem,
+            padding: TourLayoutSpacing.paddingFaqsTitleAndItem(context),
             child: Text(
               key: widget.key,
               l10n.consultation_faqs,
-              style: AppStyles.faqTitle,
+              style: AppStyles.faqTitle(context),
             ),
           ),
           // Danh sách các câu hỏi
@@ -67,17 +67,17 @@ class _FaqSectionState extends State<FaqSection> {
               });
             },
             child: Padding(
-              padding: AppLayoutSpacing.paddingFaqItem,
+              padding: TourLayoutSpacing.paddingFaqItem(context),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Text(
                       faq.question ?? "",
-                      style: AppStyles.faqQuestion,
+                      style: AppStyles.faqQuestion(context),
                     ),
                   ),
-                  AppLayoutSpacing.iconAndValue,
+                  TourLayoutSpacing.iconAndValue,
                   // Icon xoay mượt mà giống NewsCard
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,
@@ -98,7 +98,7 @@ class _FaqSectionState extends State<FaqSection> {
                 alignment: Alignment.centerLeft,
                 child: HtmlWidget(
                   faq.answer ?? l10n.faqs_answerLoading,
-                  textStyle: AppStyles.faqAnswer,
+                  textStyle: AppStyles.faqAnswer(context),
                 ),
               ),
             ),

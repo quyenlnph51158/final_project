@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:final_project/core/constants/app_icons.dart';
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/app_shape.dart';
-import 'package:final_project/core/design/tour/app_sizes.dart';
+import 'package:final_project/core/design/tour/tour_shape.dart';
+import 'package:final_project/core/design/tour/tour_sizes.dart';
 import 'package:flutter/material.dart';
-import '../../../../../core/design/tour/app_layout_spacing.dart';
+import '../../../../../core/design/tour/tour_layout_spacing.dart';
 
 class ImageCarousel extends StatefulWidget {
   final List<String> images;
@@ -13,7 +13,7 @@ class ImageCarousel extends StatefulWidget {
   const ImageCarousel({
     super.key,
     required this.images,
-    this.height = AppSizes.imageDescription,
+    required this.height,
   });
 
   @override
@@ -103,7 +103,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
               },
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: AppLayoutSpacing.paddingImageCarousel,
+                  padding: TourLayoutSpacing.paddingImageCarousel(context),
                   child: ClipRRect(
                     borderRadius: AppShape.imageLoad,
                     child: Image.network(
@@ -126,7 +126,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
           ),
         ),
 
-        AppLayoutSpacing.imageAndLengthLoad,
+        TourLayoutSpacing.imageAndLengthLoad,
 
         // ================= INDICATOR =================
         Row(
@@ -135,8 +135,8 @@ class _ImageCarouselState extends State<ImageCarousel> {
             widget.images.length,
                 (index) => AnimatedContainer(
               duration: const Duration(milliseconds: 500),
-              margin: AppLayoutSpacing.marginIndicator,
-              width: _currentIndex == index ? AppSizes.wActiveIdicator : AppSizes.wInActiveIndicator,
+              margin: TourLayoutSpacing.marginIndicator(context),
+              width: _currentIndex == index ? AppSizes.wActiveIndicator : AppSizes.wInActiveIndicator,
               height: AppSizes.hIndicator,
               decoration: BoxDecoration(
                 color: _currentIndex == index

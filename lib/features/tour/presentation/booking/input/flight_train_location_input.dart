@@ -1,4 +1,5 @@
-import 'package:final_project/core/design/tour/app_shape.dart';
+import 'package:final_project/core/design/tour/tour_shape.dart';
+import 'package:final_project/core/utils/responsive_layout.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/colors.dart';
@@ -30,6 +31,7 @@ class FlightTrainLocationInput extends StatelessWidget {
           filled: true,
           fillColor: kFormFieldBackground,
           border: AppShape.selectionField,
+          labelStyle: TextStyle(fontSize: context.sp(16)),
         ),
         child: Text(
           hasValue ? value! : hint.toString(), // 👈 nếu chưa có thì hiện chữ mờ
@@ -37,6 +39,7 @@ class FlightTrainLocationInput extends StatelessWidget {
             color: hasValue
                 ? kTextColor
                 : kNullValue, // 👈 chữ mờ
+            fontSize: context.sp(14),
           ),
         ),
       ),

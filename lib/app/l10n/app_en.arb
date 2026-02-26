@@ -209,7 +209,26 @@
   "flight_change": "Change",
   "flight_returnTicket": "Return ticket",
   "flight_selectReturnFlight": "Select return flight",
+  "flight_from_to": "Flight from {departure} to {destination}",
 
+  "selectSeatClass": "Select seat class",
+  "flightDetails": "Details",
+  "currentlySelected": "Selected",
+  "selectThisJourney": "Select",
+  "viewDetails": "Details",
+  "departureDetails": "1. Departure details",
+  "returnDetails": "2. Arrive details",
+  "stops": "{count} stop",
+  "stopAt": "Stop at {city}: {duration}",
+  "policy_carryOnBaggage": "Carry-on baggage",
+  "policy_changeFlight": "Flight change",
+  "policy_refund": "Refund",
+  "flight_fareAndCode": "{fareType} • Flight {flightCode}",
+  "text_btnContinue" : "Continue",
+  "text_change_btn" : "Change",
+  "selected_international_pair_ticket": "Selected international pair ticket",
+  "selected_departure_flight_ticket": "Selected departure flight ticket",
+  "selected_arrival_flight_ticket": "Selected arrival flight ticket",
 
   "form_consultation_departure_date": "Departure Date",
   "form_consultation_departure_point": "Departure Point",
@@ -281,5 +300,35 @@
   "social_facebook": "Facebook",
   "social_instagram": "Instagram",
   "social_tiktok": "Tiktok",
-  "social_whatsapp": "WhatsApp"
+  "social_whatsapp": "WhatsApp",
+
+
+  "tipEnterNameTitle": "Tips for Entering Your Name Correctly",
+  "tipEnterNameDesc": "Enter your personal information exactly as it appears on the data page of your passport or ID card. All names must contain only standard English alphabetical characters (A to Z), with a maximum of 35 characters for your full name.",
+  "checkInfoTitle": "Review and Verify Your Information",
+  "checkInfoDesc": "During the booking process, you might accidentally change information or miss important notes.\n\nTherefore, once you have filled in all the required details, do not click the \"Continue\" button immediately. Always double-check the information you have entered.",
+  "wrongNameTitle": "Incorrect Name on Flight Ticket",
+  "wrongNameDesc": "If the personal information on your ticket does not match your passport or ID card, the airline reserves the right to deny you boarding. In this case, you will have to undergo an official name change process or purchase a new ticket.",
+  "understand": "I Understand",
+  "titleSalutation": "Select Title",
+  "titleFirstName": "First / Middle Name",
+  "titleLastName": "Last Name / Surname",
+  "salutationMr": "Mr.",
+
+  "tip1Title": "First/Middle or Last Name with a single letter",
+  "tip1Desc": "If your first, middle, or last name contains only a single letter, please repeat that letter in the corresponding name field.",
+  "tip1Ex": "Example name on passport: D Jonson",
+
+  "tip2Title": "Names with special characters",
+  "tip2Desc": "If your name is hyphenated or contains special characters such as apostrophes or accents, please remove them when entering your name.",
+  "tip2Ex": "Example: Name on passport: John-Adam Smith",
+
+  "tip3Title": "Single name in passport",
+  "tip3Desc": "If you only have one name in your passport (regardless of whether it's a first, middle, or last name), please enter your name in the \"Last Name\" field and check the box \"This passenger does not have a first name in their passport\".",
+  "tip3Ex": "Example: Name on passport: Thomas",
+
+  "tip4Title": "Names with suffixes",
+  "tip4Desc": "If your name includes a suffix, please enter the first name and suffix together in the \"First / Middle Name\" field.",
+  "tip4Ex": "Example: Name on passport: William Smith Jr"
+
 }

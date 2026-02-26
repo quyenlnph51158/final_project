@@ -1,6 +1,6 @@
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_shape.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_shape.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +13,7 @@ class ReviewCard extends StatelessWidget{
   Widget build(BuildContext context) {
     return Container(
       width: width,
-      margin: AppLayoutSpacing.marginReviewCard,
+      margin: TourLayoutSpacing.marginReviewCard(context),
       decoration: BoxDecoration(
         color: kBackgroundColor,
         borderRadius: AppShape.reviewCard,

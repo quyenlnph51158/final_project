@@ -3,31 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../../core/constants/colors.dart';
 import '../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/design/flight/flight_shape.dart';
+import '../../../../../core/design/flight/flight_size.dart';
+import '../../../../../core/design/flight/flight_style.dart';
 import '../../controller/flight_controller.dart';
 
-class SearchFlightButton extends StatelessWidget{
+class SearchFlightButton extends StatelessWidget {
   final String text;
+
   const SearchFlightButton({super.key, required this.text});
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final controller=context.read<FlightController>();
+    final controller = context.read<FlightController>();
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      height: FlightSize.btnSearchHeight(context),
       child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: kPrimaryColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        style: FlightStyle.searchFlightButton,
+        icon: Icon(
+          Icons.search,
+          color: Colors.white,
+          size: FlightSize.iconSizeMedium(context),
         ),
-        icon: const Icon(Icons.search, color: Colors.white),
-        label: Text(
-          text,
-          style:
-          const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        label: Text(text, style: FlightStyle.buttonSearch),
         onPressed: () {
-          if (controller.state.selectedFlightTab == FlightTab.flight) {
+          if (controller.state.ui.selectedFlightTab == FlightTab.flight) {
             controller.navigateToFlightResults(context);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(

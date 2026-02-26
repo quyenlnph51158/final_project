@@ -1,343 +1,82 @@
-import 'package:final_project/core/data/constants/extra_service_data.dart';
-import 'package:final_project/core/data/constants/international_destination_data.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/shared/widgets/custom_app_bar.dart';
-import 'package:final_project/shared/widgets/app_footer.dart';
-import 'package:final_project/shared/widgets/app_drawer.dart';
-import 'package:final_project/app/l10n/app_localizations.dart';
-import '../../../tour/presentation/widgets/header/header_back_ground.dart';
-import '../controller/flight_controller.dart';
-import '../form/search_form.dart';
-import '../widgets/flight_screen/inter_destination_item.dart';
-import '../section/flight_screen/extra_service_section.dart';
-import '../section/flight_screen/featured_list_cheap_flight_section.dart';
-import '../widgets/flight_screen/flight_feature_card.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/colors.dart';
+import '../../../../core/data/constants/extra_service_data.dart';
+import '../../../../shared/footer/app_footer.dart';
+import '../../../../shared/header/app_drawer.dart';
+import '../controller/flight_controller.dart';
+import '../section/flight_screen/extra_service_section.dart';
+import '../section/flight_screen/feature_section.dart';
+import '../section/flight_screen/featured_list_cheap_flight_section.dart';
+import '../section/flight_screen/featured_list_cheap_flight_title_section.dart';
+import '../section/flight_screen/flight_destination_grid_section.dart';
+import '../section/flight_screen/flight_destination_title_section.dart';
+import '../section/flight_screen/header_section.dart';
 
-// =============================================================================
-//                      2. ENUMS & HẰNG SỐ CỦA MÀN HÌNH
-// =============================================================================
-// =============================================================================
-//                     3. MODELS/STRUCTS (Stateless Widgets)
-// =============================================================================
-/// ---------------------- 3.1. FlightDealCard (Card Ưu đãi) ----------------------
-class FlightDealCard extends StatelessWidget {
-  final String imageUrl;
-  final String route;
-  final String date;
-  final String price;
-  final String tripType;
-
-  const FlightDealCard({
-    super.key,
-    required this.imageUrl,
-    required this.route,
-    required this.date,
-    required this.price,
-    required this.tripType,
-  });
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      clipBehavior: Clip.antiAlias, // Cắt ảnh theo border radius
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      elevation: 3,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 1. Hình ảnh
-          Image.network(
-            imageUrl,
-            height: 180, // Chiều cao cố định
-            width: double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                height: 180,
-                color: Colors.grey.shade200,
-                child: Center(
-                    child: Text(l10n.error_image_load, style: TextStyle(color: Colors.grey))),
-              );
-            },
-          ),
-
-          // 2. Nội dung text
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Tuyến bay: Từ Hà Nội Đến Đà Nẵng
-                Text(
-                  route,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-
-                // Ngày khởi hành
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.schedule, // Hoặc Icons.access_time
-                      size: 16,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      date,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-
-                // Giá và Nút Chi tiết
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.flight_label_only_from,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          price,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red.shade700, // Màu đỏ nổi bật cho giá
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          tripType,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                    // Nút "Chi tiết"
-                    OutlinedButton(
-                      onPressed: () {
-                        // Xử lý khi nhấn Chi tiết
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.grey.shade400),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      ),
-                      child: Text(
-                        l10n.general_detailButton,
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// =============================================================================
-//                           4. MÀN HÌNH CHÍNH (Stateful Widget)
-// =============================================================================
-
-/// ----------------------- 4.1. FlightScreen -----------------------
 class FlightScreen extends StatefulWidget {
   const FlightScreen({super.key});
+
   @override
-  State<FlightScreen> createState() => _FlightScreen();
+  State<FlightScreen> createState() => _FlightScreenState();
 }
 
-// =============================================================================
-//                             5. STATE CỦA MÀN HÌNH
-// =============================================================================
+class _FlightScreenState extends State<FlightScreen> {
 
-class _FlightScreen extends State<FlightScreen> {
-
-  // ----------------------- 5.4. Vòng đời -----------------------
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final l10n = AppLocalizations.of(context)!;
       final controller = context.read<FlightController>();
       controller.resetToInitial();
-      context.read<FlightController>().initData();
+      controller.initData();
     });
   }
-
-  // ----------------------- 5.6. Widget Build Chính (build) -----------------------
 
   @override
   Widget build(BuildContext context) {
     final controller = context.read<FlightController>();
-    final state= context.watch<FlightController>().state;
-    final double headerHeight = MediaQuery.of(context).size.height * 0.35;
-    const double extraContentHeight = 200;
-    final double formHeight =
-    state.selectedFlightTab == FlightTab.flight ?320 :120;
+    final scrollController = controller.scrollController;
 
-    final double containerHeight =
-        headerHeight + formHeight + extraContentHeight;
-    final l10n = AppLocalizations.of(context)!;
-
-    return Scaffold(
-      endDrawer: AppDrawer(
-        onTabSelected:(_) =>
-            controller.updateTab(FlightTab.flight) ,
-        onHomeSelected: controller.resetSearch,
-        onTabFlightSelected: controller.updateTab,
-      ),
-      body: SingleChildScrollView(
-        controller: controller.scrollController,
-        child: Column(
-            children: [
-              SizedBox(
-                height: containerHeight,
-                child: Stack(
-                  children: [
-                    // 1. Background Header
-                    HeaderBackground(height: headerHeight, image: 'https://img2.thuthuat123.com/uploads/2019/11/19/anh-background-bau-troi-cuc-chat-cuc-dep_122621398.jpg',),
-                    // 2. AppBar & Tiêu đề
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: SafeArea(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const CustomAppBar(),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: 20.0, top: 20.0, right: 20.0),
-                              child: Text(
-                                l10n.flight_screen_header_title,
-                                style: TextStyle(
-                                    color: kHeaderTextColor,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1.3),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // 3. Form Tìm kiếm (Nổi)
-                    Positioned(
-                      top: headerHeight - 15,
-                      left: 16,
-                      right: 16,
-                      child: SearchForm(),
-                    ),
-                  ],
-                ),
-              ),
-              // --- Nội dung bên dưới Form ---
-              const SizedBox(height: 20),
-              // --- Tiêu đề & Tính năng ---
-              Text(
-                l10n.flight_screen_service_title,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              // --- Card Tính năng ---
-              FlightFeatureCard(
-                icon: Icons.luggage_outlined,
-                title: l10n.flight_feature_luggage_title,
-                subtitle: l10n.flight_feature_luggage_sub,
-              ),
-              const SizedBox(height: 16),
-              FlightFeatureCard(
-                icon: Icons.flight_takeoff,
-                title: l10n.flight_feature_online_checkin_title,
-                subtitle: l10n.flight_feature_online_checkin_sub,
-              ),
-              const SizedBox(height: 16),
-              FlightFeatureCard(
-                icon: Icons.flight_rounded,
-                title: l10n.flight_feature_checkin_available_title,
-                subtitle: l10n.flight_feature_checkin_available_sub,
-              ),
-              const SizedBox(height: 60),
-
-              // --- Điểm đến quốc tế hàng đầu ---
-              Text(l10n.flight_screen_top_destinations,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-
-              // Phần ảnh dạng Masonry/Wrap
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final double screenWidth = constraints.maxWidth;
-                  final double baseItemWidth = (screenWidth - 32) / 2.5;
-
-                  return Wrap(
-                    spacing: 8.0, // Khoảng cách ngang
-                    runSpacing: 8.0, // Khoảng cách dọc
-                    children: InternationalDestinationData.interDestination.map((dest) {
-                      return DestinationItem(destination: dest, itemWidth: baseItemWidth);
-                    }).toList(),
-                  );
-                },
-              ),
-              const SizedBox(height: 32.0),
-
-              // --- Chuyến bay giá rẻ ---
-              FeaturedListCheapFlightSection(),
-              const SizedBox(height: 32.0),
-
-              // --- Dịch vụ bổ sung ---
-              ExtraSection(ExtraService: ExtraServiceData.extraServices,),
-              const SizedBox(height: 20.0),
-
-              // --- Footer ---
-              const AppFooter(),
-            ]
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result){
+        if(didPop) return;
+      },
+      child: Scaffold(
+        backgroundColor: kBackgroundColor,
+        endDrawer: AppDrawer(
+          onTabSelected: (_) =>
+              controller.updateTab(FlightTab.flight),
+          onHomeSelected: controller.resetSearch,
+          onTabFlightSelected: controller.updateTab,
         ),
-      ),
+        body: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            /// HEADER
+            SliverToBoxAdapter(
+              child: FlightHeaderSection(),
+            ),
+                /// FEATURE
+            SliverToBoxAdapter(
+                  child: FlightFeatureSection(),
+                ),
+                const FlightDestinationTitleSection(),
+                FlightDestinationGridSection(),
+                const FeaturedListCheapFlightTitleSection(),
+                SliverToBoxAdapter(
+                  child: FeaturedListCheapFlightSection(),
+                ),
+                SliverToBoxAdapter(
+                  child: ExtraSection(ExtraService: ExtraServiceData.extraServices,),
+                ),
+                SliverToBoxAdapter(
+                  child: AppFooter(),
+                )
+              ]
+          ),
+
+      )
     );
   }
 }

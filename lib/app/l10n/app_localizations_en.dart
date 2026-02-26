@@ -633,6 +633,73 @@ class AppLocalizationsEn extends AppLocalizations {
   String get flight_selectReturnFlight => 'Select return flight';
 
   @override
+  String flight_from_to(Object departure, Object destination) {
+    return 'Flight from $departure to $destination';
+  }
+
+  @override
+  String get selectSeatClass => 'Select seat class';
+
+  @override
+  String get flightDetails => 'Details';
+
+  @override
+  String get currentlySelected => 'Selected';
+
+  @override
+  String get selectThisJourney => 'Select';
+
+  @override
+  String get viewDetails => 'Details';
+
+  @override
+  String get departureDetails => '1. Departure details';
+
+  @override
+  String get returnDetails => '2. Arrive details';
+
+  @override
+  String stops(Object count) {
+    return '$count stop';
+  }
+
+  @override
+  String stopAt(Object city, Object duration) {
+    return 'Stop at $city: $duration';
+  }
+
+  @override
+  String get policy_carryOnBaggage => 'Carry-on baggage';
+
+  @override
+  String get policy_changeFlight => 'Flight change';
+
+  @override
+  String get policy_refund => 'Refund';
+
+  @override
+  String flight_fareAndCode(Object fareType, Object flightCode) {
+    return '$fareType • Flight $flightCode';
+  }
+
+  @override
+  String get text_btnContinue => 'Continue';
+
+  @override
+  String get text_change_btn => 'Change';
+
+  @override
+  String get selected_international_pair_ticket =>
+      'Selected international pair ticket';
+
+  @override
+  String get selected_departure_flight_ticket =>
+      'Selected departure flight ticket';
+
+  @override
+  String get selected_arrival_flight_ticket => 'Selected arrival flight ticket';
+
+  @override
   String get form_consultation_departure_date => 'Departure Date';
 
   @override
@@ -841,4 +908,80 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get social_whatsapp => 'WhatsApp';
+
+  @override
+  String get tipEnterNameTitle => 'Tips for Entering Your Name Correctly';
+
+  @override
+  String get tipEnterNameDesc =>
+      'Enter your personal information exactly as it appears on the data page of your passport or ID card. All names must contain only standard English alphabetical characters (A to Z), with a maximum of 35 characters for your full name.';
+
+  @override
+  String get checkInfoTitle => 'Review and Verify Your Information';
+
+  @override
+  String get checkInfoDesc =>
+      'During the booking process, you might accidentally change information or miss important notes.\n\nTherefore, once you have filled in all the required details, do not click the \"Continue\" button immediately. Always double-check the information you have entered.';
+
+  @override
+  String get wrongNameTitle => 'Incorrect Name on Flight Ticket';
+
+  @override
+  String get wrongNameDesc =>
+      'If the personal information on your ticket does not match your passport or ID card, the airline reserves the right to deny you boarding. In this case, you will have to undergo an official name change process or purchase a new ticket.';
+
+  @override
+  String get understand => 'I Understand';
+
+  @override
+  String get titleSalutation => 'Select Title';
+
+  @override
+  String get titleFirstName => 'First / Middle Name';
+
+  @override
+  String get titleLastName => 'Last Name / Surname';
+
+  @override
+  String get salutationMr => 'Mr.';
+
+  @override
+  String get tip1Title => 'First/Middle or Last Name with a single letter';
+
+  @override
+  String get tip1Desc =>
+      'If your first, middle, or last name contains only a single letter, please repeat that letter in the corresponding name field.';
+
+  @override
+  String get tip1Ex => 'Example name on passport: D Jonson';
+
+  @override
+  String get tip2Title => 'Names with special characters';
+
+  @override
+  String get tip2Desc =>
+      'If your name is hyphenated or contains special characters such as apostrophes or accents, please remove them when entering your name.';
+
+  @override
+  String get tip2Ex => 'Example: Name on passport: John-Adam Smith';
+
+  @override
+  String get tip3Title => 'Single name in passport';
+
+  @override
+  String get tip3Desc =>
+      'If you only have one name in your passport (regardless of whether it\'s a first, middle, or last name), please enter your name in the \"Last Name\" field and check the box \"This passenger does not have a first name in their passport\".';
+
+  @override
+  String get tip3Ex => 'Example: Name on passport: Thomas';
+
+  @override
+  String get tip4Title => 'Names with suffixes';
+
+  @override
+  String get tip4Desc =>
+      'If your name includes a suffix, please enter the first name and suffix together in the \"First / Middle Name\" field.';
+
+  @override
+  String get tip4Ex => 'Example: Name on passport: William Smith Jr';
 }

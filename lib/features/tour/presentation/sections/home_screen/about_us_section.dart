@@ -1,12 +1,13 @@
-import 'package:final_project/core/design/tour/app_shape.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_shape.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:final_project/features/tour/presentation/controller/travel_booking_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 import 'package:final_project/core/constants/colors.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/constants/image_link.dart';
-import '../../../../../core/design/tour/app_layout_spacing.dart';
+import '../../../../../core/design/shared/app_layout_spacing.dart';
+import '../../../../../core/design/tour/tour_layout_spacing.dart';
 import '../../widgets/about_us_item.dart';
 
 class AboutUsSection extends StatelessWidget{
@@ -16,41 +17,41 @@ class AboutUsSection extends StatelessWidget{
     final l10n = AppLocalizations.of(context)!;
     final controller=context.watch<TravelBookingController>();
     return Padding(
-      padding: AppLayoutSpacing.aboutUsSection,
+      padding: TourLayoutSpacing.aboutUsSection(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             l10n.home_aboutUsVibes,
-            style: AppStyles.aboutUsVibe,
+            style: AppStyles.aboutUsVibe(context),
           ),
           Text(
             '${l10n.home_aboutUsTitleLine1}\n${l10n.home_aboutUsTitleLine2}',
             textAlign: TextAlign.center,
-            style: AppStyles.aboutUsTitle,
+            style: AppStyles.aboutUsTitle(context),
           ),
-          AppLayoutSpacing.labelandcontent,
+          TourLayoutSpacing.labelandcontent,
           Padding(
-            padding: AppLayoutSpacing.aboutUsDescription,
+            padding: TourLayoutSpacing.aboutUsDescription(context),
             child: Text(
               l10n.home_aboutUsDescription,
               textAlign: TextAlign.center,
-              style: AppStyles.aboutUsdescription,
+              style: AppStyles.aboutUsdescription(context),
             ),
           ),
-          AppLayoutSpacing.itemAndButtonAboutUs,
+          TourLayoutSpacing.itemAndButtonAboutUs,
           AboutUsItem(
             icon: Icons.map_outlined,
             title: l10n.home_aboutUsGuideTitle,
             subtitle: l10n.home_aboutUsGuideSubtitle,
           ),
-          AppLayoutSpacing.item,
+          SharedAppLayoutSpacing.item,
           AboutUsItem(
             icon: Icons.track_changes_outlined,
             title:  l10n.home_aboutUsMissionTitle,
             subtitle:  l10n.home_aboutUsMissionSubtitle,
           ),
-          AppLayoutSpacing.itemAndButtonAboutUs,
+          TourLayoutSpacing.itemAndButtonAboutUs,
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -59,16 +60,16 @@ class AboutUsSection extends StatelessWidget{
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: kPrimaryColor,
-                padding: AppLayoutSpacing.labelButtonAboutUs,
+                padding: TourLayoutSpacing.labelButtonAboutUs(context),
                 shape: AppShape.aboutUsButton,
               ),
               child: Text(
                 l10n.home_exploreButton,
-                style: AppStyles.labelButtonAboutUs,
+                style: AppStyles.labelButtonAboutUs(context),
               ),
             ),
           ),
-          AppLayoutSpacing.buttonAboutUsAndCoFounder,
+          TourLayoutSpacing.buttonAboutUsAndCoFounder,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -77,7 +78,7 @@ class AboutUsSection extends StatelessWidget{
                 backgroundImage: NetworkImage(
                     ImageLink.avatarCoFounder),
               ),
-              AppLayoutSpacing.imageAndIformation,
+              TourLayoutSpacing.imageAndIformation,
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

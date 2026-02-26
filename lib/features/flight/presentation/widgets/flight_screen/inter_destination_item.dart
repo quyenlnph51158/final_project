@@ -2,44 +2,32 @@ import 'package:final_project/core/data/model/international_destination_model.da
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class DestinationItem extends StatelessWidget{
+import '../../../../../core/design/flight/flight_layout_spacing.dart';
+import '../../../../../core/design/flight/flight_shape.dart';
+import '../../../../../core/design/flight/flight_size.dart';
+import '../../../../../core/design/flight/flight_style.dart';
+
+class DestinationItem extends StatelessWidget {
   final InternationalDestinationModel destination;
   final double itemWidth;
+
   const DestinationItem({
     super.key,
     required this.destination,
-    required this.itemWidth
+    required this.itemWidth,
   });
+
   @override
   Widget build(BuildContext context) {
-    double widthFactor = 0;
-    double heightFactor = 0;
-    switch (destination.type) {
-      case 'special':
-        widthFactor = 2.1;
-        heightFactor = 1.2;
-        break;
-      case 'normal':
-        widthFactor=1.0;
-        heightFactor=1.5;
-      default:
-        widthFactor = 1.0;
-        heightFactor = 1.0;
-        break;
-    }
-
-    double finalWidth = itemWidth * widthFactor;
-    double finalHeight = itemWidth * heightFactor;
-
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: EdgeInsets.all(FlightLayoutSpacing.destinationPadding),
       // **Không sử dụng InkWell/GestureDetector**
       child: Container(
-        width: finalWidth,
-        height: finalHeight,
+        width: itemWidth,
+        height: FlightSize.destinationCardHeight(context),
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: FlightShape.borderRadiusSmall(context),
         ),
         child: Stack(
           fit: StackFit.expand,
@@ -53,7 +41,9 @@ class DestinationItem extends StatelessWidget{
                 return const Center(child: CircularProgressIndicator());
               },
               errorBuilder: (context, error, stackTrace) {
-                return const Center(child: Icon(Icons.error, color: Colors.red));
+                return const Center(
+                  child: Icon(Icons.error, color: Colors.red),
+                );
               },
             ),
 
@@ -73,25 +63,23 @@ class DestinationItem extends StatelessWidget{
 
             // 3. Tên điểm đến (Định vị ở dưới cùng)
             Positioned(
-              bottom: 10,
-              left: 10,
-              right: 10,
+              bottom: FlightLayoutSpacing.destinationContentOffset,
+              left: FlightLayoutSpacing.destinationContentOffset,
+              right: FlightLayoutSpacing.destinationContentOffset,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     destination.name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: FlightStyle.destinationTitle(context),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(top: 4),
-                    width: 50,
-                    height: 3,
+                    margin: EdgeInsets.only(
+                      top: FlightLayoutSpacing.gapSmall(context) / 2,
+                    ),
+                    width: FlightSize.destinationIndicatorWidth,
+                    height: FlightSize.destinationIndicatorHeight,
                     color: Colors.white,
                   ),
                 ],

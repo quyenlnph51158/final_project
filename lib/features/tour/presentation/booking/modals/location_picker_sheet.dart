@@ -1,9 +1,9 @@
 import 'package:final_project/core/constants/app_icons.dart';
-import 'package:final_project/core/design/tour/app_dividers.dart';
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_shape.dart';
-import 'package:final_project/core/design/tour/app_sizes.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_dividers.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_shape.dart';
+import 'package:final_project/core/design/tour/tour_sizes.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:final_project/features/tour/data/models/tour_destination.dart';
 import 'package:final_project/shared/widgets/drag_indicator.dart';
 import 'package:flutter/material.dart';
@@ -50,19 +50,20 @@ class _LocationPickerSheetState<T extends TourDestination>
         children: [
           // Thanh kéo (Handle) và Tiêu đề
           Padding(
-            padding: AppLayoutSpacing.paddingHandleAndTitle,
+            padding: TourLayoutSpacing.paddingHandleAndTitle(context),
             child: Column(
               children: [
                 const DragIndicator(),
-                AppLayoutSpacing.handleAndTitle,
+                TourLayoutSpacing.handleAndTitle,
                 Text(widget.title,
-                    style: AppStyles.titleShowList),
+                    style: AppStyles.titleShowList(context)
+                ),
               ],
             ),
           ),
           // SEARCH
           Padding(
-            padding: AppLayoutSpacing.paddingSearchBox,
+            padding: TourLayoutSpacing.paddingSearchBox(context),
             child: TextField(
               controller: _searchController,
               onChanged: (_) => setState(() {}),
@@ -72,7 +73,7 @@ class _LocationPickerSheetState<T extends TourDestination>
                 filled: true,
                 fillColor: kFormFieldBackground,
                 border: AppShape.borderSearchBox,
-                contentPadding: AppLayoutSpacing.paddingContentSearchBox
+                contentPadding: TourLayoutSpacing.paddingContentSearchBox(context)
               ),
             ),
           ),
@@ -92,8 +93,8 @@ class _LocationPickerSheetState<T extends TourDestination>
                       leading: item.image != null
                         ? Image.network(
                         item.image!,
-                        width: AppSizes.wImageLocation,
-                        height: AppSizes.hImageLocation,
+                        width: AppSizes.wImageLocation(context),
+                        height: AppSizes.hImageLocation(context),
                         fit: BoxFit.cover,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
@@ -110,7 +111,7 @@ class _LocationPickerSheetState<T extends TourDestination>
                         Navigator.pop(context);
                       },
                     ),
-                    AppDividers.AirportAndStationName
+                    TourDividers.AirportAndStationName
                   ],
                 );
               },

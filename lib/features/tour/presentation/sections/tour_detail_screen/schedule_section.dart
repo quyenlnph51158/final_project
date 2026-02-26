@@ -1,10 +1,10 @@
 import 'package:final_project/core/constants/app_icons.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import '../../../../../app/l10n/app_localizations.dart';
 import '../../../../../core/constants/colors.dart';
-import '../../../../../core/design/tour/app_layout_spacing.dart';
+import '../../../../../core/design/tour/tour_layout_spacing.dart';
 import '../../../data/models/tour_detail.dart';
 
 class ScheduleSection extends StatefulWidget {
@@ -31,16 +31,16 @@ class _ScheduleSectionState extends State<ScheduleSection> {
     }
 
     return Padding(
-      padding: AppLayoutSpacing.scheduleTourDetailSection,
+      padding: TourLayoutSpacing.scheduleTourDetailSection(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             key: widget.key,
             l10n.tour_detail_itinerary,
-            style: AppStyles.titleScheduleSection,
+            style: AppStyles.titleScheduleSection(context),
           ),
-          AppLayoutSpacing.labelandcontent,
+          TourLayoutSpacing.labelandcontent,
 
           Column(
             children: List.generate(
@@ -105,23 +105,23 @@ class _ScheduleSectionState extends State<ScheduleSection> {
               });
             },
             child: Padding(
-              padding: AppLayoutSpacing.paddingContentScheduleItem,
+              padding: TourLayoutSpacing.paddingContentScheduleItem(context),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppLayoutSpacing.iconAndContent,
+                  TourLayoutSpacing.iconAndContent,
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           dayName,
-                          style: AppStyles.dayNameScheduleSection,
+                          style: AppStyles.dayNameScheduleSection(context),
                         ),
-                        AppLayoutSpacing.dayNameAndBriefInfo,
+                        TourLayoutSpacing.dayNameAndBriefInfo,
                         Text(
                           briefInfo,
-                          style: AppStyles.briefInfoScheduleSection,
+                          style: AppStyles.briefInfoScheduleSection(context),
                         ),
                       ],
                     ),
@@ -145,10 +145,10 @@ class _ScheduleSectionState extends State<ScheduleSection> {
 
             // Trạng thái khi mở: Nội dung HTML của bạn
             secondChild: Padding(
-              padding: AppLayoutSpacing.paddingExpadedDescriptionSchedule,
+              padding: TourLayoutSpacing.paddingExpadedDescriptionSchedule(context),
               child: HtmlWidget(
                 description,
-                textStyle: AppStyles.descriptionScheduleSection,
+                textStyle: AppStyles.descriptionScheduleSection(context),
               ),
             ),
 

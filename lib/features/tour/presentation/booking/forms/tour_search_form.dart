@@ -1,4 +1,4 @@
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
@@ -17,7 +17,12 @@ class TourSearchForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final controller = context.watch<TravelBookingController>();
+    // Optimization: Only rebuild if these specific values change
+    final destination = context.select((TravelBookingController c) => c.state.form.tempDestination);
+    final selectedDate = context.select((TravelBookingController c) => c.state.form.selectedDate);
+
+    // Get the controller once without listening (use read)
+    final controller = context.read<TravelBookingController>();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -26,7 +31,7 @@ class TourSearchForm extends StatelessWidget {
         FormFieldWrapper(
           child: LocationSelectionField(
             label: l10n.form_defaultDestination,
-            currentValue: controller.state.form.tempDestination,
+            currentValue: destination,
           ),
         ),
 
@@ -34,13 +39,14 @@ class TourSearchForm extends StatelessWidget {
           child: DateField(
             label: l10n.form_labelDepartureDate,
             hintText: '',
-            value: controller.state.form.selectedDate,
-              onTap: () async {
-                final picked = await DatePicker.pickDate(context);
-                if(picked !=null ) {
-                  controller.setDate(picked,isReturnDate: false );
-                }
+            value: selectedDate,
+            onTap: () => DatePicker.pickDate(
+              context: context,
+              onDateSelected: ( formattedDate, originalDate){
+                // Gọi hàm cập nhật date của Tour Controller
+                controller.setDepartureDate(formattedDate);
               }
+            ),
           ),
         ),
 
@@ -49,10 +55,13 @@ class TourSearchForm extends StatelessWidget {
             label: l10n.form_labelDeparturePlace,
             hint: l10n.form_defaultDeparture,
             controller: controller.departureController,
+            onChanged: (value) {
+              return controller.updateDeparture(value);
+            }
           ),
         ),
 
-        AppLayoutSpacing.fieldAndButton,
+        TourLayoutSpacing.fieldAndButton,
 
         SearchButton(
           text: l10n.form_searchTourButton,

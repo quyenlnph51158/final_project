@@ -1264,6 +1264,120 @@ abstract class AppLocalizations {
   /// **'Select return flight'**
   String get flight_selectReturnFlight;
 
+  /// No description provided for @flight_from_to.
+  ///
+  /// In en, this message translates to:
+  /// **'Flight from {departure} to {destination}'**
+  String flight_from_to(Object departure, Object destination);
+
+  /// No description provided for @selectSeatClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Select seat class'**
+  String get selectSeatClass;
+
+  /// No description provided for @flightDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get flightDetails;
+
+  /// No description provided for @currentlySelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get currentlySelected;
+
+  /// No description provided for @selectThisJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get selectThisJourney;
+
+  /// No description provided for @viewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get viewDetails;
+
+  /// No description provided for @departureDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Departure details'**
+  String get departureDetails;
+
+  /// No description provided for @returnDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'2. Arrive details'**
+  String get returnDetails;
+
+  /// No description provided for @stops.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} stop'**
+  String stops(Object count);
+
+  /// No description provided for @stopAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop at {city}: {duration}'**
+  String stopAt(Object city, Object duration);
+
+  /// No description provided for @policy_carryOnBaggage.
+  ///
+  /// In en, this message translates to:
+  /// **'Carry-on baggage'**
+  String get policy_carryOnBaggage;
+
+  /// No description provided for @policy_changeFlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Flight change'**
+  String get policy_changeFlight;
+
+  /// No description provided for @policy_refund.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund'**
+  String get policy_refund;
+
+  /// No description provided for @flight_fareAndCode.
+  ///
+  /// In en, this message translates to:
+  /// **'{fareType} • Flight {flightCode}'**
+  String flight_fareAndCode(Object fareType, Object flightCode);
+
+  /// No description provided for @text_btnContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get text_btnContinue;
+
+  /// No description provided for @text_change_btn.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get text_change_btn;
+
+  /// No description provided for @selected_international_pair_ticket.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected international pair ticket'**
+  String get selected_international_pair_ticket;
+
+  /// No description provided for @selected_departure_flight_ticket.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected departure flight ticket'**
+  String get selected_departure_flight_ticket;
+
+  /// No description provided for @selected_arrival_flight_ticket.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected arrival flight ticket'**
+  String get selected_arrival_flight_ticket;
+
   /// No description provided for @form_consultation_departure_date.
   ///
   /// In en, this message translates to:
@@ -1653,6 +1767,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'WhatsApp'**
   String get social_whatsapp;
+
+  /// No description provided for @tipEnterNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips for Entering Your Name Correctly'**
+  String get tipEnterNameTitle;
+
+  /// No description provided for @tipEnterNameDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your personal information exactly as it appears on the data page of your passport or ID card. All names must contain only standard English alphabetical characters (A to Z), with a maximum of 35 characters for your full name.'**
+  String get tipEnterNameDesc;
+
+  /// No description provided for @checkInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review and Verify Your Information'**
+  String get checkInfoTitle;
+
+  /// No description provided for @checkInfoDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'During the booking process, you might accidentally change information or miss important notes.\n\nTherefore, once you have filled in all the required details, do not click the \"Continue\" button immediately. Always double-check the information you have entered.'**
+  String get checkInfoDesc;
+
+  /// No description provided for @wrongNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect Name on Flight Ticket'**
+  String get wrongNameTitle;
+
+  /// No description provided for @wrongNameDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'If the personal information on your ticket does not match your passport or ID card, the airline reserves the right to deny you boarding. In this case, you will have to undergo an official name change process or purchase a new ticket.'**
+  String get wrongNameDesc;
+
+  /// No description provided for @understand.
+  ///
+  /// In en, this message translates to:
+  /// **'I Understand'**
+  String get understand;
+
+  /// No description provided for @titleSalutation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Title'**
+  String get titleSalutation;
+
+  /// No description provided for @titleFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First / Middle Name'**
+  String get titleFirstName;
+
+  /// No description provided for @titleLastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name / Surname'**
+  String get titleLastName;
+
+  /// No description provided for @salutationMr.
+  ///
+  /// In en, this message translates to:
+  /// **'Mr.'**
+  String get salutationMr;
+
+  /// No description provided for @tip1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'First/Middle or Last Name with a single letter'**
+  String get tip1Title;
+
+  /// No description provided for @tip1Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'If your first, middle, or last name contains only a single letter, please repeat that letter in the corresponding name field.'**
+  String get tip1Desc;
+
+  /// No description provided for @tip1Ex.
+  ///
+  /// In en, this message translates to:
+  /// **'Example name on passport: D Jonson'**
+  String get tip1Ex;
+
+  /// No description provided for @tip2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Names with special characters'**
+  String get tip2Title;
+
+  /// No description provided for @tip2Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'If your name is hyphenated or contains special characters such as apostrophes or accents, please remove them when entering your name.'**
+  String get tip2Desc;
+
+  /// No description provided for @tip2Ex.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Name on passport: John-Adam Smith'**
+  String get tip2Ex;
+
+  /// No description provided for @tip3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Single name in passport'**
+  String get tip3Title;
+
+  /// No description provided for @tip3Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'If you only have one name in your passport (regardless of whether it\'s a first, middle, or last name), please enter your name in the \"Last Name\" field and check the box \"This passenger does not have a first name in their passport\".'**
+  String get tip3Desc;
+
+  /// No description provided for @tip3Ex.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Name on passport: Thomas'**
+  String get tip3Ex;
+
+  /// No description provided for @tip4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Names with suffixes'**
+  String get tip4Title;
+
+  /// No description provided for @tip4Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'If your name includes a suffix, please enter the first name and suffix together in the \"First / Middle Name\" field.'**
+  String get tip4Desc;
+
+  /// No description provided for @tip4Ex.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Name on passport: William Smith Jr'**
+  String get tip4Ex;
 }
 
 class _AppLocalizationsDelegate

@@ -2,6 +2,10 @@ import 'package:final_project/features/flight/presentation/controller/flight_con
 import 'package:flutter/material.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
 import '../../../../../../../core/constants/colors.dart';
+import '../../../../core/design/flight/flight_layout_spacing.dart';
+import '../../../../core/design/flight/flight_size.dart';
+import '../../../../core/design/flight/flight_style.dart';
+import '../../../../core/utils/responsive_layout.dart';
 
 class PassengerSelectionFlightscreenModal extends StatefulWidget {
   final FlightController controller;
@@ -22,32 +26,25 @@ class _PassengerSelectionFLightScreenModalState extends State<PassengerSelection
   void initState() {
     super.initState();
     final state = widget.controller.state;
-    tempAdultCount = state.adultCount;
-    tempChildCount = state.childCount;
-    tempInfantCount = state.infantCount;
+    tempAdultCount = state.criteria.adultCount;
+    tempChildCount = state.criteria.childCount;
+    tempInfantCount = state.criteria.infantCount;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final int maxTotalPassengers = 9;
+    final int maxTotalPassengers = FlightLayoutSpacing.maxTotalPassengers;
     final int currentTotalPassengers = tempAdultCount + tempChildCount;
 
-    final List<String> classes = [
-      l10n.form_defaultClass,
-      l10n.form_classPremiumEconomy,
-      l10n.form_classBusiness,
-      l10n.form_classFirst
-    ];
-
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.85,
+      height: FlightSize.passengerModalHeight(context),
       child: Column(
         children: [
           _buildHeader(l10n),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: FlightLayoutSpacing.screenHorizontalPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -69,6 +66,7 @@ class _PassengerSelectionFLightScreenModalState extends State<PassengerSelection
                     maxLimit: maxTotalPassengers,
                     canIncrement: currentTotalPassengers < maxTotalPassengers,
                     onUpdate: (val) => setState(() => tempChildCount = val),
+                    
                   ),
                   _buildCounter(
                     title: l10n.form_labelInfant,
@@ -93,12 +91,18 @@ class _PassengerSelectionFLightScreenModalState extends State<PassengerSelection
 
   Widget _buildHeader(AppLocalizations l10n) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(FlightLayoutSpacing.modalPadding),
       child: Column(
         children: [
-          Container(height: 5, width: 40, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2.5))),
+          Container(height: FlightSize.dragHandleHeight,
+            width: FlightSize.dragHandleWidth,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(FlightSize.dragHandleHeight / 2),
+            ),
+          ),
           const SizedBox(height: 10),
-          Text(l10n.form_modalPassengerTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(l10n.form_modalPassengerTitle, style: FlightStyle.modalTitle(context)),
         ],
       ),
     );
@@ -114,20 +118,20 @@ class _PassengerSelectionFLightScreenModalState extends State<PassengerSelection
     required Function(int) onUpdate,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      padding: const EdgeInsets.symmetric(vertical: FlightLayoutSpacing.counterVerticalPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            Text(title, style: FlightStyle.counterLabel(context)),
+            Text(subtitle, style: FlightStyle.counterSubtitle(context)),
           ]),
           Row(children: [
             IconButton(
               icon: const Icon(Icons.remove_circle_outline, color: kPrimaryColor),
               onPressed: currentValue > minLimit ? () => onUpdate(currentValue - 1) : null,
             ),
-            Text(currentValue.toString(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(currentValue.toString(), style: FlightStyle.counterValue(context)),
             IconButton(
               icon: const Icon(Icons.add_circle_outline, color: kPrimaryColor),
               onPressed: canIncrement && currentValue < maxLimit ? () => onUpdate(currentValue + 1) : null,
@@ -144,7 +148,7 @@ class _PassengerSelectionFLightScreenModalState extends State<PassengerSelection
       padding: const EdgeInsets.all(16.0),
       child: SizedBox(
         width: double.infinity,
-        height: 50,
+        height: context.hp(6),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: kPrimaryColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
           onPressed: () {
@@ -156,7 +160,7 @@ class _PassengerSelectionFLightScreenModalState extends State<PassengerSelection
             );
             Navigator.pop(context);
           },
-          child: Text(l10n.form_confirmButton, style: const TextStyle(color: Colors.white, fontSize: 18)),
+          child: Text(l10n.form_confirmButton, style: TextStyle(color: Colors.white, fontSize: context.sp(18))),
         ),
       ),
     );

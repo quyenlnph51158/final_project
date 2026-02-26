@@ -104,9 +104,6 @@ class TravelBookingController extends ChangeNotifier {
             isLoading: false,
             isInitialized: true,
           ),
-          flight: state.flight.copyWith(
-            airports: results[0] as List<ListAirport>,
-          ),
           filter: state.filter.copyWith(
             sortBy: SortOption.highestRating,
           ),
@@ -203,8 +200,6 @@ class TravelBookingController extends ChangeNotifier {
           tempDestination: '',
           selectedDate:
           FormatDate.formatDateDDMMYYYY(DateTime.now()).toString(),
-          returnDate: '',
-          isRoundTrip: true,
         ),
         tour: _state.tour.copyWith(
           tourList: state.tour.initialList,
@@ -238,18 +233,19 @@ class TravelBookingController extends ChangeNotifier {
     );
   }
 
-  /// Cập nhật ngày đi hoặc ngày về
-  Future<void> setDate(
-      DateTime picked, {
-        required bool isReturnDate,
-      }) async {
-    final formatted = FormatDate.formatDateDDMMYYYY(picked);
+  /// Cập nhật ngày khởi hành cho Tour
+  void setDepartureDate(String picked) {
+    // 1. Chuyển String thành DateTime để tính toán logic
+    final DateTime? pickedDate = FormatDate.parseStringToDate(picked);
 
+    // 2. Kiểm tra nếu parse thất bại (null) thì dừng lại luôn
+    if (pickedDate == null) return;
+
+    // 4. Cập nhật State
+    // Vì selectedDate trong form là String, ta dùng lại biến 'picked' ban đầu
     _updateState(
       state.copyWith(
-        form: isReturnDate
-            ? state.form.copyWith(returnDate: formatted)
-            : state.form.copyWith(selectedDate: formatted),
+        form: state.form.copyWith(selectedDate: picked),
       ),
     );
   }
@@ -263,6 +259,16 @@ class TravelBookingController extends ChangeNotifier {
     );
   }
 
+  ///Nhập điểm khởi hành
+  void updateDeparture(String dep){
+    _updateState(
+      _state.copyWith(
+        form: _state.form.copyWith(
+          departure: dep,
+        )
+      )
+    );
+  }
   // =========================================================
   // 7. PAGINATION (TOUR)
   // =========================================================
@@ -429,7 +435,7 @@ class TravelBookingController extends ChangeNotifier {
   void goToTourDetail(
       TourItem tourItem,
       AppLocalizations l10n) {
-
+    print('Ngày khởi hành' + state.form.departure);
     final location =
     state.ui.selectedTab != TravelTab.tour
         ? l10n.form_defaultDeparture

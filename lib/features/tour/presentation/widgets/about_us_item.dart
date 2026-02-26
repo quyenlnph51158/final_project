@@ -1,6 +1,6 @@
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_sizes.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_sizes.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/core/constants/colors.dart';
 
@@ -18,8 +18,8 @@ class AboutUsItem extends StatelessWidget{
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: kIconAboutUsItem, size: AppSizes.iconAboutUsItem),
-        AppLayoutSpacing.iconAndtitleAboutUsItem,
+        Icon(icon, color: kIconAboutUsItem, size: AppSizes.iconAboutUsItem(context)),
+        TourLayoutSpacing.iconAndtitleAboutUsItem,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,12 +27,12 @@ class AboutUsItem extends StatelessWidget{
               Text(
                 title,
                 style:
-                AppStyles.titleAboutUsItem,
+                AppStyles.titleAboutUsItem(context),
               ),
-              AppLayoutSpacing.titleAndSubtitleAboutUsItem,
+              TourLayoutSpacing.titleAndSubtitleAboutUsItem,
               Text(
                 subtitle,
-                style: AppStyles.subtitleAboutUsItem,
+                style: AppStyles.subtitleAboutUsItem(context),
               ),
             ],
           ),

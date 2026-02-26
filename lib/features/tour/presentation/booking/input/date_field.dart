@@ -1,5 +1,6 @@
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/app_shape.dart';
+import 'package:final_project/core/design/tour/tour_shape.dart';
+import 'package:final_project/core/utils/responsive_layout.dart';
 import 'package:flutter/material.dart';
 
 
@@ -28,6 +29,7 @@ class DateField extends StatelessWidget{
           filled: true,
           fillColor: kFormFieldBackground,
           border: AppShape.selectionField,
+          labelStyle: TextStyle(fontSize: context.sp(16))
         ),
         child: Text(
           hasValue ? value! : hintText, // 👈 nếu chưa có thì hiện chữ mờ
@@ -35,6 +37,7 @@ class DateField extends StatelessWidget{
             color: hasValue
                 ? kTextColor
                 : kNullValue, // 👈 chữ mờ
+            fontSize: context.sp(14)
           ),
         ),
       ),
