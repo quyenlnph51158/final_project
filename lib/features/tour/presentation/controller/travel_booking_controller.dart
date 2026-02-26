@@ -355,10 +355,20 @@ class TravelBookingController extends ChangeNotifier {
     List<TourItem> sortedList = List.from(list);
     switch (option) {
       case SortOption.priceHighToLow:
-        sortedList.sort((a, b) => b.price.compareTo(a.price));
+        sortedList.sort((a, b) {
+          // Chuyển đổi string sang double để so sánh giá trị số
+          double priceA = double.tryParse(a.price.toString()) ?? 0.0;
+          double priceB = double.tryParse(b.price.toString()) ?? 0.0;
+          return priceB.compareTo(priceA);
+        });
         break;
       case SortOption.priceLowToHigh:
-        sortedList.sort((a, b) => a.price.compareTo(b.price));
+        sortedList.sort((a, b) {
+          // Chuyển đổi string sang double để so sánh giá trị số
+          double priceA = double.tryParse(a.price.toString()) ?? 0.0;
+          double priceB = double.tryParse(b.price.toString()) ?? 0.0;
+          return priceA.compareTo(priceB);
+        });
         break;
       case SortOption.highestRating:
         sortedList.sort((a, b) => b.reviewsCount.compareTo(a.reviewsCount));
