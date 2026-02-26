@@ -29,7 +29,8 @@ class DestinationCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           // ✅ GỌI CONTROLLER – KHÔNG setState
-          controller.onDestinationSelected(category.name,l10n.form_defaultDestination);
+          controller.onDestinationSelected(category.name, l10n.form_defaultDestination);
+          controller.goToTourScreen();
         },
         child: Column(
           children: [

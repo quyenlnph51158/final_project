@@ -1,7 +1,8 @@
 import 'package:final_project/core/data/model/home_tour_model.dart';
 import 'package:final_project/features/tour/presentation/screens/tour_screen.dart';
+import 'package:final_project/features/tour/presentation/state/booking_form_state.dart';
+import 'package:final_project/features/tour/presentation/state/booking_ui_state.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../app/l10n/app_localizations.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/navigation/navigation_service.dart';
@@ -274,7 +275,17 @@ class TravelBookingController extends ChangeNotifier {
       ),
     );
   }
-
+  void updateTourForm(HomeTourData? homeData){
+    _updateState(
+      _state.copyWith(
+        form: _state.form.copyWith(
+          tempDestination: homeData?.destination,
+          selectedDate: homeData?.departureDate,
+          departure: homeData?.departure,
+        ),
+      ),
+    );
+  }
 
   void updatePassengerData({
     required int adults,
@@ -540,7 +551,6 @@ class TravelBookingController extends ChangeNotifier {
     );
   }
   void selectDestinationFromModal(String label) {
-    // destinationController.text = label;
     _updateState(state.copyWith(
       form: state.form.copyWith(
         tempDestination: label)
@@ -559,7 +569,6 @@ class TravelBookingController extends ChangeNotifier {
           );
 
     } else {
-      // destinationController.text = item.label;
       _state =
           _state.copyWith(
             form: _state.form.copyWith(
@@ -571,14 +580,14 @@ class TravelBookingController extends ChangeNotifier {
   }
   void onDestinationSelected(
       String destinationName,
-      String defaultDeparture,
+      String defaultDestination,
       ) {
     _updateState(state.copyWith(
       form: state.form.copyWith(
-        tempDestination: destinationName)
+        tempDestination: destinationName),
       )
     );
-    performTourSearch(defaultDeparture);
+    // performTourSearch(defaultDestination);
   }
   // Điều hướng sang màn hình chi tiết tour
   void goToTourDetail( TourItem tourItem, AppLocalizations l10n) {
@@ -602,7 +611,7 @@ class TravelBookingController extends ChangeNotifier {
   void goToTourScreen(){
     final HomeTourData homeTourData = HomeTourData(
       departure: state.form.departure,
-      destination: state.form.destination,
+      destination: state.form.tempDestination,
       departureDate: state.form.selectedDate,
     );
     NavigationService.pop();
@@ -628,11 +637,22 @@ class TravelBookingController extends ChangeNotifier {
     );
     notifyListeners();
   }
-
-  void resetToInitial() {
+  void resetToHome() {
     _state = TravelBookingState.initial();
     departureController.clear();
     notifyListeners();
+  }
+  void resetToInitial() {
+    _updateState(
+      state.copyWith(
+        // Giữ nguyên initialList, chỉ reset các thứ khác
+        form: BookingFormState.initial(), // Reset form về trống
+        // ui: BookingUIState.initial(),           // Reset loading/searching
+        tour: state.tour.copyWith(
+          tourList: List.from(state.tour.initialList), // Hiển thị lại toàn bộ
+        ),
+      ),
+    );
   }
 
   // ==============================

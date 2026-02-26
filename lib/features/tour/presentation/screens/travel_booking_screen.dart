@@ -30,7 +30,7 @@ class _TravelBookingScreenState extends State<TravelBookingScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final l10n = AppLocalizations.of(context)!;
       final controller = context.read<TravelBookingController>();
-      controller.resetToInitial();
+      controller.resetToHome();
       context.read<TravelBookingController>().initData(l10n.form_defaultDeparture,l10n.form_defaultDestination);
 
     });

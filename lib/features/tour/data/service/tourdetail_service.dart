@@ -27,12 +27,9 @@ class TourdetailService {
       final Map<String, dynamic>? tourDetailJson = jsonResponse['data'];
 
       if(tourDetailJson != null){
-        print('Có dữ liệu');
-
         // Trả về đối tượng sau khi đã kiểm tra null
         return TourDetail.fromJson(tourDetailJson);
       } else {
-        print('Dữ liệu rỗng hoặc không tìm thấy trường "data"');
         // Ném lỗi nếu trường 'data' bị thiếu
         throw Exception('Failed to load tour details: Missing or null "data" field in response.');
       }

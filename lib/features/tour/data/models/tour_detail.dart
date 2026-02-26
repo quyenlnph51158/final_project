@@ -45,13 +45,11 @@ class TourDetail {
     if (faqJson == null || faqJson.isEmpty || _isAllFieldsNull(faqJson)) {
       // Nếu API không trả về hoặc trả về mảng rỗng -> Lấy dữ liệu tĩnh
       faqsResult = FaqsTourDetailData.faqs;
-      print("faqs null");
     } else {
       // Nếu có dữ liệu từ API -> Map sang Model
       faqsResult = faqJson
           .map((i) => TourDetailFaqs.fromJson(i as Map<String, dynamic>))
           .toList();
-      print("faqs has data");
     }
 
     return TourDetail(

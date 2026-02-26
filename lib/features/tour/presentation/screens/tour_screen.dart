@@ -27,18 +27,34 @@ class TourScreen extends StatefulWidget {
 class _TourScreen extends State<TourScreen> {
   final GlobalKey _resultKey = GlobalKey();
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final l10n = AppLocalizations.of(context)!;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
       final controller = context.read<TravelBookingController>();
       controller.resetToInitial();
-      context.read<TravelBookingController>().initData(l10n.form_defaultDeparture, l10n.form_defaultDestination);
-      if(widget.homeData!=null){
+      // 1. Khởi tạo data cơ bản
+      controller.initData(l10n!.form_defaultDeparture, l10n.form_defaultDestination);
 
+      // 2. QUAN TRỌNG: Đảm bảo initialList đã được load từ Server/Local
+      // Nếu controller chưa load list, hãy gọi hàm fetch list ở đây và await nó
+      // await controller.fetchTours();
+
+      if (widget.homeData != null) {
+        controller.updateTourForm(widget.homeData);
+
+        // Đợi một nhịp để State ổn định
+        await Future.delayed(const Duration(milliseconds: 300));
+
+        // Thực hiện search
+        controller.performTourSearch(l10n.form_defaultDestination);
+
+        // Cuộn tới kết quả
+        _scrollToResults();
       }
     });
-    _resultKey;
   }
   @override
   Widget build(BuildContext context) {
