@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../../../../core/constants/colors.dart';
-import '../../../../app/l10n/app_localizations.dart';
-import '../controller/flight_controller.dart';
+import '../../../../../../../../core/constants/colors.dart';
+import '../../../../../app/l10n/app_localizations.dart';
+import '../../controller/flight_controller.dart';
 
 class SearchFlightButton extends StatelessWidget{
   final String text;

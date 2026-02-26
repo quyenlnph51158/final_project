@@ -1,10 +1,11 @@
-import 'package:final_project/features/flight/presentation/widgets/service_card.dart';
+import 'package:final_project/core/data/model/extra_service_model.dart';
+import 'package:final_project/features/flight/presentation/widgets/flight_screen/service_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../../app/l10n/app_localizations.dart';
+import '../../../../../app/l10n/app_localizations.dart';
 
 class ExtraSection extends StatelessWidget{
-  final List<Map<String,dynamic>> ExtraService;
+  final List<ExtraServiceModel> ExtraService;
   const ExtraSection({
     super.key,
     required this.ExtraService

@@ -4,23 +4,19 @@ class FlightFeatureCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final double width;
-  final double height;
 
   const FlightFeatureCard({
     super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
-    this.width = 350,
-    this.height = 220,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width,
-      height: height,
+      width: 350,
+      height: 220,
       child: Card(
         elevation: 2,
         shape: RoundedRectangleBorder(

@@ -1,8 +1,9 @@
+import 'package:final_project/core/data/model/extra_service_model.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 
 class ServiceCard extends StatelessWidget {
-  final Map<String, dynamic> service;
+  final ExtraServiceModel service;
 
   const ServiceCard({
     super.key,
@@ -27,7 +28,7 @@ class ServiceCard extends StatelessWidget {
           children: [
             /// Image
             Image.network(
-              service['imageUrl'],
+              service.imageUrl,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) {
                 return Container(
@@ -61,7 +62,7 @@ class ServiceCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    service['title'],
+                    service.title,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 28,
@@ -73,7 +74,7 @@ class ServiceCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    service['subtitle'],
+                    service.subTitle,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,

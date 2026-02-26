@@ -2,15 +2,15 @@ import 'package:final_project/core/constants/colors.dart';
 import 'package:final_project/features/flight/presentation/controller/flight_controller.dart';
 import 'package:final_project/features/flight/presentation/modals/passenger_selection%20_flightScreen_modal.dart';
 import 'package:final_project/features/flight/presentation/modals/show_airport_list.dart';
-import 'package:final_project/features/flight/presentation/widgets/search_flight_button.dart';
+import 'package:final_project/features/flight/presentation/widgets/flight_screen/search_flight_button.dart';
 import 'package:final_project/shared/widgets/form_field_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
 import '../../../tour/presentation/booking/input/date_field.dart';
 import '../../../tour/presentation/booking/input/flight_train_location_input.dart';
-import '../../../tour/presentation/booking/input/passenger_input_field.dart';
 import '../../../tour/presentation/booking/widgets/trip_type_button.dart';
+import '../inputs/passenger_input_field.dart';
 
 class FlightForm extends StatelessWidget {
   const FlightForm({super.key});
@@ -47,7 +47,7 @@ class FlightForm extends StatelessWidget {
             label: l10n.form_labelFlightDeparture,
             // Hiển thị tên sân bay đã chọn hoặc gợi ý "Đi đâu?"
             hint: l10n.form_labelFlightWhereGo,
-            value: state.departure,
+            value: (state.departure + " (${state.departureCode})"),
             icon: Icons.airplanemode_on_outlined,
             onTap: () {
               showModalBottomSheet(
@@ -72,7 +72,7 @@ class FlightForm extends StatelessWidget {
           child: FlightTrainLocationInput(
             label: l10n.form_labelFlightArrival,
             hint: l10n.form_labelFlightWhereArrive,
-            value:state.destination,
+            value: state.destination + " (${state.destinationCode})",
             icon: Icons.airplanemode_off_outlined,
             onTap: () {
               showModalBottomSheet(

@@ -1,5 +1,5 @@
 import 'package:final_project/features/flight/presentation/controller/flight_controller.dart';
-import 'package:final_project/features/flight/presentation/widgets/search_flight_button.dart';
+import 'package:final_project/features/flight/presentation/widgets/flight_screen/search_flight_button.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
 import '../inputs/code_seat_input.dart';

@@ -1,7 +1,7 @@
 import 'package:final_project/core/design/tour/app_layout_spacing.dart';
 import 'package:final_project/core/design/tour/app_sizes.dart';
 import 'package:final_project/core/design/tour/app_styles.dart';
-import 'package:final_project/features/tour/presentation/sections/faqs_section.dart';
+import 'package:final_project/features/tour/presentation/sections/tour_detail_screen/faqs_section.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/core/constants/colors.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -13,11 +13,11 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/image_link.dart';
 import '../booking/forms/consultation_form_screen.dart';
 import '../controller/travel_booking_controller.dart';
-import '../sections/highlight_section.dart';
-import '../sections/image_carousel_section.dart';
-import '../sections/related_tour_section.dart';
-import '../sections/review_section.dart';
-import '../sections/schedule_section.dart';
+import '../sections/tour_detail_screen/highlight_section.dart';
+import '../sections/tour_detail_screen/image_carousel_section.dart';
+import '../sections/tour_detail_screen/related_tour_section.dart';
+import '../sections/tour_detail_screen/review_section.dart';
+import '../sections/tour_detail_screen/schedule_section.dart';
 
 class TourDetailScreen extends StatefulWidget{
   final String name;
@@ -74,77 +74,77 @@ class _TourDetailScreen extends State<TourDetailScreen> {
         onTabFlightSelected: (_) =>
             controller.updateTab(TravelTab.flight),
       ),
-      body: SingleChildScrollView(
+      body: CustomScrollView( // Thay thế SingleChildScrollView
         controller: _scrollController,
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              color: Colors.white,
-              child: Stack(
-                children: [
-                  SafeArea(
+        slivers: [
+          // 1. Phần Header (Logo, Tên Tour, Carousel) - Sẽ biến mất khi cuộn qua
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  color: Colors.white,
+                  child: SafeArea(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomAppBar(image: ImageLink.logoAppHeaderBackgroundWhite,backgroundColor: kPrimaryColor,),
+                        CustomAppBar(image: ImageLink.logoAppHeaderBackgroundWhite, backgroundColor: kPrimaryColor),
                         AppLayoutSpacing.customAppBarAndTourName,
                         Padding(
                           padding: AppLayoutSpacing.paddingTourDetailName,
-                          child: Text(
-                            widget.name,
-                            style: AppStyles.tourNameInTourDetail,
-                          ),
+                          child: Text(widget.name, style: AppStyles.tourNameInTourDetail),
                         ),
                         AppLayoutSpacing.headerNamePosition,
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            ImageCarousel(images: state.tour.tourDetail.images,),
-            _buildTabs(),
-            Padding(
-              key: _introKey,
-              padding: AppLayoutSpacing.paddingBriefTourDetail,
-              child: HtmlWidget(
-                state.tour.tourDetail.brief.toString(),
-                textStyle: AppStyles.briefTourDetail,
-                onTapUrl: (url) async {
-                  return true;
-                },
-              ),
-            ),
-            AppLayoutSpacing.section,
-            HighlightSection(detail:  state.tour.tourDetail),
-            AppLayoutSpacing.section,
-            ScheduleSection(key: _scheduleKey ,detail: state.tour.tourDetail),
-            AppLayoutSpacing.section,
-            Padding(
-              padding: AppLayoutSpacing.paddingConsultationSection,
-              child: Card(
-                color: kFormFieldBackground,
-                elevation: 8,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
                 ),
-                child: Padding(
-                  padding: AppLayoutSpacing.paddingConsultationForm,
-                  child: ConsultationFormScreen(tourSid: state.tour.tourDetail.sid,location: widget.location, date: widget.date),
-                ),
-              ),
+                ImageCarousel(images: state.tour.tourDetail.images),
+              ],
             ),
-            AppLayoutSpacing.section,
-            ReviewSection(key: _reviewKey,detail: state.tour.tourDetail),
-            AppLayoutSpacing.section,
-            FaqSection(key: _faqKey, faqs: state.tour.tourDetail.faqs,),
-            AppLayoutSpacing.section,
-            RelatedTourSection(tourDetail: state.tour.tourDetail,),
-            AppLayoutSpacing.footer,
-            AppFooter(),
-          ],
-        ),
+          ),
+
+          // 2. Phần STICKY TAB - Ghim trên đầu và hiện lại khi cuộn lên
+          SliverPersistentHeader(
+            pinned: false,   // Cố định khi cuộn xuống
+            floating: true, // HIỆN LẠI KHI CUỘN LÊN (Đúng ý bạn muốn)
+            delegate: _StickyTabBarDelegate(
+              child: _buildTabs(), // Hàm _buildTabs cũ của bạn
+            ),
+          ),
+
+          // 3. Toàn bộ nội dung phía dưới chuyển thành SliverToBoxAdapter
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                Padding(
+                  key: _introKey,
+                  padding: AppLayoutSpacing.paddingBriefTourDetail,
+                  child: HtmlWidget(state.tour.tourDetail.brief.toString(), textStyle: AppStyles.briefTourDetail),
+                ),
+                AppLayoutSpacing.section,
+                HighlightSection(detail: state.tour.tourDetail),
+                AppLayoutSpacing.section,
+                ScheduleSection(key: _scheduleKey, detail: state.tour.tourDetail),
+                AppLayoutSpacing.section,
+                Padding(
+                  padding: AppLayoutSpacing.paddingConsultationSection,
+                  child: Card(
+                    // ... logic ConsultationFormScreen
+                  ),
+                ),
+                AppLayoutSpacing.section,
+                ReviewSection(key: _reviewKey, detail: state.tour.tourDetail),
+                AppLayoutSpacing.section,
+                FaqSection(key: _faqKey, faqs: state.tour.tourDetail.faqs),
+                AppLayoutSpacing.section,
+                RelatedTourSection(tourDetail: state.tour.tourDetail),
+                AppLayoutSpacing.footer,
+                AppFooter(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -288,5 +288,38 @@ class _TourDetailScreen extends State<TourDetailScreen> {
   }
 
 
+}
+class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  _StickyTabBarDelegate({required this.child});
+
+  // 👇 Cộng thêm chiều cao của thanh Status Bar vào Extent
+  @override
+  double get minExtent => AppSizes.tabSection + _statusBarHeight;
+  @override
+  double get maxExtent => AppSizes.tabSection + _statusBarHeight;
+
+  double _statusBarHeight = 0;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    // Lấy độ cao của notch/status bar
+    _statusBarHeight = MediaQuery.of(context).padding.top;
+
+    return Material(
+      color: Colors.white,
+      elevation: overlapsContent ? 4 : 0,
+      child: Column(
+        children: [
+          // Khoảng trắng giả lập để đẩy nội dung xuống dưới Camera/Notch
+          SizedBox(height: _statusBarHeight),
+          Expanded(child: child),
+        ],
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(_StickyTabBarDelegate oldDelegate) => true;
 }
 

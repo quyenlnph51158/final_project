@@ -172,6 +172,60 @@ class AppLocalizationsVi extends AppLocalizations {
   String get search_loading => 'Đang tìm kiếm...';
 
   @override
+  String get rating_great => 'Tuyệt vời';
+
+  @override
+  String get rating_good => 'Tốt';
+
+  @override
+  String get rating_fine => 'Ổn';
+
+  @override
+  String get rating_bad => 'Tệ';
+
+  @override
+  String get rating_terrible => 'Cực tệ';
+
+  @override
+  String get sort_highestRating => 'Đánh giá cao nhất';
+
+  @override
+  String get sort_priceHighToLow => 'Giá cao đến thấp';
+
+  @override
+  String get sort_priveLowToHigh => 'Giá thấp đến cao';
+
+  @override
+  String get sort_durationShortToLong => 'Thời lượng tour (ngắn đến dài)';
+
+  @override
+  String get sort_durationLongToShort => 'Thời lượng tour (dài đến ngắn)';
+
+  @override
+  String get filter => 'Lọc';
+
+  @override
+  String get sort => 'Sắp xếp';
+
+  @override
+  String get review => 'Đánh giá';
+
+  @override
+  String get type => 'Loại hình';
+
+  @override
+  String get apply => 'Áp dụng';
+
+  @override
+  String get tour_screenTourTitle => 'Tour du lịch';
+
+  @override
+  String get consultation_faqs => 'Câu hỏi thường gặp';
+
+  @override
+  String get faqs_answerLoading => 'Nội dung đang được cập nhật...';
+
+  @override
   String get policy_loadDataFailed => 'Lỗi tải dữ liệu:';
 
   @override
@@ -273,10 +327,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get menu_tourTitle => 'TOUR';
 
   @override
-  String get menu_flightTitle => 'VÉ MÁY BAY';
+  String get menu_flightTitle => 'MÁY BAY';
 
   @override
-  String get menu_trainTitle => 'VÉ TÀU HỎA';
+  String get menu_trainTitle => 'TÀU HỎA';
 
   @override
   String get menu_blogTitle => 'BLOG';

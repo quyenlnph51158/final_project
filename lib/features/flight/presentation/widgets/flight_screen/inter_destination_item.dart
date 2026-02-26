@@ -1,8 +1,9 @@
+import 'package:final_project/core/data/model/international_destination_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DestinationItem extends StatelessWidget{
-  final Map<String, dynamic> destination;
+  final InternationalDestinationModel destination;
   final double itemWidth;
   const DestinationItem({
     super.key,
@@ -13,7 +14,7 @@ class DestinationItem extends StatelessWidget{
   Widget build(BuildContext context) {
     double widthFactor = 0;
     double heightFactor = 0;
-    switch (destination['type']) {
+    switch (destination.type) {
       case 'special':
         widthFactor = 2.1;
         heightFactor = 1.2;
@@ -45,7 +46,7 @@ class DestinationItem extends StatelessWidget{
           children: [
             // 1. Hình ảnh
             Image.network(
-              destination['imageUrl'],
+              destination.imageUrl,
               fit: BoxFit.cover,
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
@@ -80,7 +81,7 @@ class DestinationItem extends StatelessWidget{
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    destination['name'],
+                    destination.name,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,

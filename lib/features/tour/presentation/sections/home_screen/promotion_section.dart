@@ -4,7 +4,7 @@ import 'package:final_project/core/design/tour/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 
-import '../widgets/promotion_card_item.dart';
+import '../../widgets/promotion_card_item.dart';
 class PromotionSection extends StatelessWidget {
   const PromotionSection({super.key});
   @override

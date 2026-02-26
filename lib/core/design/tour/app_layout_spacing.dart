@@ -13,7 +13,7 @@ class AppLayoutSpacing {
   static const item = AppSpacing.h12;
   static const tourNameAndTourDescription = AppSpacing.h8;
   static const tourDescriptionAndDurationStar = AppSpacing.h12;
-  static const reviewscountAndStar = AppSpacing.h4;
+  static const averageRatingAndStar = AppSpacing.h4;
   static const tabAndForm = AppSpacing.h16;
 
   //===========================TourCardItem==================
@@ -48,8 +48,8 @@ class AppLayoutSpacing {
 
 
   //===================Pagination=============================
-  static const  iconpage = AppSpacing.w12;
-
+  static const iconpage = AppSpacing.w12;
+  static const itemAndPagination = AppSpacing.h16;
   //===================Promotion-Tour Screen==================
   static const titleAndDiscountValue = AppSpacing.h8;
   static const titleAndPromotionCard = AppSpacing.h16;
@@ -85,7 +85,7 @@ class AppLayoutSpacing {
   //==========================Categories=========================
   static const marginDestinationCard = EdgeInsets.symmetric(horizontal: 4);
   static const categoryNameAndImage = EdgeInsets.only(top: 4);
-  static const paddingDestinationSection = EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0, bottom: 8.0);
+  static const paddingDestinationSection = EdgeInsets.only(left: 32.0, right: 32.0, top: 24.0, bottom: 8.0);
   static const paddingCategoryCard = EdgeInsets.symmetric(horizontal: 12.0);
 
   //==========================aboutUs============================
@@ -130,6 +130,8 @@ class AppLayoutSpacing {
   static const paddingTripTypeButton = EdgeInsets.symmetric(vertical: 12);
   static const paddingtabform =EdgeInsets.symmetric(vertical: 10);
   static const paddingContentInField = EdgeInsets.symmetric(horizontal: 15, vertical: 15);
+  static const paddingFaqsTitleAndItem = EdgeInsets.only(bottom: 16.0);
+  static const paddingFaqItem = EdgeInsets.symmetric(vertical: 16.0);
   //========================Indicator============================
   static const  marginIndicator = EdgeInsets.symmetric(horizontal: 4);
   //========================ShowAirportAndStationList============

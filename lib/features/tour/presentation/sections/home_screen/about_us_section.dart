@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 import 'package:final_project/core/constants/colors.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/image_link.dart';
-import '../../../../core/design/tour/app_layout_spacing.dart';
-import '../widgets/about_us_item.dart';
+import '../../../../../core/constants/image_link.dart';
+import '../../../../../core/design/tour/app_layout_spacing.dart';
+import '../../widgets/about_us_item.dart';
 
 class AboutUsSection extends StatelessWidget{
   const AboutUsSection({super.key});

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import '../../../../app/l10n/app_localizations.dart';
-import '../../../../core/constants/colors.dart';
-import '../controller/flight_controller.dart';
-import 'cheap_flight_card.dart';
+import '../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../controller/flight_controller.dart';
+import '../../widgets/flight_screen/cheap_flight_card.dart';
 import 'package:flutter/material.dart';
 
 class FeaturedListCheapFlightSection extends StatelessWidget{

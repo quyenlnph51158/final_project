@@ -84,10 +84,10 @@ class TourCardItem extends StatelessWidget{
                       mainAxisSize: MainAxisSize.min, // Giữ cho Row này chỉ chiếm diện tích cần thiết
                       children: [
                         Text(
-                          tour.reviewsCount.toString(), // Giá trị đánh giá
+                          tour.avarageRating.toString(), // Giá trị đánh giá
                           style: AppStyles.reviewCountValue,
                         ),
-                        AppLayoutSpacing.reviewscountAndStar,
+                        AppLayoutSpacing.averageRatingAndStar,
                         AppIcons.tourCardItemStar
                       ],
                     ),

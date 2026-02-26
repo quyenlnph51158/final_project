@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../app/l10n/app_localizations.dart';
 import '../../../../core/constants/colors.dart';
 import '../controller/flight_controller.dart';
-import '../widgets/flight_tabs_widget.dart';
+import '../widgets/flight_screen/flight_tabs_widget.dart';
 import 'flight_form.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,4 @@
-import 'package:final_project/features/tour/presentation/sections/promotion_section.dart';
+import 'package:final_project/features/tour/presentation/sections/home_screen/promotion_section.dart';
 
 import '../../../../core/constants/colors.dart';
 import '../../data/models/policy_infomation.dart';

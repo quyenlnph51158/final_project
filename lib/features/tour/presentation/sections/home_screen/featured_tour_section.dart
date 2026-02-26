@@ -1,12 +1,10 @@
-import 'package:final_project/core/design/tour/app_spacing.dart';
 import 'package:final_project/core/design/tour/app_styles.dart';
-import 'package:final_project/features/tour/presentation/widgets/pagination_control.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import '../../../../../../app/l10n/app_localizations.dart';
-import '../../../../core/design/tour/app_layout_spacing.dart';
-import '../controller/travel_booking_controller.dart';
-import '../widgets/tour_card_item.dart';
+import '../../../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/design/tour/app_layout_spacing.dart';
+import '../../controller/travel_booking_controller.dart';
+import '../../widgets/tour_card_item.dart';
 
 class FeaturedTourSection extends StatelessWidget{
   const FeaturedTourSection({super.key});
@@ -43,7 +41,7 @@ class FeaturedTourSection extends StatelessWidget{
               ),
             )
           else
-            ...controller.state.tour.initialList.where((x)=> x.reviewsCount == 5).take(3).map((tour) {
+            ...controller.state.tour.initialList.where((x)=> x.avarageRating == 5).take(3).map((tour) {
               return Padding(
                 padding: AppLayoutSpacing.paddingTourCard,
                 child: TourCardItem(tour: tour,),

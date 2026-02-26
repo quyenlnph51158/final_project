@@ -10,7 +10,6 @@ import '../../../../app/l10n/app_localizations.dart';
 import '../../../../core/constants/colors.dart';
 import '../../data/service/flight_service.dart';
 import '../screens/flight_results_screen.dart';
-import 'package:intl/intl.dart';
 
 class FlightController extends ChangeNotifier {
   FlightState _state = FlightState.initial();
@@ -173,14 +172,14 @@ class FlightController extends ChangeNotifier {
       _updateState(
         _state.copyWith(
           departureCode: airport.value,
-          departure: '${airport.label} (${airport.value})',
+          departure: airport.desc,
         ),
       );
     } else {
       _updateState(
         _state.copyWith(
           destinationCode: airport.value,
-          destination: '${airport.label} (${airport.value})'
+          destination: airport.desc,
         ),
       );
     }
@@ -207,7 +206,7 @@ class FlightController extends ChangeNotifier {
         // 🔥 QUAN TRỌNG
         returnDate: isRoundTrip ? _state.returnDate : '',
         selectedReturnFlight: null,
-        isViewingReturnFlights: false,
+        isViewingReturnFlights: isRoundTrip ? true : false,
 
         outboundFlights: [],
         returnFlights: [],
@@ -251,6 +250,8 @@ class FlightController extends ChangeNotifier {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => FlightResultsScreen(
+            departure: state.departure,
+            destination: state.destination,
             departureCode: state.departureCode,
             destinationCode: state.destinationCode,
             departureDate: state.selectedDate,

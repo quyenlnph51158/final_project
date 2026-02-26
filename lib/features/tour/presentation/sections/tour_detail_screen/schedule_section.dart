@@ -2,10 +2,10 @@ import 'package:final_project/core/constants/app_icons.dart';
 import 'package:final_project/core/design/tour/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import '../../../../app/l10n/app_localizations.dart';
-import '../../../../core/constants/colors.dart';
-import '../../../../core/design/tour/app_layout_spacing.dart';
-import '../../data/models/tour_detail.dart';
+import '../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../../../../core/design/tour/app_layout_spacing.dart';
+import '../../../data/models/tour_detail.dart';
 
 class ScheduleSection extends StatefulWidget {
   final TourDetail detail;
@@ -36,6 +36,7 @@ class _ScheduleSectionState extends State<ScheduleSection> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            key: widget.key,
             l10n.tour_detail_itinerary,
             style: AppStyles.titleScheduleSection,
           ),
@@ -130,7 +131,7 @@ class _ScheduleSectionState extends State<ScheduleSection> {
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 250),
-                    child: AppIcons.expandedDescriptionSchedule,
+                    child: AppIcons.expandedIcon,
                   ),
                 ],
               ),

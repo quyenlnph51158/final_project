@@ -7,7 +7,6 @@ import 'package:final_project/features/tour/data/service/consulation_service.dar
 import 'package:final_project/features/tour/data/models/response/tour_api_response_model.dart';
 import 'package:final_project/features/tour/data/models/request/tour_request.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
-
 import '../../../../../../../core/constants/colors.dart';
 import '../../../../policy/presentation/screens/policy_screen.dart';
 
