@@ -3,14 +3,26 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:final_project/features/tour/presentation/screens/travel_booking_screen.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
-import 'features/tour/presentation/screens/controller/travel_booking_controller.dart';
+import 'core/navigation/navigation_service.dart';
+import 'features/flight/presentation/controller/flight_controller.dart';
+import 'features/policy/presentation/controller/news_controller.dart';
+import 'features/policy/presentation/controller/policy_controller.dart';
+import 'features/tour/presentation/controller/travel_booking_controller.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => TravelBookingController()),
-
+        ChangeNotifierProvider(
+            create: (_) => TravelBookingController(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FlightController(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PolicyController(),
+        ),
+        ChangeNotifierProvider(create: (_) => NewsController()),
       ],
       child: const MyApp(),
     ),
@@ -28,6 +40,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue),
 
       // 🔥 KHÔNG TẠO CONTROLLER TRONG SCREEN NỮA
+      navigatorKey: NavigationService.navigatorKey,
       home: const TravelBookingScreen(),
 
       localizationsDelegates: const [

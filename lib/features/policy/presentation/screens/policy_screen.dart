@@ -1,3 +1,4 @@
+import 'package:final_project/features/policy/presentation/controller/policy_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/core/constants/colors.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -5,8 +6,12 @@ import 'package:final_project/features/policy/data/models/policy_infomation.dart
 import 'package:final_project/features/policy/data/service/policy_service.dart';
 import 'package:final_project/shared/widgets/custom_app_bar.dart';
 import 'package:final_project/shared/widgets/app_footer.dart';
-import 'package:final_project/shared/widgets/app_drawer.dart';
+import 'package:provider/provider.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
+
+import '../../../../shared/widgets/app_drawer.dart';
+import '../state/policy_state.dart';
+
 // Giả định kHeaderTextColor là một màu cụ thể đã được định nghĩa
 class PolicyScreen extends StatefulWidget {
   final int postId;
@@ -22,92 +27,16 @@ class PolicyScreen extends StatefulWidget {
 }
 
 class _PolicyScreenState extends State<PolicyScreen> {
-  String? _errorMessage;
-  final PolicyService _policyService = PolicyService();
-  Policy? _policy;
-  bool _isLoading = true;
-  final ScrollController _scrollController = ScrollController(); // Giữ lại nếu cần cho màn hình lớn hơn
-  TravelTab _selectedTab = TravelTab.tour;
-  FlightTab _selectedFlightTab = FlightTab.flight;
-  void _scrollToForm() {
-    final double headerHeight = MediaQuery
-        .of(context)
-        .size
-        .height * 0.35;
-    final double targetScrollPosition = headerHeight - 10;
 
-    _scrollController.animateTo(
-      targetScrollPosition,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
-  }
-  void _handleFlightTabSelected(FlightTab tab) {
-    setState(() => _selectedFlightTab = tab);
-    _scrollToForm();
-  }
-
-  void _handleDrawerTabSelected(TravelTab tab) {
-    setState(() => _selectedTab = tab);
-    _scrollToForm();
-  }
-
-  void _handleDrawerHomeSelected() {
-    _scrollController.animateTo(0,
-        duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
-  }
   @override
   void initState() {
     super.initState();
-    // 1. GỌI HÀM TẢI DỮ LIỆU TẠI ĐÂY
-    _fetchPolicyInfo();
-  }
-
-  Future<void> _fetchPolicyInfo() async {
-    final l10n = AppLocalizations.of(context)!;
-    // Sử dụng widget.postId
-    final int postId = widget.postId;
-
-    // Kiểm tra postId hợp lệ trước khi gọi API
-    if (postId == 0) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = l10n.policy_searchCodeArticleCode(postId);
-      });
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null; // Xóa lỗi cũ
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final l10n = AppLocalizations.of(context)!;
+      context.read<PolicyController>().initData(l10n, widget.postId);
     });
-
-    try {
-      // Gọi service với tham số từ Widget
-      final Policy policyData = await _policyService.fetchPolicy(postId: postId);
-
-      setState(() {
-        _policy = policyData;
-        _isLoading = false;
-        _errorMessage = null;
-      });
-
-      if (_policy != null) {
-        print('Dữ liệu chính sách đã được tải: ${_policy!.title}');
-      } else {
-        print('Dữ liệu trống sau khi tải.');
-        setState(() {
-          _errorMessage = l10n.policy_loadDataPolicyFailed;
-        });
-      }
-    } catch (e) {
-      print('LỖI KHI TẢI CHÍNH SÁCH: $e');
-      setState(() {
-        _errorMessage = '${l10n.policy_loadDetailPolicyFailed} ${e.toString()}';
-        _isLoading = false;
-      });
-    }
   }
+
 
   // Hàm Helper để render nội dung HTML (Đã giữ nguyên)
   Widget _buildHtmlContent(String htmlContent) {
@@ -159,87 +88,101 @@ class _PolicyScreenState extends State<PolicyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    String appBarTitle = l10n.policy_detail;
-    if (_policy != null) {
-      appBarTitle = _policy!.title; // Cập nhật tiêu đề nếu có dữ liệu
-    }
+    final controller = context.watch<PolicyController>();
+    final state = controller.state;
 
     return Scaffold(
       endDrawer: AppDrawer(
-        onTabSelected: _handleDrawerTabSelected,
-        onHomeSelected: _handleDrawerHomeSelected,
-        onTabFlightSelected: _handleFlightTabSelected,
+        onTabSelected: (_) {},
+        onHomeSelected: () {},
+        onTabFlightSelected: (_) {},
       ),
-      body: _buildBody(),
-    );
-  }
-
-  // Hàm xây dựng nội dung Body dựa trên trạng thái (tải, lỗi, dữ liệu)
-  Widget _buildBody() {
-    final l10n = AppLocalizations.of(context)!;
-    if (_isLoading) {
-      // TRẠNG THÁI 1: ĐANG TẢI
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (_errorMessage != null) {
-      // TRẠNG THÁI 2: LỖI
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          controller: controller.scrollController,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '${l10n.policy_loadDataFailed} \n$_errorMessage',
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.red),
+              const CustomAppBar(
+                backgroundColor: kPrimaryColor,
+                image: 'https://www.wonderingvietnam.com/assets/img/logo_wondering.svg',
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _fetchPolicyInfo, // Nút thử lại
-                child: Text(l10n.error_retryButton),
-              ),
+
+              /// TITLE (nếu có data)
+              if (state.policy != null && !state.isLoading)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
+                  child: Text(
+                    state.policy!.title,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+
+              /// CONTENT
+              _buildContent(state),
+
+              /// FOOTER
+              const SizedBox(height: 40),
+              const AppFooter(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+
+
+  // Hàm xây dựng nội dung Body dựa trên trạng thái (tải, lỗi, dữ liệu)
+  Widget _buildContent(PolicyState state) {
+    final l10n = AppLocalizations.of(context)!;
+
+    if (state.isLoading) {
+      return const Padding(
+        padding: EdgeInsets.all(40),
+        child: Center(child: CircularProgressIndicator()),
       );
     }
 
-    if (_policy != null) {
-      final policy = _policy!;
-      return SingleChildScrollView(
-        controller: _scrollController,
+    if (state.errorMessage != null) {
+      return Padding(
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const CustomAppBar(backgroundColor: kPrimaryColor,), // AppBar/Header của bạn
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      policy.title,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            Text(
+              '${l10n.policy_loadDataFailed}\n${state.errorMessage}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.red),
             ),
-            const SizedBox(height: 5),
-            _buildHtmlContent(policy.content),
-            const SizedBox(height: 40),
-            AppFooter(),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                context.read<PolicyController>()
+                    .initData(l10n, widget.postId);
+              },
+              child: Text(l10n.error_retryButton),
+            ),
           ],
         ),
       );
     }
-    return Center(child: Text(l10n.error_noDataFound));
+
+    if (state.policy == null) {
+      return Center(child: Text(l10n.error_noDataFound));
+    }
+
+    final policy = state.policy!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// HTML CONTENT
+        _buildHtmlContent(policy.content),
+      ],
+    );
   }
+
 }

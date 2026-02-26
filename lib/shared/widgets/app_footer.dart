@@ -1,3 +1,5 @@
+import 'package:final_project/core/constants/image_link.dart';
+import 'package:final_project/features/policy/presentation/screens/news_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -55,7 +57,7 @@ class _AppFooterState extends State<AppFooter> {
         children: [
           // Logo/Tên thương hiệu ở đầu footer
           Center(
-            child: SvgPicture.network('https://www.wonderingvietnam.com/assets/img/logo_footer.svg',
+            child: SvgPicture.network(ImageLink.logoFooter,
               height: 80,
               width: 80,
             ),
@@ -159,7 +161,7 @@ class _AppFooterState extends State<AppFooter> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const PolicyScreen(postId: 37),
+                  builder: (context) => const NewsListScreen(),
                 ),
               );
             },
@@ -199,7 +201,7 @@ class _AppFooterState extends State<AppFooter> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const PolicyScreen(postId: 37),
+                  builder: (context) => const PolicyScreen(postId: 8),
                 ),
               );
             },
@@ -268,14 +270,14 @@ class _AppFooterState extends State<AppFooter> {
               ),
               Row(
                 children: [
-                  Text(l10n.general_visaPayment,
-                      style: TextStyle(
-                          color: kHeaderTextColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12)),
-                  SizedBox(width: 8),
-                  Icon(Icons.payment, color: Colors.blue, size: 20),
+                  SvgPicture.asset("assets/icons/card_icon.svg", width :30, height:20),
+                  const SizedBox(width: 8),
+                  SvgPicture.asset("assets/icons/master_card_icon.svg", width :30, height:20),
+                  const SizedBox(width: 8),
+                  SvgPicture.asset("assets/icons/jcb_card_icon.svg", width :30, height:20),
+
                 ],
+
               ),
             ],
           )

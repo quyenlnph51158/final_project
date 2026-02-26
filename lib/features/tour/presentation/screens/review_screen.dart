@@ -1,10 +1,10 @@
-import 'package:final_project/features/tour/presentation/screens/widgets/rating_filters.dart';
-import 'package:final_project/features/tour/presentation/screens/widgets/review_item.dart';
-import 'package:final_project/features/tour/presentation/screens/widgets/header/summery_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../../../app/l10n/app_localizations.dart';
 import '../../../../../core/constants/colors.dart';
+import '../widgets/header/summery_header.dart';
+import '../widgets/rating_filters.dart';
+import '../widgets/review_item.dart';
 
 class AllReviewsScreen extends StatefulWidget {
   final List<dynamic> reviews;
@@ -37,6 +37,7 @@ class _AllReviewsScreenState extends State<AllReviewsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
+      backgroundColor: kBackgroundColor,
       appBar: AppBar(
         title: Text(l10n.general_allReviews),
         backgroundColor: kFormBackgroundColor,
@@ -50,10 +51,11 @@ class _AllReviewsScreenState extends State<AllReviewsScreen> {
             reviews: widget.reviews,
             selectedRating: _selectedRating,
             onChanged: (rating) {
-            setState(() {
-              _selectedRating = rating; // ✅ GÁN Ở ĐÂY
-            });
-          },),
+              setState(() {
+                _selectedRating = rating; // ✅ GÁN Ở ĐÂY
+              });
+            },
+          ),
 
           Expanded(
             child: ListView.builder(

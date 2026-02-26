@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 class LocationItem {
   final String label;
   final String code;

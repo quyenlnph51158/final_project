@@ -82,9 +82,6 @@ class AppDrawer extends StatelessWidget {
                 ),
               );
             },
-
-            isBold: true,
-
           ),
           Divider(color: kSidebarDividerColor.withOpacity(0.5), height: 1),
 

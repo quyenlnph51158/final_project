@@ -66,13 +66,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get general_detailButton => 'Chi tiết';
 
   @override
-  String get general_passengerLabel => 'Hành khách và hạng vé';
+  String get general_passengerLabel => 'Hành khách';
 
   @override
   String get general_totalPassengers => 'Hành khách';
 
   @override
-  String get general_coFounderName => 'Tiêu Quỳnh';
+  String get general_coFounderName => 'Thuong Nguyen';
 
   @override
   String get general_coFounderRole => 'Co Founder';
@@ -252,6 +252,21 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String get tour_detail_tab_intro => 'Giới thiệu';
+
+  @override
+  String get tour_detail_tab_schedule => 'Lịch trình';
+
+  @override
+  String get tour_detail_tab_review => 'Đánh giá';
+
+  @override
+  String get tour_detail_tab_question => 'Câu hỏi thường gặp';
+
+  @override
+  String get tour_detail_you_should_consult => 'Bạn nên tham khảo';
+
+  @override
   String get menu_homeTitle => 'TRANG CHỦ';
 
   @override
@@ -393,7 +408,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get form_modalSelectStationArrival => 'Chọn Ga Tàu Đến';
 
   @override
-  String get form_modalPassengerTitle => 'Hành khách & Hạng vé';
+  String get form_modalPassengerTitle => 'Hành khách';
 
   @override
   String get form_modalSearchLocationHint => 'Tìm kiếm địa điểm...';
@@ -513,7 +528,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get flight_enterYourEmail => 'Nhập email của bạn';
 
   @override
-  String get flight_viewLatestDeals => 'Xem những ưu đãi khởi hành \n mới nhất';
+  String get flight_viewLatestDeals => 'Xem những ưu đãi\nkhởi hành mới nhất';
 
   @override
   String get flight_noFlightsFound => 'Không tìm thấy chuyến bay nào phù hợp.';
@@ -666,7 +681,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get home_promotionSnackbar => 'Bạn đã chọn ưu đãi:';
 
   @override
-  String get home_destinationsTitle => '🔥 Danh mục Tour';
+  String get home_destinationsTitle => 'Danh mục Tour';
 
   @override
   String get home_aboutUsVibes => 'Giới thiệu';

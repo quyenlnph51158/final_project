@@ -66,13 +66,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get general_detailButton => 'Details';
 
   @override
-  String get general_passengerLabel => 'Passengers & Class';
+  String get general_passengerLabel => 'Passengers';
 
   @override
   String get general_totalPassengers => 'Passengers';
 
   @override
-  String get general_coFounderName => 'Tieu Quynh';
+  String get general_coFounderName => 'Thuong Nguyen';
 
   @override
   String get general_coFounderRole => 'Co Founder';
@@ -249,6 +249,21 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tour_detail_tab_intro => 'Introduce';
+
+  @override
+  String get tour_detail_tab_schedule => 'Schedule';
+
+  @override
+  String get tour_detail_tab_review => 'Review';
+
+  @override
+  String get tour_detail_tab_question => 'Question';
+
+  @override
+  String get tour_detail_you_should_consult => 'You should consult';
+
+  @override
   String get menu_homeTitle => 'HOME';
 
   @override
@@ -390,7 +405,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get form_modalSelectStationArrival => 'Select Arrival Station';
 
   @override
-  String get form_modalPassengerTitle => 'Passengers & Class';
+  String get form_modalPassengerTitle => 'Passengers';
 
   @override
   String get form_modalSearchLocationHint => 'Search location...';
@@ -510,7 +525,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get flight_enterYourEmail => 'Enter your email';
 
   @override
-  String get flight_viewLatestDeals => 'View the latest departure deals';
+  String get flight_viewLatestDeals => 'View the latest\ndeparture deals';
 
   @override
   String get flight_noFlightsFound => 'No suitable flights were found.';
@@ -540,10 +555,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get flight_directFlight => 'Direct flight';
 
   @override
-  String get flight_selectReturnTicket => 'Select return ticket';
+  String get flight_selectReturnTicket => 'Select';
 
   @override
-  String get flight_selectOutboundTicket => 'Select outbound ticket';
+  String get flight_selectOutboundTicket => 'Select';
 
   @override
   String get flight_shrink => 'Shrink';
@@ -662,7 +677,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_promotionSnackbar => 'You selected the offer:';
 
   @override
-  String get home_destinationsTitle => '🔥 Tour Categories';
+  String get home_destinationsTitle => 'Tour Categories';
 
   @override
   String get home_aboutUsVibes => 'Introduction';

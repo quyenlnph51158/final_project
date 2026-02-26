@@ -215,7 +215,7 @@ abstract class AppLocalizations {
   /// No description provided for @general_passengerLabel.
   ///
   /// In en, this message translates to:
-  /// **'Passengers & Class'**
+  /// **'Passengers'**
   String get general_passengerLabel;
 
   /// No description provided for @general_totalPassengers.
@@ -227,7 +227,7 @@ abstract class AppLocalizations {
   /// No description provided for @general_coFounderName.
   ///
   /// In en, this message translates to:
-  /// **'Tieu Quynh'**
+  /// **'Thuong Nguyen'**
   String get general_coFounderName;
 
   /// No description provided for @general_coFounderRole.
@@ -546,6 +546,36 @@ abstract class AppLocalizations {
   /// **' stars ({count})'**
   String reviews_filter_star(Object count);
 
+  /// No description provided for @tour_detail_tab_intro.
+  ///
+  /// In en, this message translates to:
+  /// **'Introduce'**
+  String get tour_detail_tab_intro;
+
+  /// No description provided for @tour_detail_tab_schedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get tour_detail_tab_schedule;
+
+  /// No description provided for @tour_detail_tab_review.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get tour_detail_tab_review;
+
+  /// No description provided for @tour_detail_tab_question.
+  ///
+  /// In en, this message translates to:
+  /// **'Question'**
+  String get tour_detail_tab_question;
+
+  /// No description provided for @tour_detail_you_should_consult.
+  ///
+  /// In en, this message translates to:
+  /// **'You should consult'**
+  String get tour_detail_you_should_consult;
+
   /// No description provided for @menu_homeTitle.
   ///
   /// In en, this message translates to:
@@ -831,7 +861,7 @@ abstract class AppLocalizations {
   /// No description provided for @form_modalPassengerTitle.
   ///
   /// In en, this message translates to:
-  /// **'Passengers & Class'**
+  /// **'Passengers'**
   String get form_modalPassengerTitle;
 
   /// No description provided for @form_modalSearchLocationHint.
@@ -1027,7 +1057,7 @@ abstract class AppLocalizations {
   /// No description provided for @flight_viewLatestDeals.
   ///
   /// In en, this message translates to:
-  /// **'View the latest departure deals'**
+  /// **'View the latest\ndeparture deals'**
   String get flight_viewLatestDeals;
 
   /// No description provided for @flight_noFlightsFound.
@@ -1081,13 +1111,13 @@ abstract class AppLocalizations {
   /// No description provided for @flight_selectReturnTicket.
   ///
   /// In en, this message translates to:
-  /// **'Select return ticket'**
+  /// **'Select'**
   String get flight_selectReturnTicket;
 
   /// No description provided for @flight_selectOutboundTicket.
   ///
   /// In en, this message translates to:
-  /// **'Select outbound ticket'**
+  /// **'Select'**
   String get flight_selectOutboundTicket;
 
   /// No description provided for @flight_shrink.
@@ -1309,7 +1339,7 @@ abstract class AppLocalizations {
   /// No description provided for @home_destinationsTitle.
   ///
   /// In en, this message translates to:
-  /// **'🔥 Tour Categories'**
+  /// **'Tour Categories'**
   String get home_destinationsTitle;
 
   /// No description provided for @home_aboutUsVibes.

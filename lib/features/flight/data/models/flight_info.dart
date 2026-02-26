@@ -52,7 +52,7 @@ class FlightInfo {
       stopInfos: (json['StopInfos'] as List<dynamic>?)
           ?.map((i) => StopInfo.fromJson(i as Map<String, dynamic>))
           .toList() ?? [],
-      logo: json['Logo'] as String? ?? '',
+      logo: json['airlineObject']?['logo'] as String? ?? '',
     );
   }
 }

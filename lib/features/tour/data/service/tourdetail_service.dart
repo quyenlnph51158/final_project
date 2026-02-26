@@ -9,10 +9,6 @@ class TourdetailService {
     required String q,
     String locale = 'vi',
   }) async {
-    final Map<String, dynamic> body = {
-      "q": q,
-      "locale": locale,
-    };
     final response = await http.get(
       Uri.parse('$baseUrl/tour/detail?q=${Uri.encodeComponent(q)}&locale=$locale'),
       headers: { 'Content-Type': 'application/json; charset=UTF-8' },
