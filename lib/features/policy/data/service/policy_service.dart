@@ -1,11 +1,12 @@
 // lib/services/policy_service.dart (Đã sửa lỗi 405)
 
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:final_project/features/policy/data/models/policy_infomation.dart';
 
 class PolicyService {
-  final String baseUrl = 'https://www.wonderingvietnam.com/api/v1';
+  final String baseUrl = dotenv.env['BASE_URL'] ?? '';
 
   Future<Policy> fetchPolicy({
     required int postId,

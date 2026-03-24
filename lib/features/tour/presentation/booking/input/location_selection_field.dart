@@ -1,6 +1,7 @@
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_shape.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_shape.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
+import 'package:final_project/core/utils/responsive_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -45,23 +46,21 @@ class LocationSelectionField extends StatelessWidget{
           filled: true,
           fillColor: kFormFieldBackground,
           border: AppShape.selectionField,
+          labelStyle:TextStyle(fontSize: context.sp(16)),
         ),
         child: selectedDestination != null
             ? Row(
           children: [
-
-            AppLayoutSpacing.valueInField,
+            TourLayoutSpacing.valueInField,
             Expanded(
               child: Text(
                 selectedDestination.label,
-                style: AppStyles.textValue
+                style: AppStyles.textValue(context)
               ),
             ),
           ],
         )
-            : Text(
-          l10n.form_defaultReturnDate,
-          style: AppStyles.hintText,
+            : Text(l10n.form_defaultReturnDate, style: AppStyles.hintText(context),
         ),
       ),
     );

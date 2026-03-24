@@ -1,4 +1,4 @@
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
 import 'package:final_project/features/flight/presentation/form/flight_form.dart';
 import 'package:final_project/features/tour/presentation/booking/forms/tour_search_form.dart';
 import 'package:final_project/features/tour/presentation/controller/travel_booking_controller.dart';
@@ -6,8 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../../../../../core/constants/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/design/shared/app_layout_spacing.dart';
 import '../widgets/travel_booking_tab.dart';
 
 class SearchFormContainer extends StatelessWidget {
@@ -38,7 +37,7 @@ class SearchFormContainer extends StatelessWidget {
     }
 
     return Container(
-      padding: AppLayoutSpacing.paddingForm,
+      padding: SharedAppLayoutSpacing.paddingForm,
       decoration: BoxDecoration(
         color: kFormBackgroundColor,
         borderRadius: BorderRadius.circular(12),
@@ -54,7 +53,7 @@ class SearchFormContainer extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           TravelBookingTab(),
-          AppLayoutSpacing.tabAndForm,
+          TourLayoutSpacing.tabAndForm,
           currentForm,
         ],
       ),

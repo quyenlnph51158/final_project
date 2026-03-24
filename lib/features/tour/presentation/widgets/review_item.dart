@@ -1,8 +1,8 @@
 import 'package:final_project/core/constants/app_icons.dart';
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/app_elevation.dart';
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_elevation.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../data/models/reviews_tourdetail.dart';
@@ -19,10 +19,10 @@ class ReviewItem extends StatelessWidget{
 
     return Card(
       color: kBackgroundColor,
-      margin: AppLayoutSpacing.marginCardItem,
-      elevation: AppElevation.reviewItemElevation,
+      margin: TourLayoutSpacing.marginCardItem(context),
+      elevation: TourElevation.reviewItemElevation,
       child: Padding(
-        padding: AppLayoutSpacing.paddingCardItem,
+        padding: TourLayoutSpacing.paddingCardItem(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -31,13 +31,13 @@ class ReviewItem extends StatelessWidget{
               children: [
                 Text(
                   review.name ?? 'Khách hàng ẩn danh',
-                  style: AppStyles.customerNameReview,
+                  style: AppStyles.customerNameReview(context),
                 ),
               ],
             ),
-            AppLayoutSpacing.customerNameAndStarIcon,
+            TourLayoutSpacing.customerNameAndStarIcon,
             _buildStarRating(reviewRating),
-            AppLayoutSpacing.starIconAndComment,
+            TourLayoutSpacing.starIconAndComment,
             if (review.comment != null && review.comment!.isNotEmpty)
               Text(
                 review.comment!,
@@ -46,7 +46,7 @@ class ReviewItem extends StatelessWidget{
             if (review.positive != null && review.positive!.isNotEmpty)
               Text(
                 review.positive!,
-                style: AppStyles.positiveReviewItem,
+                style: AppStyles.positiveReviewItem(context),
               ),
           ],
         ),

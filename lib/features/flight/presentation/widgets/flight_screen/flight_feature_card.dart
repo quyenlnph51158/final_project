@@ -1,4 +1,10 @@
+import 'package:final_project/core/constants/colors.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../../core/design/flight/flight_layout_spacing.dart';
+import '../../../../../core/design/flight/flight_shape.dart';
+import '../../../../../core/design/flight/flight_size.dart';
+import '../../../../../core/design/flight/flight_style.dart';
 
 class FlightFeatureCard extends StatelessWidget {
   final IconData icon;
@@ -15,48 +21,44 @@ class FlightFeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 350,
-      height: 220,
+      width: 361,
+      height: FlightSize.featureCardHeight(context),
       child: Card(
+        color: kBackgroundColor,
         elevation: 2,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: FlightShape.borderRadiusLarge(context),
+          side: BorderSide(color: kBorderColor, width: FlightShape.borderThin),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 20,
-          ),
+          padding: FlightLayoutSpacing.featureCardPadding,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(FlightLayoutSpacing.iconWrapperPadding),
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: FlightShape.borderRadiusSmall(context),
                 ),
                 child: Icon(
                   icon,
-                  size: 40,
+                  size: FlightSize.featureIconSize(context),
                   color: Colors.blue.shade700,
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: FlightLayoutSpacing.gapMedium(context)),
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: FlightStyle.featureCardTitle(context),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: FlightLayoutSpacing.gapSmall(context)),
               Text(
                 subtitle,
-                style: const TextStyle(fontSize: 14),
+                style: FlightStyle.featureCardSubtitle(context),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

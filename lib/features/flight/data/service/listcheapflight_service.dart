@@ -1,11 +1,12 @@
 // listcheapflight_service.dart
 
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../models/list_cheap_flight.dart';
 
 class ListcheapflightService {
-  final String baseUrl = 'https://www.wonderingvietnam.com/api/v1';
+  final String baseUrl = dotenv.env['BASE_URL'] ?? '';
 
   Future<List<ListCheapFlight>> fetchlistcheapflight() async {
     final response = await http.post(Uri.parse('$baseUrl/flight/list-cheap-flight'));

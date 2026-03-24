@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:final_project/core/constants/colors.dart';
 
+import '../../../../core/design/flight/flight_shape.dart';
+import '../../../../core/design/flight/flight_style.dart';
+
 class CodeSeatInput extends StatelessWidget {
   final String label;
   final String hint;
   final TextEditingController controller;
+  final bool isEmail;
 
   const CodeSeatInput({
     super.key,
     required this.label,
     required this.hint,
     required this.controller,
+    required this.isEmail,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bool isEmail =
-    label.toLowerCase().contains('email');
-
     return TextField(
       controller: controller,
       decoration: InputDecoration(
@@ -29,15 +31,9 @@ class CodeSeatInput extends StatelessWidget {
         ),
         filled: true,
         fillColor: kFormFieldBackground,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: kBorderColor),
-        ),
+        border: FlightShape.inputOutlineBorder(context),
       ),
-      style: const TextStyle(
-        fontSize: 16,
-        color: Colors.black87,
-      ),
+      style: FlightStyle.inputFieldText(context),
     );
   }
 }

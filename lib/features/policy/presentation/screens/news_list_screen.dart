@@ -1,10 +1,10 @@
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/shared/widgets/app_footer.dart';
-import 'package:final_project/shared/widgets/custom_app_bar.dart';
+import 'package:final_project/shared/footer/app_footer.dart';
+import 'package:final_project/shared/header/custom_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../shared/widgets/app_drawer.dart';
+import '../../../../shared/header/app_drawer.dart';
 import '../controller/news_controller.dart';
 import '../widget/news_card.dart';
 

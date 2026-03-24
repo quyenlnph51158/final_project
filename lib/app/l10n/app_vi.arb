@@ -209,7 +209,26 @@
   "flight_change": "Thay đổi",
   "flight_returnTicket": "Hoàn vé",
   "flight_selectReturnFlight": "Chọn chuyến bay chiều về",
+  "flight_from_to": "Chuyến bay từ {departure} đến {destination}",
 
+  "selectSeatClass": "Chọn hạng ghế",
+  "flightDetails": "Chi tiết",
+  "currentlySelected": "Đã chọn",
+  "selectThisJourney": "Chọn",
+  "viewDetails": "xem chi tiết",
+  "departureDetails": "1. Chi tiết khởi hành",
+  "returnDetails": "2. Chi tiết chuyến về",
+  "stops": "{count} điểm dừng",
+  "stopAt": "Dừng tại {city}: {duration}",
+  "policy_carryOnBaggage": "Hành lý xách tay",
+  "policy_changeFlight": "Thay đổi chuyến bay",
+  "policy_refund": "Hoàn vé",
+  "flight_fareAndCode": "{fareType} • Chuyến bay {flightCode}",
+  "text_btnContinue" : "Tiếp tục",
+  "text_change_btn" : "Thay đổi",
+  "selected_international_pair_ticket": "Cặp vé quốc tế đã chọn",
+  "selected_departure_flight_ticket": "Vé chuyến đi đã chọn",
+  "selected_arrival_flight_ticket": "Vé chuyến về đã chọn",
 
   "form_consultation_departure_date": "Ngày khởi hành",
   "form_consultation_departure_point": "Điểm khởi hành",
@@ -281,5 +300,34 @@
   "social_facebook": "Facebook",
   "social_instagram": "Instagram",
   "social_tiktok": "Tiktok",
-  "social_whatsapp": "WhatsApp"
+  "social_whatsapp": "WhatsApp",
+
+
+  "tipEnterNameTitle": "Lời khuyên khi điền tên của bạn đúng cách",
+  "tipEnterNameDesc": "Điền thông tin cá nhân như chúng xuất hiện trên trang dữ liệu trong hộ chiếu hoặc trên chứng minh thư của bạn. Tất cả các tên chỉ có thể chứa các ký tự bảng chữ cái tiếng Anh tiêu chuẩn (A đến Z) với tối đa 35 ký tự cho tên đầy đủ của bạn.",
+  "checkInfoTitle": "Kiểm tra và Xem lại Thông tin của Bạn",
+  "checkInfoDesc": "Trong quá trình đặt vé, bạn có thể vô tình thay đổi thông tin hoặc chưa đọc kỹ các ghi chú.\n\nVì vậy, một khi bạn đã điền đầy đủ thông tin cần thiết, đừng nhấn nút \"Tiếp tục\" ngay lập tức, mà hãy luôn chắc chắn kiểm tra kỹ thông tin bạn đã nhập.",
+  "wrongNameTitle": "Tên sai trên Vé Máy bay",
+  "wrongNameDesc": "Nếu thông tin cá nhân trên vé máy bay của bạn không khớp với hộ chiếu hoặc chứng minh thư, hãng hàng không có quyền từ chối bạn lên chuyến bay. Trong trường hợp này, bạn sẽ phải thay đổi tên qua việc thay đổi tên chính thức hoặc bạn sẽ cần mua vé mới.",
+  "understand": "Tôi đã hiểu",
+  "titleSalutation": "Chọn danh xưng",
+  "titleFirstName": "Tên đệm và tên",
+  "titleLastName": "Họ",
+  "salutationMr": "Ông",
+
+  "tip1Title": "Tên đầu / Tên đệm & Tên họ chỉ gồm một chữ cái",
+  "tip1Desc": "Nếu tên đầu / tên đệm hoặc tên họ của bạn chỉ chứa một chữ cái, vui lòng lặp lại chữ cái đó cho đúng với trường tên của bạn.",
+  "tip1Ex": "Ví dụ tên trong hộ chiếu: D Jonson",
+
+  "tip2Title": "Tên có ký tự đặc biệt",
+  "tip2Desc": "Nếu tên của bạn có liên kết với dấu gạch ngang hoặc chứa các ký tự đặc biệt như dấu nháy đơn hay dấu nhấn, vui lòng loại bỏ chúng khi nhập tên của bạn.",
+  "tip2Ex": "Ví dụ: Tên trong hộ chiếu: John-Adam Smith",
+
+  "tip3Title": "Chỉ có một tên trong hộ chiếu",
+  "tip3Desc": "Nếu bạn chỉ có một tên trong hộ chiếu (bất kể là tên đầu, tên đệm hay tên họ), vui lòng nhập tên của bạn vào trường \"Tên họ\" và tích vào ô \"Hành khách này không có tên đầu trong hộ chiếu\".",
+  "tip3Ex": "Ví dụ: Tên trong hộ chiếu: Thomas",
+
+  "tip4Title": "Tên có hậu tố",
+  "tip4Desc": "Nếu tên của bạn có hậu tố, vui lòng điền tên đầu và hậu tố vào trường \"Tên đầu / Tên đệm\".",
+  "tip4Ex": "Ví dụ: Tên trong hộ chiếu: William Smith Jr"
 }

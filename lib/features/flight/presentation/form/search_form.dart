@@ -3,13 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../../../../app/l10n/app_localizations.dart';
 import '../../../../core/constants/colors.dart';
+import '../../../../core/design/flight/flight_elevation.dart';
+import '../../../../core/design/flight/flight_layout_spacing.dart';
+import '../../../../core/design/flight/flight_shape.dart';
 import '../controller/flight_controller.dart';
 import '../widgets/flight_screen/flight_tabs_widget.dart';
 import 'flight_form.dart';
 import 'package:flutter/material.dart';
 
-class SearchForm extends StatelessWidget{
+class SearchForm extends StatelessWidget {
   const SearchForm({super.key});
+
   @override
   Widget build(BuildContext context) {
     Widget currentForm;
@@ -17,34 +21,27 @@ class SearchForm extends StatelessWidget{
     // Lắng nghe sự thay đổi từ controller
     final controller = context.read<FlightController>();
     final state = context.watch<FlightController>().state;
-    if(state.selectedFlightTab==FlightTab.flight){
-      currentForm=FlightForm();
-    }
-    else{
-      currentForm=FormCodeSeat();
+    if (state.ui.selectedFlightTab == FlightTab.flight) {
+      currentForm = FlightForm();
+    } else {
+      currentForm = FormCodeSeat();
     }
 
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(FlightLayoutSpacing.formInnerPadding(context)),
       decoration: BoxDecoration(
         color: kFormBackgroundColor,
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        borderRadius: FlightShape.borderRadiusLarge(context),
+        // Đồng bộ bo góc 12.0
+        boxShadow: FlightElevation.formShadow,
       ),
       child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            FlightTabsWidget(),
-            const SizedBox(height: 16),
-            currentForm,
-          ]
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FlightTabsWidget(),
+          SizedBox(height: FlightLayoutSpacing.gapTabToForm(context)),
+          currentForm,
+        ],
       ),
     );
   }

@@ -4,12 +4,12 @@ import 'package:final_project/core/constants/colors.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:final_project/features/policy/data/models/policy_infomation.dart';
 import 'package:final_project/features/policy/data/service/policy_service.dart';
-import 'package:final_project/shared/widgets/custom_app_bar.dart';
-import 'package:final_project/shared/widgets/app_footer.dart';
+import 'package:final_project/shared/header/custom_app_bar.dart';
+import 'package:final_project/shared/footer/app_footer.dart';
 import 'package:provider/provider.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 
-import '../../../../shared/widgets/app_drawer.dart';
+import '../../../../shared/header/app_drawer.dart';
 import '../state/policy_state.dart';
 
 // Giả định kHeaderTextColor là một màu cụ thể đã được định nghĩa

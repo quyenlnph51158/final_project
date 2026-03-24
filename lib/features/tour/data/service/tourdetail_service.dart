@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:final_project/features/tour/data/models/tour_detail.dart';
 
 class TourdetailService {
-  final String baseUrl = 'https://www.wonderingvietnam.com/api/v1';
+  final String baseUrl = dotenv.env['BASE_URL'] ?? '';
 
   Future<TourDetail> fetchTourDetail({
     required String q,

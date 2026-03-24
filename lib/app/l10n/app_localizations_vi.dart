@@ -636,6 +636,71 @@ class AppLocalizationsVi extends AppLocalizations {
   String get flight_selectReturnFlight => 'Chọn chuyến bay chiều về';
 
   @override
+  String flight_from_to(Object departure, Object destination) {
+    return 'Chuyến bay từ $departure đến $destination';
+  }
+
+  @override
+  String get selectSeatClass => 'Chọn hạng ghế';
+
+  @override
+  String get flightDetails => 'Chi tiết';
+
+  @override
+  String get currentlySelected => 'Đã chọn';
+
+  @override
+  String get selectThisJourney => 'Chọn';
+
+  @override
+  String get viewDetails => 'xem chi tiết';
+
+  @override
+  String get departureDetails => '1. Chi tiết khởi hành';
+
+  @override
+  String get returnDetails => '2. Chi tiết chuyến về';
+
+  @override
+  String stops(Object count) {
+    return '$count điểm dừng';
+  }
+
+  @override
+  String stopAt(Object city, Object duration) {
+    return 'Dừng tại $city: $duration';
+  }
+
+  @override
+  String get policy_carryOnBaggage => 'Hành lý xách tay';
+
+  @override
+  String get policy_changeFlight => 'Thay đổi chuyến bay';
+
+  @override
+  String get policy_refund => 'Hoàn vé';
+
+  @override
+  String flight_fareAndCode(Object fareType, Object flightCode) {
+    return '$fareType • Chuyến bay $flightCode';
+  }
+
+  @override
+  String get text_btnContinue => 'Tiếp tục';
+
+  @override
+  String get text_change_btn => 'Thay đổi';
+
+  @override
+  String get selected_international_pair_ticket => 'Cặp vé quốc tế đã chọn';
+
+  @override
+  String get selected_departure_flight_ticket => 'Vé chuyến đi đã chọn';
+
+  @override
+  String get selected_arrival_flight_ticket => 'Vé chuyến về đã chọn';
+
+  @override
   String get form_consultation_departure_date => 'Ngày khởi hành';
 
   @override
@@ -845,4 +910,80 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get social_whatsapp => 'WhatsApp';
+
+  @override
+  String get tipEnterNameTitle => 'Lời khuyên khi điền tên của bạn đúng cách';
+
+  @override
+  String get tipEnterNameDesc =>
+      'Điền thông tin cá nhân như chúng xuất hiện trên trang dữ liệu trong hộ chiếu hoặc trên chứng minh thư của bạn. Tất cả các tên chỉ có thể chứa các ký tự bảng chữ cái tiếng Anh tiêu chuẩn (A đến Z) với tối đa 35 ký tự cho tên đầy đủ của bạn.';
+
+  @override
+  String get checkInfoTitle => 'Kiểm tra và Xem lại Thông tin của Bạn';
+
+  @override
+  String get checkInfoDesc =>
+      'Trong quá trình đặt vé, bạn có thể vô tình thay đổi thông tin hoặc chưa đọc kỹ các ghi chú.\n\nVì vậy, một khi bạn đã điền đầy đủ thông tin cần thiết, đừng nhấn nút \"Tiếp tục\" ngay lập tức, mà hãy luôn chắc chắn kiểm tra kỹ thông tin bạn đã nhập.';
+
+  @override
+  String get wrongNameTitle => 'Tên sai trên Vé Máy bay';
+
+  @override
+  String get wrongNameDesc =>
+      'Nếu thông tin cá nhân trên vé máy bay của bạn không khớp với hộ chiếu hoặc chứng minh thư, hãng hàng không có quyền từ chối bạn lên chuyến bay. Trong trường hợp này, bạn sẽ phải thay đổi tên qua việc thay đổi tên chính thức hoặc bạn sẽ cần mua vé mới.';
+
+  @override
+  String get understand => 'Tôi đã hiểu';
+
+  @override
+  String get titleSalutation => 'Chọn danh xưng';
+
+  @override
+  String get titleFirstName => 'Tên đệm và tên';
+
+  @override
+  String get titleLastName => 'Họ';
+
+  @override
+  String get salutationMr => 'Ông';
+
+  @override
+  String get tip1Title => 'Tên đầu / Tên đệm & Tên họ chỉ gồm một chữ cái';
+
+  @override
+  String get tip1Desc =>
+      'Nếu tên đầu / tên đệm hoặc tên họ của bạn chỉ chứa một chữ cái, vui lòng lặp lại chữ cái đó cho đúng với trường tên của bạn.';
+
+  @override
+  String get tip1Ex => 'Ví dụ tên trong hộ chiếu: D Jonson';
+
+  @override
+  String get tip2Title => 'Tên có ký tự đặc biệt';
+
+  @override
+  String get tip2Desc =>
+      'Nếu tên của bạn có liên kết với dấu gạch ngang hoặc chứa các ký tự đặc biệt như dấu nháy đơn hay dấu nhấn, vui lòng loại bỏ chúng khi nhập tên của bạn.';
+
+  @override
+  String get tip2Ex => 'Ví dụ: Tên trong hộ chiếu: John-Adam Smith';
+
+  @override
+  String get tip3Title => 'Chỉ có một tên trong hộ chiếu';
+
+  @override
+  String get tip3Desc =>
+      'Nếu bạn chỉ có một tên trong hộ chiếu (bất kể là tên đầu, tên đệm hay tên họ), vui lòng nhập tên của bạn vào trường \"Tên họ\" và tích vào ô \"Hành khách này không có tên đầu trong hộ chiếu\".';
+
+  @override
+  String get tip3Ex => 'Ví dụ: Tên trong hộ chiếu: Thomas';
+
+  @override
+  String get tip4Title => 'Tên có hậu tố';
+
+  @override
+  String get tip4Desc =>
+      'Nếu tên của bạn có hậu tố, vui lòng điền tên đầu và hậu tố vào trường \"Tên đầu / Tên đệm\".';
+
+  @override
+  String get tip4Ex => 'Ví dụ: Tên trong hộ chiếu: William Smith Jr';
 }

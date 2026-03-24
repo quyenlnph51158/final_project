@@ -15,6 +15,8 @@ class FlightInfo {
   final List<Inventory> inventories;
   final List<StopInfo> stopInfos;
   final String logo;
+  final String timeStart;
+  final String timeEnd;
 
   FlightInfo({
     required this.departureCode,
@@ -31,6 +33,8 @@ class FlightInfo {
     required this.inventories,
     required this.stopInfos,
     required this.logo,
+    required this.timeStart,
+    required this.timeEnd,
   });
 
   factory FlightInfo.fromJson(Map<String, dynamic> json) {
@@ -53,6 +57,8 @@ class FlightInfo {
           ?.map((i) => StopInfo.fromJson(i as Map<String, dynamic>))
           .toList() ?? [],
       logo: json['airlineObject']?['logo'] as String? ?? '',
+      timeStart: json['timeStart']?.toString() ?? '',
+      timeEnd: json['timeEnd']?.toString() ?? '',
     );
   }
 }

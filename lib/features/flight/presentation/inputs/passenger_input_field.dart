@@ -1,8 +1,10 @@
-import 'package:final_project/core/design/tour/app_shape.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_shape.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
+import 'package:final_project/core/utils/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
 import '../../../../../../../core/constants/colors.dart';
+import '../../../../core/design/flight/flight_style.dart';
 
 class PassengerInputField extends StatelessWidget {
   final int adultCount;
@@ -37,10 +39,11 @@ class PassengerInputField extends StatelessWidget {
           filled: true,
           fillColor: kFormFieldBackground,
           border: AppShape.selectionField,
+          labelStyle: FlightStyle.labelField(context),
         ),
         child: Text(
           textToShow,
-          style: AppStyles.textValue,
+          style: AppStyles.textValue(context),
         ),
       ),
     );

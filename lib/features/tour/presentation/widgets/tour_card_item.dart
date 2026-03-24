@@ -1,15 +1,15 @@
 import 'package:final_project/core/constants/app_icons.dart';
-import 'package:final_project/core/design/tour/app_dividers.dart';
-import 'package:final_project/core/design/tour/app_elevation.dart';
-import 'package:final_project/core/design/tour/app_shape.dart';
-import 'package:final_project/core/design/tour/app_sizes.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_dividers.dart';
+import 'package:final_project/core/design/tour/tour_elevation.dart';
+import 'package:final_project/core/design/tour/tour_shape.dart';
+import 'package:final_project/core/design/tour/tour_sizes.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:final_project/features/tour/data/models/tour_item.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/core/constants/colors.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/design/tour/app_layout_spacing.dart';
+import '../../../../core/design/tour/tour_layout_spacing.dart';
 import '../controller/travel_booking_controller.dart';
 
 class TourCardItem extends StatelessWidget{
@@ -25,7 +25,7 @@ class TourCardItem extends StatelessWidget{
     return Card(
       color: kFormFieldBackground,
       shape: AppShape.card,
-      elevation: AppElevation.tourCardItemElevation,
+      elevation: TourElevation.tourCardItemElevation,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,10 +35,10 @@ class TourCardItem extends StatelessWidget{
               tour.image,
               fit: BoxFit.cover,
               width: double.infinity,
-              height: AppSizes.imageTourCardItem,
+              height: AppSizes.imageTourCardItem(context),
               errorBuilder: (context, error, stackTrace) =>
                 Container(
-                  height: AppSizes.errorLoadImageCardItem,
+                  height: AppSizes.errorLoadImageCardItem(context),
                   color: Colors.grey,
                   alignment: Alignment.center,
                   child: AppIcons.error,
@@ -46,22 +46,22 @@ class TourCardItem extends StatelessWidget{
             ),
           ),
           Padding(
-            padding: AppLayoutSpacing.tourCardItemContent,
+            padding: TourLayoutSpacing.tourCardItemContent(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   tour.name,
-                  style: AppStyles.tourNameCardItem
+                  style: AppStyles.tourNameCardItem(context)
                 ),
-                AppLayoutSpacing.tourNameAndTourDescription ,
+                TourLayoutSpacing.tourNameAndTourDescription ,
                 Text(
                   tour.description,
-                  style: AppStyles.tourDescriptionCardItem,
+                  style: AppStyles.tourDescriptionCardItem(context),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
-                AppLayoutSpacing.tourNameAndTourDescription,
+                TourLayoutSpacing.tourNameAndTourDescription,
                 Row(
                   // Dùng mainAxisAlignment.spaceBetween để đẩy hai nhóm ra hai phía
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -71,7 +71,7 @@ class TourCardItem extends StatelessWidget{
                       mainAxisSize: MainAxisSize.min, // Giữ cho Row này chỉ chiếm diện tích cần thiết
                       children: [
                         AppIcons.duration,
-                        AppLayoutSpacing.durationIconAndValue,
+                        TourLayoutSpacing.durationIconAndValue,
                         Text(
                           tour.duration,
                           style: AppStyles.durationIcon,
@@ -85,25 +85,25 @@ class TourCardItem extends StatelessWidget{
                       children: [
                         Text(
                           tour.avarageRating.toString(), // Giá trị đánh giá
-                          style: AppStyles.reviewCountValue,
+                          style: AppStyles.reviewCountValue(context),
                         ),
-                        AppLayoutSpacing.averageRatingAndStar,
+                        TourLayoutSpacing.averageRatingAndStar,
                         AppIcons.tourCardItemStar
                       ],
                     ),
                   ],
                 ),
-                AppDividers.tourCardItem,
+                TourDividers.tourCardItem,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       tour.price,
-                      style: AppStyles.priceValue,
+                      style: AppStyles.priceValue(context),
                     ),
 
                     SizedBox(
-                      height: AppSizes.tourCardItemButton,
+                      height: AppSizes.tourCardItemButton(context),
                       child: ElevatedButton(
                         onPressed: () {
                           controller.goToTourDetail(tour,l10n);

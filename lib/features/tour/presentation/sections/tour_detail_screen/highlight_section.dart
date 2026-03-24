@@ -1,6 +1,6 @@
 import 'package:final_project/core/constants/app_icons.dart';
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:final_project/features/tour/data/models/tour_detail.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -18,15 +18,15 @@ class HighlightSection extends StatelessWidget{
     }
 
     return Padding(
-      padding: AppLayoutSpacing.paddingHighLight,
+      padding: TourLayoutSpacing.paddingHighLight(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             l10n.tour_detail_highlights,
-            style: AppStyles.hightLightTitle,
+            style: AppStyles.hightLightTitle(context),
           ),
-          AppLayoutSpacing.labelandcontent,
+          TourLayoutSpacing.labelandcontent,
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: detail.extensions.map((highlight) {
@@ -36,13 +36,13 @@ class HighlightSection extends StatelessWidget{
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: AppLayoutSpacing.iconHighLight,
+                      padding: TourLayoutSpacing.iconHighLight(context),
                       child: AppIcons.check_circle,
                     ),
                     Expanded(
                       child: Text(
                         highlight,
-                        style: AppStyles.hightLightContent,
+                        style: AppStyles.hightLightContent(context),
                       ),
                     ),
                   ],

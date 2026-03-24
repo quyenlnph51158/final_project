@@ -62,15 +62,16 @@ class NewsCard extends StatelessWidget  {
             ),
           ),
 
-          /// CONTENT – MỞ RỘNG
-          AnimatedSize(
+          /// CONTENT – MỞ RỘNG (Using AnimatedCrossFade)
+          AnimatedCrossFade(
             duration: const Duration(milliseconds: 400),
-            curve: Curves.easeOutCubic,
-            alignment: Alignment.topCenter,
-            child: isExpanded
-                ? Padding(
-              padding:
-              const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            sizeCurve: Curves.easeOutCubic,
+            // 1. CLOSED STATE: An empty box with no height
+            firstChild: const SizedBox(width: double.infinity, height: 0),
+
+            // 2. OPEN STATE: The actual content
+            secondChild: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
               child: HtmlWidget(
                 news.content,
                 textStyle: const TextStyle(
@@ -78,8 +79,12 @@ class NewsCard extends StatelessWidget  {
                   color: Colors.black87,
                 ),
               ),
-            )
-                : const SizedBox.shrink(),
+            ),
+
+            // 3. SWITCH LOGIC: Determine which child to show
+            crossFadeState: isExpanded
+                ? CrossFadeState.showSecond
+                : CrossFadeState.showFirst,
           ),
         ],
       ),

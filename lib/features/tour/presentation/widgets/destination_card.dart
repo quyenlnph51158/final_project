@@ -1,8 +1,8 @@
 import 'package:final_project/core/constants/app_icons.dart';
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_sizes.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_sizes.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../app/l10n/app_localizations.dart';
@@ -24,8 +24,8 @@ class DestinationCard extends StatelessWidget {
     final controller = context.read<TravelBookingController>();
 
     return Container(
-      width: AppSizes.imageCategory,
-      margin: AppLayoutSpacing.marginDestinationCard,
+      width: AppSizes.imageCategory(context),
+      margin: TourLayoutSpacing.marginDestinationCard(context),
       child: InkWell(
         onTap: () {
           // ✅ GỌI CONTROLLER – KHÔNG setState
@@ -40,7 +40,7 @@ class DestinationCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
                   category.image,
-                  width: AppSizes.imageCategory,
+                  width: AppSizes.imageCategory(context),
                   fit: BoxFit.cover,
                   loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) return child;
@@ -57,13 +57,13 @@ class DestinationCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: AppLayoutSpacing.categoryNameAndImage,
+              padding: TourLayoutSpacing.categoryNameAndImage(context),
               child: Center(
                 child: Text(
                   category.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppStyles.categoryName
+                  style: AppStyles.categoryName(context)
                 ),
               ),
             ),

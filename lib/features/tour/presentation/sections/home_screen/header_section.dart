@@ -1,7 +1,7 @@
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
-import '../../../../../../shared/widgets/custom_app_bar.dart';
+import '../../../../../shared/header/custom_app_bar.dart';
 import '../../../../../../app/l10n/app_localizations.dart';
 
 class HeaderSection extends StatelessWidget {
@@ -20,10 +20,10 @@ class HeaderSection extends StatelessWidget {
           children: [
             const CustomAppBar(),
             Padding(
-              padding: AppLayoutSpacing.paddingAppbarAndTitle,
+              padding: TourLayoutSpacing.paddingAppbarAndTitle(context),
               child: Text(
                 '${l10n.header_titleLine1}\n${l10n.header_titleLine2}',
-                style: AppStyles.TravelingBookingHeaderTitle,
+                style: AppStyles.TravelingBookingHeaderTitle(context),
               ),
             ),
           ],

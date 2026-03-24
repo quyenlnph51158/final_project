@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../models/request/tour_request.dart';
 import '../models/response/tour_api_response_model.dart';
 
 class ConsultationService {
   // Thay đổi thành URL cơ sở thực tế của bạn
-  final String _baseUrl = 'https://www.wonderingvietnam.com/api';
+  final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
 
   // ĐÃ LOẠI BỎ 'apikey' VÀ 'Access-Token'
   final Map<String, String> _headers = {
@@ -14,7 +15,7 @@ class ConsultationService {
   };
 
   Future<ApiResponse> submitTourRequest(TourRequest request) async {
-    final url = Uri.parse('$_baseUrl/v1/tour/submit_request');
+    final url = Uri.parse('$_baseUrl/tour/submit_request');
     // DEBUG: In ra URL đầy đủ đang được gọi
     print('DEBUG API URL: $url');
     // DEBUG: In ra body request

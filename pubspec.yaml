@@ -46,6 +46,9 @@ dependencies:
     sdk: flutter
   dio: ^5.9.1
   dotted_line: ^3.2.2
+  flutter_screen_scaler: ^3.0.0
+  dropdown_search: ^6.0.2
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +79,7 @@ flutter:
     - assets/icons/card_icon.svg
     - assets/icons/jcb_card_icon.svg
     - assets/icons/master_card_icon.svg
+    - .env
   uses-material-design: true
   generate: true  # Dòng này kích hoạt việc sinh mã Localization
    # To add assets to your application, add an assets section, like this:

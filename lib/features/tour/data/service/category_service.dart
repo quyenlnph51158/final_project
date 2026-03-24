@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../models/tour_category.dart';
 import 'package:final_project/features/tour/data/models/response/api_category_response.dart';
 
 class CategoryService {
   // Thay thế bằng URL API thực tế của bạn
-  final String _baseUrl = "https://www.wonderingvietnam.com/api/v1";
+  final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
 
   // Hàm lấy danh sách danh mục tour
   Future<List<TourCategory>> fetchTourCategories() async {

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../app/l10n/app_localizations.dart';
 import '../../../../../core/constants/colors.dart';
+import '../../../../../core/design/flight/flight_layout_spacing.dart';
+import '../../../../../core/design/flight/flight_size.dart';
+import '../../../../../core/design/flight/flight_style.dart';
 import '../../controller/flight_controller.dart';
 
 class FlightTabsWidget extends StatelessWidget {
@@ -16,8 +19,7 @@ class FlightTabsWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: FlightTab.values.map((tab) {
-        final isSelected =
-            state.selectedFlightTab == tab;
+        final isSelected = state.ui.selectedFlightTab == tab;
 
         final icon = tab == FlightTab.flight
             ? Icons.flight_outlined
@@ -29,39 +31,26 @@ class FlightTabsWidget extends StatelessWidget {
 
         return Expanded(
           child: InkWell(
-            onTap: () =>
-                controller.selectFlightTab(tab, l10n),
+            onTap: () => controller.selectFlightTab(tab, l10n),
             child: Container(
-              padding:
-              const EdgeInsets.symmetric(vertical: 10),
+              padding: FlightLayoutSpacing.tabItemPadding,
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: isSelected
-                        ? kPrimaryColor
-                        : Colors.transparent,
-                    width: 3,
+                    color: isSelected ? kPrimaryColor : Colors.transparent,
+                    width: FlightSize.tabIndicatorHeight,
                   ),
                 ),
               ),
               child: Column(
                 children: [
-                  Icon(
-                    icon,
-                    color: isSelected
-                        ? kPrimaryColor
-                        : Colors.grey,
-                  ),
+                  Icon(icon, color: isSelected ? kPrimaryColor : Colors.grey),
+                  const SizedBox(height: 4),
                   Text(
                     text,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: isSelected
-                          ? kPrimaryColor
-                          : Colors.grey,
+                    style: FlightStyle.tabLabel(
+                      context,
+                      isSelected: isSelected,
                     ),
                   ),
                 ],

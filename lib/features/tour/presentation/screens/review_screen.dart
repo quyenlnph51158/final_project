@@ -36,38 +36,44 @@ class _AllReviewsScreenState extends State<AllReviewsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      backgroundColor: kBackgroundColor,
-      appBar: AppBar(
-        title: Text(l10n.general_allReviews),
-        backgroundColor: kFormBackgroundColor,
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SummeryHeader(
-              reviews: widget.reviews, averageRating: widget.averageRating),
-          RatingFilters(
-            reviews: widget.reviews,
-            selectedRating: _selectedRating,
-            onChanged: (rating) {
-              setState(() {
-                _selectedRating = rating; // ✅ GÁN Ở ĐÂY
-              });
-            },
-          ),
-
-          Expanded(
-            child: ListView.builder(
-              itemCount: _filteredReviews.length,
-              itemBuilder: (context, index) {
-                final review = _filteredReviews[index];
-                return ReviewItem(review: review);
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result){
+        if(didPop) return;
+      },
+      child:Scaffold(
+        backgroundColor: kBackgroundColor,
+        appBar: AppBar(
+          title: Text(l10n.general_allReviews),
+          backgroundColor: kFormBackgroundColor,
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SummeryHeader(
+                reviews: widget.reviews, averageRating: widget.averageRating),
+            RatingFilters(
+              reviews: widget.reviews,
+              selectedRating: _selectedRating,
+              onChanged: (rating) {
+                setState(() {
+                  _selectedRating = rating; // ✅ GÁN Ở ĐÂY
+                });
               },
             ),
-          ),
-        ],
-      ),
+
+            Expanded(
+              child: ListView.builder(
+                itemCount: _filteredReviews.length,
+                itemBuilder: (context, index) {
+                  final review = _filteredReviews[index];
+                  return ReviewItem(review: review);
+                },
+              ),
+            ),
+          ],
+        ),
+      )
     );
   }
 }

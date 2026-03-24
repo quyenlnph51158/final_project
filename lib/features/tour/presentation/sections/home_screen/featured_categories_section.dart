@@ -1,6 +1,6 @@
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_sizes.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_sizes.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -39,16 +39,16 @@ class _FeaturedDestinationSectionState extends State<FeaturedDestinationSection>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: AppLayoutSpacing.paddingDestinationSection,
+          padding: TourLayoutSpacing.paddingDestinationSection(context),
           child: Center(
             child: Text(
               l10n.home_destinationsTitle,
-              style: AppStyles.titleCategory,
+              style: AppStyles.titleCategory(context),
             ),
           ),
         ),
         SizedBox(
-          height: AppSizes.destinationListHeight,
+          height: AppSizes.destinationListHeight(context),
           child: PageView.builder(
             controller: _pageController,
             onPageChanged: (index) {
@@ -83,7 +83,7 @@ class _FeaturedDestinationSectionState extends State<FeaturedDestinationSection>
         ),
 
         // 4. Indicator có khả năng tương tác (Click để chuyển trang)
-        AppLayoutSpacing.itemAndPagination,
+        TourLayoutSpacing.itemAndPagination,
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(

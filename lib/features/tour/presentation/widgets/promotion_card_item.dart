@@ -1,7 +1,7 @@
 import 'package:final_project/core/data/model/promotion_model.dart';
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_sizes.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_sizes.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 
@@ -26,7 +26,7 @@ class PromotionCardItem extends StatelessWidget{
           // );
         },
         child: Container(
-          height: AppSizes.promotionItem,
+          height: AppSizes.promotionItem(context),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: NetworkImage(promotionData.imageUrl),
@@ -38,7 +38,7 @@ class PromotionCardItem extends StatelessWidget{
             ),
           ),
           child: Padding(
-            padding: AppLayoutSpacing.paddingPromotionCardItem,
+            padding: TourLayoutSpacing.paddingPromotionCardItem(context),
             child: Stack(
               children: [
                 Column(
@@ -47,15 +47,15 @@ class PromotionCardItem extends StatelessWidget{
                   children: [
                     Text(
                       promotionData.title,
-                      style: AppStyles.promotionTitle,
+                      style: AppStyles.promotionTitle(context),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     if (promotionData.discount != null) ...[
-                      AppLayoutSpacing.titleAndDiscountValue,
+                      TourLayoutSpacing.titleAndDiscountValue,
                       Text(
                         promotionData.discount,
-                        style: AppStyles.promotionDiscountValue,
+                        style: AppStyles.promotionDiscountValue(context),
                       ),
                     ],
                   ],

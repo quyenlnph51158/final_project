@@ -1,6 +1,6 @@
 import 'package:final_project/core/data/constants/promotion_data.dart';
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_styles.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 
@@ -11,26 +11,26 @@ class PromotionSection extends StatelessWidget {
   Widget build(BuildContext context){
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: AppLayoutSpacing.paddingPromotionSection,
+      padding: TourLayoutSpacing.paddingPromotionSection(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
             child: Text(
               l10n.home_promotionSectionVibes,
-              style: AppStyles.promotionSectionVibe,
+              style: AppStyles.promotionSectionVibe(context),
             ),
           ),
           Center(
             child: Text(
               l10n.home_tourSectionTitleVibes,
-              style: AppStyles.promotionSectionTitle,
+              style: AppStyles.promotionSectionTitle(context),
             ),
           ),
-          AppLayoutSpacing.titleAndPromotionCard,
+          TourLayoutSpacing.titleAndPromotionCard,
           ...PromotionData.promotions.map((promotion) {
             return Padding(
-              padding: AppLayoutSpacing.paddingBottomPromotionCard,
+              padding: TourLayoutSpacing.paddingBottomPromotionCard(context),
               child: PromotionCardItem(promotionData:promotion),
             );
           }).toList(),

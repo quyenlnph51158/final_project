@@ -1,6 +1,6 @@
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/app_sizes.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_sizes.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../app/l10n/app_localizations.dart';
 
@@ -21,11 +21,11 @@ class _RatingFiltersState extends State<RatingFilters> {
     const List<int> ratings = [0, 5, 4, 3, 2, 1];
 
     return Container(
-      padding: AppLayoutSpacing.paddingRatingFilter,
-      height: AppSizes.RatingFilters,
+      padding: TourLayoutSpacing.paddingRatingFilter(context),
+      height: AppSizes.ratingFilters(context),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: AppLayoutSpacing.paddingRatingFilterState,
+        padding: TourLayoutSpacing.paddingRatingFilterState(context),
         itemCount: ratings.length,
         itemBuilder: (context, index) {
           final rating = ratings[index];
@@ -44,7 +44,7 @@ class _RatingFiltersState extends State<RatingFilters> {
           }
 
           return Padding(
-            padding: AppLayoutSpacing.paddingRatingFilterItem,
+            padding: TourLayoutSpacing.paddingRatingFilterItem(context),
             child: ChoiceChip(
               label: Text(text),
               selected: isSelected,

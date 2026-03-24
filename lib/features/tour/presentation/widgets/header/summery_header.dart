@@ -1,9 +1,9 @@
 import 'package:final_project/core/constants/app_icons.dart';
-import 'package:final_project/core/design/tour/app_layout_spacing.dart';
+import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/tour/app_styles.dart';
+import '../../../../../core/design/tour/tour_styles.dart';
 
 class SummeryHeader extends StatelessWidget{
   final List<dynamic> reviews;
@@ -16,7 +16,7 @@ class SummeryHeader extends StatelessWidget{
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: AppLayoutSpacing.paddingSummaryHeaderTour,
+      padding: TourLayoutSpacing.paddingSummaryHeaderTour(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -25,13 +25,13 @@ class SummeryHeader extends StatelessWidget{
             children: [
               Text(
                 '${averageRating.toStringAsFixed(1)}',
-                style: AppStyles.averageRatingValue,
+                style: AppStyles.averageRatingValue(context),
               ),
               Text(
                 '/5',
-                style: AppStyles.averageRatingSuffix,
+                style: AppStyles.averageRatingSuffix(context),
               ),
-              AppLayoutSpacing.averageRatingAndInfo,
+              TourLayoutSpacing.averageRatingAndInfo,
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +39,7 @@ class SummeryHeader extends StatelessWidget{
                   _buildStarRating(averageRating,),
                   Text(
                     '${l10n.tour_detail_based_on} ${reviews.length} ${l10n.tour_detail_reviews_count}',
-                    style: AppStyles.textBasedOn,
+                    style: AppStyles.textBasedOn(context),
                   ),
                 ],
               ),
