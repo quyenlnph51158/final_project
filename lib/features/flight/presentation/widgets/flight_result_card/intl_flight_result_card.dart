@@ -135,6 +135,35 @@ class _IntlFlightResultCardState extends State<IntlFlightResultCard> {
                     widget.pair.returnFlight,
                     isReturn: true,
                   ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Divider(thickness: 1, color: kBorderColor),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if(widget.pair.outbound.flightAirlineText == widget.pair.returnFlight.flightAirlineText)...[
+                        Text(
+                            '${widget.pair.outbound.flightAirlineText} | ${widget.pair.outbound.flightCode} & ${widget.pair.returnFlight.flightCode}'
+                        ),
+                      ],
+
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            FormatPrice.formatPrice(currentPairPrice),
+                            style: FlightStyle.priceMedium(context),
+                          ),
+                          AnimatedRotation(
+                            turns: widget.isExpanded ? 0.5 : 0,
+                            duration: const Duration(milliseconds: 250),
+                            child: const Icon(Icons.keyboard_arrow_down),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -142,7 +171,7 @@ class _IntlFlightResultCardState extends State<IntlFlightResultCard> {
 
           if (widget.isExpanded) ...[
             Padding(
-              padding: FlightLayoutSpacing.tabPadding,
+              padding: FlightLayoutSpacing.tabPadding(context),
               child: Row(
                 children: [
                   _buildTabItem(
@@ -151,7 +180,7 @@ class _IntlFlightResultCardState extends State<IntlFlightResultCard> {
                     isActive: _activeTabIndex == 0,
                     onTap: () => setState(() => _activeTabIndex = 0),
                   ),
-                  SizedBox(width: FlightLayoutSpacing.tabGap),
+                  SizedBox(width: FlightLayoutSpacing.tabGap(context)),
                   _buildTabItem(
                     context,
                     l10n.flightDetails,
@@ -316,7 +345,7 @@ class _IntlFlightResultCardState extends State<IntlFlightResultCard> {
         children: [
           _buildSectionTitle(context, l10n.departureDetails),
           _buildVerticalTimeline(context, widget.pair.outbound, fareType),
-          SizedBox(height: FlightLayoutSpacing.tabGap),
+          SizedBox(height: FlightLayoutSpacing.tabGap(context)),
           _buildSectionTitle(context, l10n.returnDetails),
           _buildVerticalTimeline(context, widget.pair.returnFlight, fareType),
         ],
@@ -356,8 +385,8 @@ class _IntlFlightResultCardState extends State<IntlFlightResultCard> {
           SizedBox(height: FlightLayoutSpacing.gapSmall(context) / 2),
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            height: FlightSize.tabIndicatorHeight,
-            width: isActive ? FlightSize.tabIndicatorWidth : 0,
+            height: FlightSize.tabIndicatorHeight(context),
+            width: isActive ? FlightSize.tabIndicatorWidth(context) : 0,
             color: kPrimaryColor,
           ),
         ],
@@ -394,7 +423,7 @@ class _IntlFlightResultCardState extends State<IntlFlightResultCard> {
                 style: FlightStyle.durationSmall(context),
               ),
               Padding(
-                padding: FlightLayoutSpacing.dottedLinePadding,
+                padding: FlightLayoutSpacing.dottedLinePadding(context),
                 child: DottedLine(
                   dashColor: kTextColor,
                   lineThickness: FlightDivider.dashThickness,
@@ -414,19 +443,6 @@ class _IntlFlightResultCardState extends State<IntlFlightResultCard> {
           flight.arrivalCode,
           isEnd: true,
         ),
-        SizedBox(width: FlightLayoutSpacing.gapMedium(context)),
-        if (price != null)
-          Text(
-            FormatPrice.formatPrice(price),
-            style: FlightStyle.priceMedium(context),
-          )
-        else
-          Icon(
-            widget.isExpanded
-                ? Icons.keyboard_arrow_up
-                : Icons.keyboard_arrow_down,
-            color: kPrimaryColor,
-          ),
       ],
     );
   }
@@ -506,7 +522,7 @@ class _IntlFlightResultCardState extends State<IntlFlightResultCard> {
               SizedBox(
                 height:
                     FlightDivider.timelineConnectorHeight -
-                    FlightLayoutSpacing.timelineTimeGap,
+                    FlightLayoutSpacing.timelineTimeGap(context),
               ),
               _buildTimelineTime(
                 context,
@@ -620,8 +636,8 @@ class _IntlFlightResultCardState extends State<IntlFlightResultCard> {
     final minutes = layoverMinutes % 60;
     final durationStr = hours > 0 ? "${hours}h ${minutes}m" : "${minutes}m";
     return Container(
-      margin: FlightLayoutSpacing.stopPointMargin,
-      padding: FlightLayoutSpacing.stopPointPadding,
+      margin: FlightLayoutSpacing.stopPointMargin(context),
+      padding: FlightLayoutSpacing.stopPointPadding(context),
       decoration: BoxDecoration(
         color: Colors.orange.withOpacity(0.1),
         borderRadius: FlightShape.borderRadiusSmall(context),
@@ -634,7 +650,7 @@ class _IntlFlightResultCardState extends State<IntlFlightResultCard> {
             color: Colors.orange,
             size: FlightSize.iconSmall(context),
           ),
-          SizedBox(width: FlightLayoutSpacing.gapIcon),
+          SizedBox(width: FlightLayoutSpacing.gapIcon(context)),
           Text(
             l10n.stopAt(cityName, durationStr),
             style: FlightStyle.stopPointText(context),
@@ -653,12 +669,12 @@ class _IntlFlightResultCardState extends State<IntlFlightResultCard> {
 
     return Padding(
       padding: EdgeInsets.only(
-        bottom: FlightLayoutSpacing.featurePaddingBottom,
+        bottom: FlightLayoutSpacing.featurePaddingBottom(context),
       ),
       child: Row(
         children: [
           Icon(icon, size: FlightSize.iconSmall(context), color: kPrimaryColor),
-          SizedBox(width: FlightLayoutSpacing.gapIcon),
+          SizedBox(width: FlightLayoutSpacing.gapIcon(context)),
           Flexible(
             child: Text(
               translatedText,

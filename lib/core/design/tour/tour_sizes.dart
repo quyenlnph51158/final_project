@@ -3,44 +3,57 @@ import 'package:flutter/material.dart';
 import '../../utils/responsive_layout.dart';
 
 class AppSizes {
+  //======================================== Height (Dùng rh) ==========================
 
-  //========================================Height==========================
-  static double searchButton(BuildContext context) => context.hp(6);
-  static double destinationListHeight(BuildContext context) => context.hp(25);
+  static double searchButton(BuildContext context) => context.rh(50);
 
-  //==================================TourDetail======================
-  static double imageDescription(BuildContext context) => context.hp(30);
-  static double tabSection(BuildContext context) => context.hp(10);
-  static double reviewItem(BuildContext context) => context.hp(22);
-  static double promotionItem(BuildContext context) => context.hp(30);
-  static double heightTabAndUnderline(BuildContext context) => context.hp(12);
+  static double destinationListHeight(BuildContext context) => context.rh(200);
 
-  static const heightUnderline = 2.0;
+  //================================== TourDetail ======================
+  static double imageDescription(BuildContext context) => context.rh(250);
 
-  //==================================Tour Card Item ========================
-  static double imageTourCardItem(BuildContext context) => context.hp(24);
-  static double errorLoadImageCardItem(BuildContext context) => context.hp(24);
-  static double tourCardItemButton(BuildContext context) => context.hp(5);
+  static double tabSection(BuildContext context) => context.rh(50);
 
-  //===================================Review================================
-  static double ratingFilters(BuildContext context) => context.hp(7);
+  static double reviewItem(BuildContext context) => context.rh(180);
 
-  //=================================Tour Category===========================
-  static const hIndicator = 8.0;
+  static double promotionItem(BuildContext context) => context.rh(240);
 
-  //===============================TravelingBookingScreen=========
-  static double hImageLocation(BuildContext context) => context.hp(4.5);
+  static double heightTabAndUnderline(BuildContext context) => context.rh(60);
 
-  //===================================width=================================
-  //===================================Categories===========================
-  static double imageCategory(BuildContext context) => context.wp(35);
-  static double iconAboutUsItem(BuildContext context) => context.sp(40);
+  // Chuyển const sang hàm để áp dụng rh
+  static double heightUnderline(BuildContext context) => context.rh(2.0);
 
-  //=================================Tour Category===========================
-  static const wActiveIndicator = 18.0;
-  static const wInActiveIndicator = 8.0;
+  //================================== Tour Card Item ========================
+  static double imageTourCardItem(BuildContext context) => context.rh(200);
 
-  //===============================TravelingBookingScreen=========
-  static const wTabBorder = 3.0;
-  static double wImageLocation(BuildContext context) => context.wp(10);
+  static double errorLoadImageCardItem(BuildContext context) => context.rh(200);
+
+  static double tourCardItemButton(BuildContext context) => context.rh(40);
+
+  //=================================== Review ================================
+  static double ratingFilters(BuildContext context) => context.rh(55);
+
+  // Chuyển const sang hàm để áp dụng rh
+  static double hIndicator(BuildContext context) => context.rh(8.0);
+
+  //=============================== TravelingBookingScreen =========
+  static double hImageLocation(BuildContext context) => context.rh(36);
+
+  //=================================== Width (Dùng rw) =================================
+
+  //=================================== Categories ===========================
+  static double imageCategory(BuildContext context) => context.rw(130);
+
+  // Đối với Icon, sử dụng context.icon để đảm bảo tỷ lệ chuẩn
+  static double iconAboutUsItem(BuildContext context) => context.icon(40);
+
+  //================================= Tour Category ===========================
+  static double wActiveIndicator(BuildContext context) => context.rw(18.0);
+
+  static double wInActiveIndicator(BuildContext context) => context.rw(8.0);
+
+  //=============================== TravelingBookingScreen =========
+  static double wTabBorder(BuildContext context) => context.rw(3.0);
+
+  static double wImageLocation(BuildContext context) => context.rw(37);
 }

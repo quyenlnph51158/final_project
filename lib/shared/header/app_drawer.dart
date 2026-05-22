@@ -1,345 +1,227 @@
+import 'dart:async';
+import 'package:final_project/features/auth/presentation/controller/auth_controller.dart';
+import 'package:final_project/features/train/presentation/screens/train_screen.dart';
 import 'package:flutter/material.dart';
-
-import 'package:final_project/features/train/presentation/Screens/train_results_screen.dart';
-
+import 'package:provider/provider.dart';
 import 'package:final_project/features/tour/presentation/screens/travel_booking_screen.dart';
-
 import 'package:final_project/features/tour/presentation/screens/tour_screen.dart';
-
 import 'package:final_project/features/flight/presentation/screens/flight_screen.dart';
-
 import 'package:final_project/core/constants/colors.dart';
-
 import 'package:final_project/app/l10n/app_localizations.dart';
-
-
-
-// Định nghĩa kiểu hàm callback để truyền hành động cuộn và đổi tab
+import '../../../../core/utils/responsive_layout.dart';
+import '../../features/auth/presentation/screen/login_screen.dart';
+import '../../features/train/presentation/controller/train_controller.dart';
 
 typedef TabSelectedCallback = void Function(TravelTab tab);
-
-typedef TabSelectedFlightCallback=void Function(FlightTab tab);
-
-
-
-
+typedef TabSelectedFlightCallback = void Function(FlightTab tab);
+typedef ControllerCallback = FutureOr<void> Function();
 
 class AppDrawer extends StatelessWidget {
-
-// Callback để truyền hành động chọn tab ra bên ngoài
-
-  final TabSelectedCallback onTabSelected;
-
-// Callback cho Trang Chủ (thường là cuộn lên đầu)
-
-  final VoidCallback onHomeSelected;
-
-  final TabSelectedFlightCallback onTabFlightSelected;
-
-// XÓA TỪ KHÓA const ở đây
+  final TabSelectedCallback? onTabSelected;
+  final VoidCallback? onHomeSelected;
+  final TabSelectedFlightCallback? onTabFlightSelected;
 
   const AppDrawer({
-
     super.key,
-
-    required this.onTabSelected,
-
-    required this.onHomeSelected,
-
-    required this.onTabFlightSelected,
-
+    this.onTabSelected,
+    this.onHomeSelected,
+    this.onTabFlightSelected,
   });
 
-
-
-// Hàm tạo các mục trong Drawer
-
-  Widget _buildDrawerItem(String title, IconData icon, VoidCallback action,
-
-      {bool isBold = false}) {
-
+  Widget _buildDrawerItem({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required VoidCallback action,
+    required ControllerCallback controller,
+    bool isBold = false,
+  }) {
     return ListTile(
-
-      leading: Icon(icon, color: kSidebarTextColor),
-
-      title: Text(
-
-        title,
-
-        style: TextStyle(
-
-          color: kSidebarTextColor,
-
-          fontSize: isBold ? 18 : 16,
-
-          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-
-        ),
-
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: context.padding,
+        // Dùng rh(4) thay vì h(0.2) để cố định khoảng cách theo tỷ lệ pixel chuẩn
+        vertical: context.rh(4),
       ),
-
-      trailing: const Icon(Icons.arrow_forward_ios,
-
-          size: 14, color: kSidebarTextColor),
-
-      onTap: () {
-
-        action(); // Thực thi hành động: setState và cuộn
-
+      leading: Icon(icon, color: kSidebarTextColor, size: context.icon(22)),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: kSidebarTextColor,
+          fontSize: context.sp(isBold ? 17 : 15),
+          fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
+        ),
+      ),
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        size: context.icon(12),
+        color: kSidebarTextColor.withOpacity(0.3),
+      ),
+      onTap: () async {
+        await controller();
+        action();
       },
-
     );
-
   }
-
-
 
   @override
-
   Widget build(BuildContext context) {
-
     final l10n = AppLocalizations.of(context)!;
+    final authController = context.watch<AuthController>();
+    final isLoggedIn = authController.state.ui.isLoggedIn;
 
     return Drawer(
-
-      width: MediaQuery.of(context).size.width * 0.7,
-
+      // Dùng rw(280) để cố định chiều rộng drawer theo tỷ lệ thiết kế 375px
+      width: context.rw(280).clamp(250.0, 320.0),
       backgroundColor: kSidebarBackgroundColor,
-
-      child: ListView(
-
-        padding: EdgeInsets.zero,
-
-        children: <Widget>[
-
-// Header: Nút đóng Drawer (mũi tên lên)
-
+      child: Column(
+        children: [
+          // 1. HEADER: Nút đóng Drawer
           Container(
-
-            height: 120,
-
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            // rh(100) giúp header có chiều cao ổn định khoảng 100px trên máy chuẩn
+            height: context.rh(100).clamp(80.0, 120.0),
+            width: double.infinity,
             color: kPrimaryColor,
-
-            child: Align(
-
-              alignment: Alignment.center,
-
-              child: IconButton(
-
-                icon: const Icon(Icons.keyboard_arrow_up,
-
-                    color: kHeaderTextColor, size: 50),
-
-                onPressed: () => Navigator.pop(context),
-
+            alignment: Alignment.center,
+            child: IconButton(
+              icon: Icon(
+                Icons.keyboard_arrow_right_sharp,
+                color: kHeaderTextColor,
+                size: context.icon(35),
               ),
-
+              onPressed: () => Navigator.pop(context),
             ),
-
           ),
 
-
-
-// Mục Trang chủ (In đậm)
-
-          _buildDrawerItem(
-
-            l10n.menu_homeTitle,
-
-            Icons.home_outlined,
-
-                () {
-
-              Navigator.pop(context);
-
-              Navigator.pushReplacement(
-
-                context,
-
-                MaterialPageRoute(
-
-                  builder: (context) => const TravelBookingScreen(), // Thay BlogScreen() bằng Screen mong muốn
-
+          // 2. LIST MENU ITEMS
+          Expanded(
+            child: ListView(
+              // Padding dọc đồng bộ theo tỷ lệ pixel
+              padding: EdgeInsets.symmetric(vertical: context.rh(10)),
+              physics: const BouncingScrollPhysics(),
+              children: <Widget>[
+                _buildDrawerItem(
+                  context: context,
+                  title: l10n.menu_homeTitle,
+                  icon: Icons.home_outlined,
+                  action: () {
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TravelBookingScreen(),
+                      ),
+                    );
+                  },
+                  controller: () {},
+                  isBold: true,
                 ),
+                _buildDivider(context),
 
-              );
-
-            },
-
-          ),
-
-          Divider(color: kSidebarDividerColor.withOpacity(0.5), height: 1),
-
-
-
-// Mục VÉ MÁY BAY
-
-          _buildDrawerItem(
-
-            l10n.menu_flightTitle,
-
-            Icons.flight_outlined,
-
-                () {
-
-              Navigator.pop(context);
-
-              Navigator.pushReplacement(
-
-                context,
-
-                MaterialPageRoute(
-
-                  builder: (context) => const FlightScreen(), // Thay BlogScreen() bằng Screen mong muốn
-
+                _buildDrawerItem(
+                  context: context,
+                  title: l10n.menu_tourTitle,
+                  icon: Icons.luggage_outlined,
+                  action: () {
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TourScreen(),
+                      ),
+                    );
+                  },
+                  controller: () {},
                 ),
+                _buildDivider(context),
 
-              );
-
-            },
-
-          ),
-
-          Divider(color: kSidebarDividerColor.withOpacity(0.5), height: 1),
-
-
-
-// Mục TOUR DU LỊCH
-
-          _buildDrawerItem(
-
-            l10n.menu_tourTitle,
-
-            Icons.luggage_outlined,
-
-                () {
-
-              Navigator.pop(context);
-
-              Navigator.pushReplacement(
-
-                context,
-
-                MaterialPageRoute(
-
-                  builder: (context) => const TourScreen(), // Thay BlogScreen() bằng Screen mong muốn
-
+                _buildDrawerItem(
+                  context: context,
+                  title: l10n.menu_flightTitle,
+                  icon: Icons.flight_outlined,
+                  action: () {
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FlightScreen(),
+                      ),
+                    );
+                  },
+                  controller: () {},
                 ),
+                _buildDivider(context),
 
-              );
-
-            },
-
-          ),
-
-          Divider(color: kSidebarDividerColor.withOpacity(0.5), height: 1),
-
-
-
-// Mục VÉ TÀU
-
-          _buildDrawerItem(
-
-            l10n.menu_trainTitle,
-
-            Icons.directions_boat_outlined,
-
-                () {
-
-              Navigator.pop(context);
-
-              Navigator.pushReplacement(
-
-                context,
-
-                MaterialPageRoute(
-
-                  builder: (context) => const TrainResultScreen(), // Thay BlogScreen() bằng Screen mong muốn
-
+                _buildDrawerItem(
+                  context: context,
+                  title: l10n.menu_trainTitle,
+                  icon: Icons.train_outlined,
+                  action: () {
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TrainScreen(),
+                      ),
+                    );
+                  },
+                  controller: () {
+                    context.read<TrainController>().resetToInitial();
+                  },
                 ),
+                _buildDivider(context),
 
-              );
-
-            },
-
+                _buildDrawerItem(
+                  context: context,
+                  title: isLoggedIn ? "Đăng xuất" : l10n.login,
+                  icon: isLoggedIn ? Icons.logout : Icons.login,
+                  action: () {
+                    Navigator.pop(context);
+                    if (!isLoggedIn) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      );
+                    }
+                  },
+                  controller: () async {
+                    if (isLoggedIn) {
+                      await authController.logOut();
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
 
-          Divider(color: kSidebarDividerColor.withOpacity(0.5), height: 1),
-
-
-
-// Mục BLOG
-
-          _buildDrawerItem(
-
-            l10n.menu_blogTitle,
-
-            Icons.article_outlined,
-
-                () {
-
-              Navigator.pop(context);
-
-            },
-
-          ),
-
-          Divider(color: kSidebarDividerColor.withOpacity(0.5), height: 1),
-
-
-
-// Mục ĐẶT NGAY (Nút nổi bật)
-
-          Padding(
-
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-
-            child: ElevatedButton.icon(
-
-              onPressed: () {
-
-                Navigator.pop(context);
-
-                ScaffoldMessenger.of(context).showSnackBar(
-
-                  const SnackBar(content: Text('Chuyển đến trang Đặt ngay...')),
-
-                );
-
-              },
-
-              icon: const Icon(Icons.arrow_forward, color: Colors.white),
-
-              label: Text(l10n.menu_bookNowButton,
-
-                  style: TextStyle(
-
-                      color: Colors.white, fontWeight: FontWeight.bold)),
-
-              style: ElevatedButton.styleFrom(
-
-                backgroundColor: kPrimaryColor,
-
-                padding: const EdgeInsets.symmetric(vertical: 12),
-
-                shape: RoundedRectangleBorder(
-
-                    borderRadius: BorderRadius.circular(10)),
-
+          // 3. FOOTER
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: context.rh(20)),
+              child: Text(
+                "Version 1.0.0",
+                style: TextStyle(
+                  color: kSidebarTextColor.withOpacity(0.3),
+                  fontSize: context.sp(12),
+                  letterSpacing: 1.1,
+                ),
               ),
-
             ),
-
           ),
-
-          const SizedBox(height: 20),
-
         ],
-
       ),
-
     );
-
   }
 
+  Widget _buildDivider(BuildContext context) {
+    return Divider(
+      color: kSidebarDividerColor.withOpacity(0.1),
+      height: 1,
+      indent: context.padding,
+      endIndent: context.padding,
+    );
+  }
 }

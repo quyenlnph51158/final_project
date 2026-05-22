@@ -1,7 +1,4 @@
-import 'package:final_project/core/constants/app_icons.dart';
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
 import 'package:final_project/core/design/tour/tour_shape.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:final_project/features/tour/presentation/controller/travel_booking_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/features/tour/data/service/consulation_service.dart';
@@ -9,21 +6,18 @@ import 'package:final_project/features/tour/data/models/response/tour_api_respon
 import 'package:final_project/features/tour/data/models/request/tour_request.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 import '../../../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../../../policy/presentation/screens/policy_screen.dart';
 import 'package:provider/provider.dart';
 
-
 class ConsultationFormScreen extends StatefulWidget {
-  const ConsultationFormScreen({
-    super.key,
-  });
+  const ConsultationFormScreen({super.key});
 
   @override
   State<ConsultationFormScreen> createState() => _ConsultationFormState();
 }
 
 class _ConsultationFormState extends State<ConsultationFormScreen> {
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -32,14 +26,7 @@ class _ConsultationFormState extends State<ConsultationFormScreen> {
   bool _isLoading = false;
 
   @override
-  void initState() {
-    super.initState();
-    debugPrint('ConsultationFormScreen INIT: ${hashCode}');
-  }
-
-  @override
   void dispose() {
-    // 4. GIẢI PHÓNG TẤT CẢ CÁC CONTROLLER ĐỂ TRÁNH RÒ RỈ BỘ NHỚ
     _nameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
@@ -47,28 +34,20 @@ class _ConsultationFormState extends State<ConsultationFormScreen> {
     super.dispose();
   }
 
+  // --- Logic submit giữ nguyên ---
   void _submitForm() async {
     final l10n = AppLocalizations.of(context)!;
-    final state = context.watch<TravelBookingController>().state;
-    if (!_formKey.currentState!.validate() || _isLoading) {
-      return;
-    }
+    final state = context.read<TravelBookingController>().state;
+    if (!_formKey.currentState!.validate() || _isLoading) return;
 
-    setState(() {
-      _isLoading = true; // Bắt đầu loading
-    });
-
-    // 1. TẠO REQUEST MODEL (Dữ liệu cố định và mock cho các trường chưa có trong form)
+    setState(() => _isLoading = true);
     final TourRequest request = TourRequest(
-      // Dữ liệu từ form
       fullName: _nameController.text.trim(),
       phone: _phoneController.text.trim(),
       email: _emailController.text.trim(),
       note: _noteController.text.trim(),
-
-      // Dữ liệu từ Widget properties
       tourSid: state.tour.tourDetail.sid,
-      startDate: state.form.selectedDate, // Giả định widget.date đã ở format 'd-m-Y'
+      startDate: state.form.selectedDate,
       departurePoint: state.form.departure,
       srand: '1',
       stime: '1',
@@ -76,45 +55,28 @@ class _ConsultationFormState extends State<ConsultationFormScreen> {
       sf: '1',
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.form_consultation_submitting_snackbar)),
+    final ApiResponse response = await ConsultationService().submitTourRequest(
+      request,
     );
 
-    // 2. GỌI SERVICE VÀ XỬ LÝ PHẢN HỒI
-    final ApiResponse response = await ConsultationService().submitTourRequest(request);
-
-    // Tắt trạng thái loading bất kể kết quả
     if (!mounted) return;
-
-    setState(() {
-      _isLoading = false;
-    });
-
+    setState(() => _isLoading = false);
 
     if (response.status == 1) {
-      // THÀNH CÔNG
-      _formKey.currentState!.reset(); // Đặt lại form
+      _formKey.currentState!.reset();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.form_consultation_success_msg(response.message)),
           backgroundColor: kBackGroundSuccessFullResponse,
+          behavior: SnackBarBehavior.floating,
         ),
       );
     } else {
-      // LỖI (Bao gồm lỗi xác thực 422)
-      String errorMessage = response.message;
-      if (response.errors != null && response.errors!.isNotEmpty) {
-        // Trích xuất lỗi xác thực đầu tiên
-        // response.errors có dạng {'email': ['Email không hợp lệ'], ...}
-        final errorKey = response.errors!.keys.first;
-        final firstError = (response.errors![errorKey] as List).first;
-        errorMessage = l10n.form_consultation_validation_error(firstError);
-      }
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(errorMessage),
+          content: Text(response.message),
           backgroundColor: kError,
+          behavior: SnackBarBehavior.floating,
         ),
       );
     }
@@ -123,118 +85,176 @@ class _ConsultationFormState extends State<ConsultationFormScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
+    // Cố định khoảng cách dọc giữa các field theo pixel thiết kế (khoảng 12-16px)
+    final double fieldGap = context.rh(14);
+
     return Card(
-        color: Colors.white, // Background of the form
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child:Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 1. Ngày khởi hành & Điểm khởi hành
-                  _buildDepartureInfo(),
-                  TourLayoutSpacing.departureInfoAndField,
-                  // 2. Các trường thông tin cá nhân
-                  _buildTextField(controller: _nameController,label: l10n.form_consultation_name_label, hint: l10n.form_consultation_name_hint, requiredField: true),
-                  TourLayoutSpacing.field,
-                  _buildTextField(controller: _phoneController,label: l10n.form_consultation_phone_label, hint: l10n.form_consultation_phone_hint, keyboardType: TextInputType.phone, requiredField: true),
-                  TourLayoutSpacing.field,
-                  _buildTextField(controller: _emailController,label: l10n.form_consultation_email_label, hint: l10n.form_consultation_email_hint, keyboardType: TextInputType.emailAddress, requiredField: true),
-                  TourLayoutSpacing.field,
-                  _buildTextField(controller: _noteController,label: l10n.form_consultation_note_label, hint: l10n.form_consultation_note_hint,requiredField: false , maxLines: 3),
-                  TourLayoutSpacing.fieldAndPolicyOrButton,
-                  // 3. Chính sách và Ưu đãi
-                  _buildPolicyAndBooking(),
-                  TourLayoutSpacing.fieldAndPolicyOrButton,
-                  // 4. Nút Gửi Form
-                  _buildSubmitButton(),
-                ],
+      color: Colors.white,
+      elevation: 2,
+      // Dùng radius chuẩn (10 hoặc 14)
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(context.radius),
+      ),
+      child: Padding(
+        // Dùng context.padding (12 hoặc 16) để thẳng hàng lề toàn app
+        padding: EdgeInsets.all(context.padding),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDepartureInfo(),
+
+              SizedBox(height: context.rh(20)), // Khoảng cách sau header
+
+              _buildTextField(
+                controller: _nameController,
+                label: l10n.form_consultation_name_label,
+                hint: l10n.form_consultation_name_hint,
+                requiredField: true,
               ),
-            )
-        )
+              SizedBox(height: fieldGap),
+
+              _buildTextField(
+                controller: _phoneController,
+                label: l10n.form_consultation_phone_label,
+                hint: l10n.form_consultation_phone_hint,
+                keyboardType: TextInputType.phone,
+                requiredField: true,
+              ),
+              SizedBox(height: fieldGap),
+
+              _buildTextField(
+                controller: _emailController,
+                label: l10n.form_consultation_email_label,
+                hint: l10n.form_consultation_email_hint,
+                keyboardType: TextInputType.emailAddress,
+                requiredField: true,
+              ),
+              SizedBox(height: fieldGap),
+
+              _buildTextField(
+                controller: _noteController,
+                label: l10n.form_consultation_note_label,
+                hint: l10n.form_consultation_note_hint,
+                requiredField: false,
+                maxLines: 3,
+              ),
+
+              SizedBox(height: context.rh(24)),
+              _buildPolicyAndBooking(),
+              SizedBox(height: context.rh(24)),
+              _buildSubmitButton(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  // --- Widget Builders ---
   Widget _buildDepartureInfo() {
     final l10n = AppLocalizations.of(context)!;
     final state = context.watch<TravelBookingController>().state;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Ngày khởi hành
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              l10n.form_consultation_departure_date,
-              style: AppStyles.labelDepartureDate(context),
-            ),
-            Container(
-              padding: TourLayoutSpacing.paddingDepartureDate(context),
-              decoration: AppShape.departureDate,
-              child: Row(
-                children: [
-                  AppIcons.iconCalenderToday,
-                  TourLayoutSpacing.iconAndValue,
-                  Text(state.form.selectedDate, style: TextStyle(color: kTextColor)),
-                ],
-              ),
-            ),
-          ],
-        ),
-        TourLayoutSpacing.departureDateAndDeparturePoint,
 
-        // Điểm khởi hành
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              l10n.form_consultation_departure_point,
-              style: AppStyles.labelDeparturePoint(context),
-            ),
-            Container(
-              padding: TourLayoutSpacing.paddingDeparturePoint(context),
-              decoration: AppShape.departurePoint,
-              child: Row(
-                children: [
-                  AppIcons.iconLocation,
-                  TourLayoutSpacing.iconAndValue,
-                  Text(state.form.departure, style: TextStyle(color: kTextColor)),
-                ],
+    return Column(
+      children: [
+        _buildInfoRow(
+          l10n.form_consultation_departure_date,
+          state.form.selectedDate,
+          Icons.calendar_today,
+        ),
+        SizedBox(height: context.rh(12)),
+        _buildInfoRow(
+          l10n.form_consultation_departure_point,
+          state.form.departure,
+          Icons.location_on,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value, IconData icon) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(fontSize: context.sp(14), color: Colors.blueGrey),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: context.rw(10),
+            vertical: context.rh(6),
+          ),
+          decoration: BoxDecoration(
+            color: kPrimaryColor.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(context.radius / 2),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: context.icon(14), color: kPrimaryColor),
+              SizedBox(width: context.rw(6)),
+              Text(
+                value,
+                style: TextStyle(
+                  color: kTextColor,
+                  fontSize: context.sp(13),
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
   }
 
   Widget _buildTextField({
-    required TextEditingController controller, // <<< CẦN THÊM VÀO ĐÂY
+    required TextEditingController controller,
     required String label,
     required String hint,
     required bool requiredField,
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
   }) {
-    // Chỉ cần trường nhập liệu, không cần label nổi bật
     final l10n = AppLocalizations.of(context)!;
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       maxLines: maxLines,
+      style: TextStyle(fontSize: context.sp(14), color: kTextColor),
       decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(fontSize: context.sp(13), color: Colors.blueGrey),
         hintText: hint,
-        contentPadding: TourLayoutSpacing.paddingContentInField(context),
-        border: AppShape.selectionField,
+        hintStyle: TextStyle(
+          fontSize: context.sp(13),
+          color: Colors.grey.shade400,
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: context.rw(16),
+          vertical: context.rh(14),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(context.radius * 0.6),
+          borderSide: const BorderSide(color: kBorderColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(context.radius * 0.6),
+          borderSide: const BorderSide(color: kBorderColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(context.radius * 0.6),
+          borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
+        ),
       ),
-      // Giả lập logic kiểm tra nhập liệu cơ bản
       validator: (value) {
-        if ((value == null || value.isEmpty) && requiredField==true) {
+        if ((value == null || value.isEmpty) && requiredField) {
           return l10n.form_consultation_required_error(label);
         }
         return null;
@@ -245,71 +265,74 @@ class _ConsultationFormState extends State<ConsultationFormScreen> {
   Widget _buildPolicyAndBooking() {
     final l10n = AppLocalizations.of(context)!;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Chính sách hủy
         Row(
           children: [
-            AppIcons.iconRefresh,
-            const SizedBox(width: 8),
-            Text(
-              l10n.form_consultation_policy_cancel,
-              style: TextStyle(fontWeight: FontWeight.w500),
-            ),
-            const Text(' - ', style: TextStyle(color: kTextColor)),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PolicyScreen(postId: 1),
-                  ),
-                );
-              },
-              child: Text(
-                l10n.form_consultation_view_detail,
-                style: AppStyles.viewDetailPolicy,
+            Icon(Icons.refresh, size: context.icon(18), color: Colors.blueGrey),
+            SizedBox(width: context.rw(8)),
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(fontSize: context.sp(13), color: kTextColor),
+                  children: [
+                    TextSpan(text: l10n.form_consultation_policy_cancel),
+                    const TextSpan(text: ' - '),
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const PolicyScreen(postId: 1),
+                          ),
+                        ),
+                        child: Text(
+                          l10n.form_consultation_view_detail,
+                          style: TextStyle(
+                            color: kPrimaryColor,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
         ),
-        TourLayoutSpacing.field,
-
-        // Đặt trước và thanh toán sau
+        SizedBox(height: context.rh(12)),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: TourLayoutSpacing.iconCancellation(context),
-              child: AppIcons.check_circle,
+            Icon(
+              Icons.check_circle,
+              size: context.icon(18),
+              color: kBackGroundSuccessFullResponse,
             ),
-            TourLayoutSpacing.IconCancellationAndText,
-
+            SizedBox(width: context.rw(8)),
             Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PolicyScreen(postId: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.form_consultation_book_now_pay_later,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: context.sp(13),
+                      color: kTextColor,
                     ),
-                  );
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.form_consultation_book_now_pay_later,
-                      style: AppStyles.textBookNowAndPayLater(context),
+                  ),
+                  SizedBox(height: context.rh(2)),
+                  Text(
+                    l10n.form_consultation_flexible_desc,
+                    style: TextStyle(
+                      fontSize: context.sp(12),
+                      color: Colors.blueGrey,
                     ),
-                    TourLayoutSpacing.textBookNowAndFlexibleText,
-                    Text(
-                      l10n.form_consultation_flexible_desc,
-                      style: AppStyles.textFlexibleDesc(context),
-
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -322,13 +345,34 @@ class _ConsultationFormState extends State<ConsultationFormScreen> {
     final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       width: double.infinity,
+      // Nút bấm cao 48px chuẩn UX trên mọi máy thật
+      height: context.rh(48).clamp(45.0, 55.0),
       child: ElevatedButton(
-        style: AppStyles.submitButton,
-        onPressed: _submitForm,
-        child: Text(
-          l10n.form_consultation_submit_button,
-          style: AppStyles.textSubmitButton(context),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: kPrimaryColor,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(context.radius),
+          ),
+          elevation: 0,
         ),
+        onPressed: _isLoading ? null : _submitForm,
+        child: _isLoading
+            ? SizedBox(
+                height: context.rh(20),
+                width: context.rh(20),
+                child: const CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(
+                l10n.form_consultation_submit_button,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: context.sp(16),
+                ),
+              ),
       ),
     );
   }

@@ -51,7 +51,7 @@ class LocationSelectionField extends StatelessWidget{
         child: selectedDestination != null
             ? Row(
           children: [
-            TourLayoutSpacing.valueInField,
+            SizedBox(height: TourLayoutSpacing.valueInField(context)),
             Expanded(
               child: Text(
                 selectedDestination.label,

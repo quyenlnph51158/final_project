@@ -16,8 +16,8 @@ class ExtraSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: FlightLayoutSpacing.screenHorizontalPadding,
+      padding: EdgeInsets.symmetric(
+        horizontal: FlightLayoutSpacing.screenHorizontalPadding(context),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,8 +32,8 @@ class ExtraSection extends StatelessWidget {
           SharedAppLayoutSpacing.labelandCard,
           ...ExtraService.map((service) {
             return Padding(
-              padding: const EdgeInsets.only(
-                bottom: FlightLayoutSpacing.gapBetweenCards,
+              padding: EdgeInsets.only(
+                bottom: FlightLayoutSpacing.gapBetweenCards(context),
               ),
               child: ServiceCard(service: service),
             );

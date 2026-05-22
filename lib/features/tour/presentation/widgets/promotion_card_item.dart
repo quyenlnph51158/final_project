@@ -52,7 +52,7 @@ class PromotionCardItem extends StatelessWidget{
                       overflow: TextOverflow.ellipsis,
                     ),
                     if (promotionData.discount != null) ...[
-                      TourLayoutSpacing.titleAndDiscountValue,
+                      SizedBox(height: TourLayoutSpacing.titleAndDiscountValue(context)),
                       Text(
                         promotionData.discount,
                         style: AppStyles.promotionDiscountValue(context),

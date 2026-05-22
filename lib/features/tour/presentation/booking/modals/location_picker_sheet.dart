@@ -54,7 +54,7 @@ class _LocationPickerSheetState<T extends TourDestination>
             child: Column(
               children: [
                 const DragIndicator(),
-                TourLayoutSpacing.handleAndTitle,
+                SizedBox(height: TourLayoutSpacing.handleAndTitle(context)),
                 Text(widget.title,
                     style: AppStyles.titleShowList(context)
                 ),

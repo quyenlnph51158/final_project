@@ -126,7 +126,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
           ),
         ),
 
-        TourLayoutSpacing.imageAndLengthLoad,
+        SizedBox(height: TourLayoutSpacing.imageAndLengthLoad(context)),
 
         // ================= INDICATOR =================
         Row(
@@ -136,8 +136,8 @@ class _ImageCarouselState extends State<ImageCarousel> {
                 (index) => AnimatedContainer(
               duration: const Duration(milliseconds: 500),
               margin: TourLayoutSpacing.marginIndicator(context),
-              width: _currentIndex == index ? AppSizes.wActiveIndicator : AppSizes.wInActiveIndicator,
-              height: AppSizes.hIndicator,
+              width: _currentIndex == index ? AppSizes.wActiveIndicator(context) : AppSizes.wInActiveIndicator(context),
+              height: AppSizes.hIndicator(context),
               decoration: BoxDecoration(
                 color: _currentIndex == index
                     ? kActiveIndicator

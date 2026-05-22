@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 import 'package:final_project/core/constants/colors.dart';
-import '../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../core/design/flight/flight_shape.dart';
-import '../../../../core/design/flight/flight_size.dart';
-import '../../../../core/design/flight/flight_style.dart';
+import '../../../../core/utils/responsive_layout.dart';
 import '../controller/flight_controller.dart';
 
 class ShowAirportList extends StatelessWidget {
@@ -34,102 +31,169 @@ class ShowAirportList extends StatelessWidget {
       builder: (context, modalSetState) {
         final filteredList = controller.filteredAirports(searchController.text);
 
-        return SizedBox(
-          height: FlightSize.airportModalHeight(context),
+        return Container(
+          // Sử dụng rh để chiều cao ổn định (ví dụ thiết kế là 650px trên màn 812px)
+          height: context.rh(650).clamp(500.0, 850.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(context.radius * 1.5),
+            ),
+          ),
           child: Column(
             children: [
-              // Handle + title
+              // 1. HANDLE BAR & TITLE
               Padding(
-                padding: const EdgeInsets.all(FlightLayoutSpacing.modalPadding),
+                padding: EdgeInsets.all(context.padding),
                 child: Column(
                   children: [
                     Container(
-                      height: FlightSize.dragHandleHeight,
-                      width: FlightSize.dragHandleWidth,
+                      height: context.rh(4),
+                      width: context.rw(40),
                       decoration: BoxDecoration(
                         color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(
-                          FlightSize.dragHandleHeight / 2,
-                        ),
+                        borderRadius: BorderRadius.circular(context.radius),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    Text(modalTitle, style: FlightStyle.modalTitle(context)),
+                    SizedBox(height: context.rh(12)),
+                    Text(
+                      modalTitle,
+                      style: TextStyle(
+                        fontSize: context.sp(18),
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF263238),
+                      ),
+                    ),
                   ],
                 ),
               ),
 
-              // Search
+              // 2. SEARCH BOX
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: FlightLayoutSpacing.searchPaddingH,
-                  vertical: FlightLayoutSpacing.searchPaddingV,
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.padding,
+                  vertical: context.rh(4), // rh(4) thay vì h(1)
                 ),
                 child: TextField(
                   controller: searchController,
+                  autofocus: false,
                   onChanged: (_) => modalSetState(() {}),
+                  style: TextStyle(fontSize: context.sp(15)),
                   decoration: InputDecoration(
                     hintText: l10n.form_labelSearchHint,
+                    hintStyle: TextStyle(
+                      fontSize: context.sp(14),
+                      color: Colors.grey,
+                    ),
                     prefixIcon: Icon(
                       Icons.search,
                       color: kPrimaryColor,
-                      size: FlightSize.searchIconSize,
+                      size: context.icon(22),
                     ),
                     filled: true,
-                    fillColor: kFormFieldBackground,
+                    fillColor: const Color(0xFFF2F4F7),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: context.rh(12),
+                    ),
                     border: OutlineInputBorder(
-                      borderRadius: FlightShape.borderRadiusSmall(context),
-                      borderSide: BorderSide(color: kBorderColor, width: 1),
+                      borderRadius: BorderRadius.circular(context.radius),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                 ),
               ),
 
-              // Airport list
+              SizedBox(height: context.rh(8)),
+
+              // 3. AIRPORT LIST
               Expanded(
-                child: ListView.builder(
-                  itemCount: filteredList.length,
-                  itemBuilder: (context, index) {
-                    final item = filteredList[index];
-
-                    final isSelected = isDeparture
-                        ? item.label == state.criteria.departure
-                        : item.label == state.criteria.destination;
-
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          leading: Icon(
-                            icon,
-                            color: kPrimaryColor,
-                            size: FlightSize.iconSizeSmall(context),
-                          ),
-                          title: Text(
-                            item.label + " (${item.value})",
-                            style: FlightStyle.airportItemTitle(context),
-                          ),
-                          trailing: isSelected
-                              ? const Icon(Icons.check, color: kPrimaryColor)
-                              : null,
-                          onTap: () {
-                            controller.selectAirport(
-                              isDeparture: isDeparture,
-                              airport: item,
-                            );
-                            Navigator.pop(context);
-                          },
+                child: filteredList.isEmpty
+                    ? _buildEmptyState(context)
+                    : ListView.separated(
+                        // Thêm padding dưới để tránh dính sát Home Bar/Phím ảo máy thật
+                        padding: EdgeInsets.only(bottom: context.rh(30)),
+                        itemCount: filteredList.length,
+                        separatorBuilder: (context, index) => Divider(
+                          height: 1,
+                          indent:
+                              context.padding +
+                              context.icon(24) +
+                              context.rw(12),
+                          endIndent: context.padding,
+                          color: Colors.grey.withOpacity(0.1),
                         ),
-                        Divider(thickness: 1, color: kBorderColor,)
-                      ],
-                    );
-                  },
-                ),
+                        itemBuilder: (context, index) {
+                          final item = filteredList[index];
+                          final isSelected = isDeparture
+                              ? item.label == state.criteria.departure
+                              : item.label == state.criteria.destination;
+
+                          return ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: context.padding,
+                              vertical: context.rh(2),
+                            ),
+                            leading: Icon(
+                              icon,
+                              color: isSelected
+                                  ? kPrimaryColor
+                                  : Colors.blueGrey,
+                              size: context.icon(22),
+                            ),
+                            title: Text(
+                              "${item.label} (${item.value})",
+                              style: TextStyle(
+                                fontSize: context.sp(15),
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.w500,
+                                color: isSelected
+                                    ? kPrimaryColor
+                                    : const Color(0xFF263238),
+                              ),
+                            ),
+                            trailing: isSelected
+                                ? Icon(
+                                    Icons.check_circle,
+                                    color: kPrimaryColor,
+                                    size: context.icon(20),
+                                  )
+                                : null,
+                            onTap: () {
+                              controller.selectAirport(
+                                isDeparture: isDeparture,
+                                airport: item,
+                              );
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
+                      ),
               ),
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.airplanemode_inactive,
+            size: context.icon(50),
+            color: Colors.grey[300],
+          ),
+          SizedBox(height: context.rh(12)),
+          Text(
+            "Không tìm thấy sân bay",
+            style: TextStyle(color: Colors.grey, fontSize: context.sp(14)),
+          ),
+        ],
+      ),
     );
   }
 }

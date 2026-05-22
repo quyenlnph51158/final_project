@@ -5,4 +5,5 @@ class ImageLink {
   static const String logoFooter = 'https://www.wonderingvietnam.com/assets/img/logo_footer.svg';
   static const String logoDefaultAppHeader='https://www.wonderingvietnam.com/assets/img/logo_footer.svg';
   static const String flightScreenBackgroundHeader = 'https://img2.thuthuat123.com/uploads/2019/11/19/anh-background-bau-troi-cuc-chat-cuc-dep_122621398.jpg';
+  static const String TrainScreenBackgroundHeader = 'https://images.pexels.com/photos/35430844/pexels-photo-35430844.jpeg';
 }

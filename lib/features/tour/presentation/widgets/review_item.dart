@@ -35,9 +35,9 @@ class ReviewItem extends StatelessWidget{
                 ),
               ],
             ),
-            TourLayoutSpacing.customerNameAndStarIcon,
+            SizedBox(height: TourLayoutSpacing.customerNameAndStarIcon(context)),
             _buildStarRating(reviewRating),
-            TourLayoutSpacing.starIconAndComment,
+            SizedBox(height: TourLayoutSpacing.starIconAndComment(context)),
             if (review.comment != null && review.comment!.isNotEmpty)
               Text(
                 review.comment!,

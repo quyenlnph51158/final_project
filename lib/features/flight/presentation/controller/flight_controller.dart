@@ -1,5 +1,9 @@
+import 'package:final_project/features/auth/data/service/token_service.dart';
 import 'package:final_project/features/flight/data/models/flight_info.dart';
 import 'package:final_project/features/flight/data/models/inventory.dart';
+import 'package:final_project/features/flight/presentation/state/flight_criteria_state.dart';
+import 'package:final_project/features/flight/presentation/state/flight_data_state.dart';
+import 'package:final_project/features/flight/presentation/state/flight_ui_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/features/flight/data/models/list_airport.dart';
@@ -7,12 +11,13 @@ import 'package:final_project/features/flight/data/models/list_cheap_flight.dart
 import 'package:final_project/features/flight/data/service/listairport_service.dart';
 import 'package:final_project/features/flight/data/service/listcheapflight_service.dart';
 import 'package:final_project/features/flight/presentation/state/flight_state.dart';
-import 'package:intl/date_symbols.dart';
 import '../../../../app/l10n/app_localizations.dart';
 import '../../../../core/constants/colors.dart';
+import '../../../../core/utils/format_date.dart';
 import '../../data/models/international_flight_pair.dart';
 import '../../data/service/flight_service.dart';
 import '../screens/flight_results_screen.dart';
+import '../state/flight_filter_state.dart';
 
 class FlightController extends ChangeNotifier {
   FlightState _state = FlightState.initial();
@@ -53,9 +58,10 @@ class FlightController extends ChangeNotifier {
     _updateState(_state.copyWith(ui: _state.ui.copyWith(isLoading: true)));
 
     try {
+      final token = await TokenService.getToken();
       final results = await Future.wait([
-        _cheapFlightService.fetchlistcheapflight(),
-        _airportService.fetchListAirport(),
+        _cheapFlightService.fetchlistcheapflight(token!),
+        _airportService.fetchListAirport(token!),
       ]);
 
       _updateState(
@@ -109,6 +115,7 @@ class FlightController extends ChangeNotifier {
     );
 
     try {
+      final token = await TokenService.getToken();
       final response = await _flightService.fetchFlightInfo(
         startAirport: startCode,
         endAirport: endCode,
@@ -118,6 +125,7 @@ class FlightController extends ChangeNotifier {
         children: children,
         infant: infant,
         typeAirport: state.criteria.typeAirport,
+        token: token!,
       );
       final isRoundTrip = state.criteria.typeAirport == 2;
 
@@ -135,6 +143,7 @@ class FlightController extends ChangeNotifier {
           ui: _state.ui.copyWith(
             isLoading: false,
             isViewingReturnFlights: false,
+            errorMessage: '',
           ),
         ),
       );
@@ -242,7 +251,7 @@ class FlightController extends ChangeNotifier {
     );
   }
 
-  void updateTripType(bool isRoundTrip, AppLocalizations l10n) {
+  void updateTripType(bool isRoundTrip) {
     _updateState(
       _state.copyWith(
         criteria: _state.criteria.copyWith(
@@ -465,8 +474,14 @@ class FlightController extends ChangeNotifier {
   }
 
   void resetToInitial() {
-    _state = FlightState.initial();
-    notifyListeners();
+    _updateState(
+        _state.copyWith(
+          criteria: FlightCriteriaState.initial(),
+          ui: FlightUiState.initial(),
+          filter: FlightFilterState.Initial(),
+          data: FlightDataState.initial()
+        )
+    );
   }
 
   // Trong FlightController class
@@ -544,6 +559,7 @@ class FlightController extends ChangeNotifier {
       ),
     );
   }
+
   void applyFilter() {
     _updateState(
       _state.copyWith(ui: _state.ui.copyWith(isSearchingFlight: true)),
@@ -660,7 +676,8 @@ class FlightController extends ChangeNotifier {
           bool matchTimeDeparture =
               filter.selectedTimeDeparture.isEmpty ||
               (filter.selectedTimeDeparture.any(
-                    (r) => isWithinRange(hourOutbound, r)));
+                (r) => isWithinRange(hourOutbound, r),
+              ));
 
           return matchAirline && matchStop && matchTimeDeparture;
         })
@@ -677,6 +694,30 @@ class FlightController extends ChangeNotifier {
         ui: _state.ui.copyWith(isSearchingFlight: false),
       ),
     );
+    scrollToTop();
+  }
+
+  void validateForm(AppLocalizations l10n) {
+    final f = state.criteria;
+    String error = '';
+    final DateTime? depDate = FormatDate.parseStringToDate(f.departureDate);
+    final DateTime? retDate = f.roundTrip ? FormatDate.parseStringToDate(f.returnDate) : null;
+
+    if (f.departure == '' || f.departureCode == '') {
+      error = l10n.errorDepartureEmpty;
+    } else if (f.destination == '' || f.destinationCode == '') {
+      error = l10n.errorDestinationEmpty;
+    } else if (f.departure == f.destination) {
+      error = l10n.errorSameLocation;
+    } else if (f.roundTrip && f.returnDate == null) {
+      error = l10n.errorReturnDateEmpty;
+    }else if (f.roundTrip && retDate != null && depDate != null && retDate.isBefore(depDate)) {
+      error = l10n.errorReturnBeforeDeparture; // Thêm logic này
+    }else if(f.roundTrip && retDate != null && depDate != null && retDate == depDate){
+      error = l10n.errorSameDate;
+    }
+
+    _updateState(_state.copyWith(ui: _state.ui.copyWith(errorMessage: error)));
   }
 
   @override

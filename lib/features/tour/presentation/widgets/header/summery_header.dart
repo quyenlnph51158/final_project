@@ -31,7 +31,7 @@ class SummeryHeader extends StatelessWidget{
                 '/5',
                 style: AppStyles.averageRatingSuffix(context),
               ),
-              TourLayoutSpacing.averageRatingAndInfo,
+              SizedBox(height: TourLayoutSpacing.averageRatingAndInfo(context)),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,

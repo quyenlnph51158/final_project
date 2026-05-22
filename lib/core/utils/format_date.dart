@@ -21,4 +21,27 @@ class FormatDate {
       return null;
     }
   }
+  static String? parseStringToDateString(String? dateString) {
+    if (dateString == null || dateString.isEmpty) return null;
+    try {
+      // Đảm bảo pattern khớp chính xác với định dạng bạn đang lưu
+      return DateFormat('dd-MM-yyyy').format(DateTime.parse(dateString)).toString();
+    } catch (e) {
+      debugPrint("Lỗi parse ngày: $e");
+      return null;
+    }
+  }
+  static String formatDate(String? date) {
+    if (date == null || date.isEmpty) {
+      return '';
+    }
+
+    try {
+      return DateFormat('dd/MM/yyyy | HH:mm').format(
+        DateTime.parse(date).toLocal(),
+      );
+    } catch (e) {
+      return '';
+    }
+  }
 }

@@ -1,300 +1,291 @@
-import 'package:final_project/core/design/shared/app_spacing.dart';
 import 'package:flutter/material.dart';
-
 import '../../utils/responsive_layout.dart';
 
 class TourLayoutSpacing {
+  static double valueInField(BuildContext context) => context.rw(12);
+  static double fieldAndButton(BuildContext context) => context.rh(24);
 
-  static const valueInField = AppSpacing.w12;
-  static const fieldAndButton = AppSpacing.h24;
-  //===================================SizedBox=========================
-  static const tourNameAndTourDescription = AppSpacing.h8;
-  static const tourDescriptionAndDurationStar = AppSpacing.h12;
-  static const averageRatingAndStar = AppSpacing.h4;
-  static const tabAndForm = AppSpacing.h16;
+  //===================================SizedBox (Dọc dùng rh, Ngang dùng rw)=========================
+  static double tourNameAndTourDescription(BuildContext context) => context.rh(8);
+  static double tourDescriptionAndDurationStar(BuildContext context) => context.rh(12);
+  static double averageRatingAndStar(BuildContext context) => context.rh(4);
+  static double tabAndForm(BuildContext context) => context.rh(16);
 
   //===========================TourCardItem==================
-  static const durationIconAndValue = AppSpacing.h4;
+  static double durationIconAndValue(BuildContext context) => context.rh(4);
 
   //==================AboutUsSection======================
-  static const labelandcontent= AppSpacing.h16;
-  static const itemAndButtonAboutUs= AppSpacing.h32;
-  static const buttonAboutUsAndCoFounder = AppSpacing.h16;
-  static const imageAndIformation = AppSpacing.h8;
-  static const iconAndtitleAboutUsItem= AppSpacing.h16;
-  static const titleAndSubtitleAboutUsItem = AppSpacing.h4;
+  static double labelandcontent(BuildContext context) => context.rh(16);
+  static double itemAndButtonAboutUs(BuildContext context) => context.rh(32);
+  static double buttonAboutUsAndCoFounder(BuildContext context) => context.rh(16);
+  static double imageAndIformation(BuildContext context) => context.rh(8);
+  static double iconAndtitleAboutUsItem(BuildContext context) => context.rh(16);
+  static double titleAndSubtitleAboutUsItem(BuildContext context) => context.rh(4);
 
   //==================LoadImageListAutoScroll=================
-  static const imageAndLengthLoad = AppSpacing.h8;
+  static double imageAndLengthLoad(BuildContext context) => context.rh(8);
 
   //==================CustomerReview==========================
-  static const starAndComment = AppSpacing.h8;
-  static const customerNameAndStarIcon = AppSpacing.h4;
-  static const starIconAndComment = AppSpacing.h8;
-  static const averageRatingAndInfo = AppSpacing.w12;
+  static double starAndComment(BuildContext context) => context.rh(8);
+  static double customerNameAndStarIcon(BuildContext context) => context.rh(4);
+  static double starIconAndComment(BuildContext context) => context.rh(8);
+  static double averageRatingAndInfo(BuildContext context) => context.rw(12);
 
   //==================TourDetail==============================
-  static const dayNameAndBriefInfo = AppSpacing.h4;
-  static const iconAndContent = AppSpacing.h12;
-  static const headerNamePosition= AppSpacing.h8;
-  static const titleReviewAndContent = AppSpacing.h8;
-  static const iconStarAndInfoReview = AppSpacing.h4;
-  static const reviewInfoAndReviewItem = AppSpacing.h24;
-  static const customAppBarAndTourName = AppSpacing.h24;
-  static const textTabAndUnderline = AppSpacing.h8;
+  static double dayNameAndBriefInfo(BuildContext context) => context.rh(4);
+  static double iconAndContent(BuildContext context) => context.rh(12);
+  static double headerNamePosition(BuildContext context) => context.rh(8);
+  static double titleReviewAndContent(BuildContext context) => context.rh(8);
+  static double iconStarAndInfoReview(BuildContext context) => context.rh(4);
+  static double reviewInfoAndReviewItem(BuildContext context) => context.rh(24);
+  static double customAppBarAndTourName(BuildContext context) => context.rh(24);
+  static double textTabAndUnderline(BuildContext context) => context.rh(8);
 
   //===================Pagination=============================
-  static const iconpage = AppSpacing.w12;
-  static const itemAndPagination = AppSpacing.h16;
+  static double iconpage(BuildContext context) => context.rw(12);
+  static double itemAndPagination(BuildContext context) => context.rh(16);
 
   //===================Promotion-Tour Screen==================
-  static const titleAndDiscountValue = AppSpacing.h8;
-  static const titleAndPromotionCard = AppSpacing.h16;
+  static double titleAndDiscountValue(BuildContext context) => context.rh(8);
+  static double titleAndPromotionCard(BuildContext context) => context.rh(16);
 
   //========================ConsultationForm=====================
-  static const field = AppSpacing.h16;
-  static const departureInfoAndField = AppSpacing.h24;
-  static const fieldAndPolicyOrButton = AppSpacing.h32;
-  static const iconAndValue = AppSpacing.w8;
-  static const departureDateAndDeparturePoint = AppSpacing.h24;
-  static const IconCancellationAndText= AppSpacing.h8;
-  static const textBookNowAndFlexibleText = AppSpacing.h4;
+  static double field(BuildContext context) => context.rh(16);
+  static double departureInfoAndField(BuildContext context) => context.rh(24);
+  static double fieldAndPolicyOrButton(BuildContext context) => context.rh(32);
+  static double iconAndValue(BuildContext context) => context.rw(8);
+  static double departureDateAndDeparturePoint(BuildContext context) => context.rh(24);
+  static double IconCancellationAndText(BuildContext context) => context.rh(8);
+  static double textBookNowAndFlexibleText(BuildContext context) => context.rh(4);
 
   //====================Show Airport Or Station List ============
-  static const handleAndTitle = AppSpacing.h8;
+  static double handleAndTitle(BuildContext context) => context.rh(8);
 
   //==========================EdgeInsets======================
   //==========================TravelingBookingScreen==========
 
-  static EdgeInsets titleHeader(BuildContext context) =>
-      EdgeInsets.only(
-        left: context.sp(20),
-        top: context.sp(20),
-        right: context.sp(20),
-      );
+  static EdgeInsets titleHeader(BuildContext context) => EdgeInsets.only(
+    left: context.padding, // rw(12) hoặc rw(16) chuẩn app
+    top: context.rh(20),
+    right: context.padding,
+  );
 
   //==========================Tour Card Item =================
   static EdgeInsets tourCardItemContent(BuildContext context) =>
-      EdgeInsets.all(context.sp(16));
+      EdgeInsets.all(context.rw(16));
 
-  static EdgeInsets bottomTourCardItem(BuildContext context) =>
-      EdgeInsets.only(
-        bottom: context.sp(24),
-        left: context.sp(16),
-        right: context.sp(16),
-      );
+  static EdgeInsets bottomTourCardItem(BuildContext context) => EdgeInsets.only(
+    bottom: context.rh(24),
+    left: context.padding,
+    right: context.padding,
+  );
 
   static EdgeInsets contentInReviewCard(BuildContext context) =>
-      EdgeInsets.all(context.sp(12));
+      EdgeInsets.all(context.rw(12));
 
   //==========================Review Tour Screen===============
-  static EdgeInsets marginCardItem(BuildContext context) =>
-      EdgeInsets.symmetric(
-        horizontal: context.sp(16),
-        vertical: context.sp(8),
-      );
+  static EdgeInsets marginCardItem(BuildContext context) => EdgeInsets.symmetric(
+    horizontal: context.padding,
+    vertical: context.rh(8),
+  );
 
   static EdgeInsets paddingCardItem(BuildContext context) =>
-      EdgeInsets.all(context.sp(16));
+      EdgeInsets.all(context.rw(16));
 
   static EdgeInsets marginReviewCard(BuildContext context) =>
-      EdgeInsets.only(right: context.sp(12));
+      EdgeInsets.only(right: context.rw(12));
 
-  static EdgeInsets paddingRatingFilter(BuildContext context) =>
-      EdgeInsets.only(
-        top: context.sp(10),
-        bottom: context.sp(10),
-      );
+  static EdgeInsets paddingRatingFilter(BuildContext context) => EdgeInsets.symmetric(
+    vertical: context.rh(10),
+  );
 
   static EdgeInsets paddingRatingFilterState(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(16));
+      EdgeInsets.symmetric(horizontal: context.padding);
 
   static EdgeInsets paddingRatingFilterItem(BuildContext context) =>
-      EdgeInsets.only(right: context.sp(8));
+      EdgeInsets.only(right: context.rw(8));
 
   static EdgeInsets paddingPromotionCardItem(BuildContext context) =>
-      EdgeInsets.all(context.sp(16));
+      EdgeInsets.all(context.rw(16));
 
   static EdgeInsets paddingSummaryHeaderTour(BuildContext context) =>
-      EdgeInsets.all(context.sp(16));
+      EdgeInsets.all(context.rw(16));
 
   //==========================Categories=========================
   static EdgeInsets marginDestinationCard(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(4));
+      EdgeInsets.symmetric(horizontal: context.rw(4));
 
   static EdgeInsets categoryNameAndImage(BuildContext context) =>
-      EdgeInsets.only(top: context.sp(4));
+      EdgeInsets.only(top: context.rh(4));
 
   static EdgeInsets paddingDestinationSection(BuildContext context) =>
       EdgeInsets.only(
-        left: context.sp(32),
-        right: context.sp(32),
-        top: context.sp(24),
-        bottom: context.sp(8),
+        left: context.rw(32),
+        right: context.rw(32),
+        top: context.rh(24),
+        bottom: context.rh(8),
       );
 
   static EdgeInsets paddingCategoryCard(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(12));
+      EdgeInsets.symmetric(horizontal: context.rw(12));
 
   //==========================aboutUs============================
   static EdgeInsets labelButtonAboutUs(BuildContext context) =>
-      EdgeInsets.symmetric(vertical: context.sp(16));
+      EdgeInsets.symmetric(vertical: context.rh(16));
 
   static EdgeInsets aboutUsSection(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(16));
+      EdgeInsets.symmetric(horizontal: context.padding);
 
   static EdgeInsets aboutUsDescription(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(8));
+      EdgeInsets.symmetric(horizontal: context.rw(8));
 
   //==========================Featured Tour Section==============
   static EdgeInsets paddingFeaturedTourSection(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.wp(4));
+      EdgeInsets.symmetric(horizontal: context.padding);
 
   static EdgeInsets paddingTourCardError(BuildContext context) =>
-      EdgeInsets.all(context.sp(24));
+      EdgeInsets.all(context.rw(24));
 
   static EdgeInsets paddingTourCard(BuildContext context) =>
-      EdgeInsets.only(bottom: context.sp(16));
+      EdgeInsets.only(bottom: context.rh(16));
 
   static EdgeInsets paddingAppbarAndTitle(BuildContext context) =>
       EdgeInsets.only(
-        left: context.sp(20),
-        top: context.sp(20),
-        right: context.sp(20),
+        left: context.padding,
+        top: context.rh(20),
+        right: context.padding,
       );
 
   //======================Promotion Section=======================
   static EdgeInsets paddingPromotionSection(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.wp(4));
+      EdgeInsets.symmetric(horizontal: context.padding);
 
   static EdgeInsets paddingBottomPromotionCard(BuildContext context) =>
-      EdgeInsets.only(bottom: context.sp(24));
+      EdgeInsets.only(bottom: context.rh(24));
 
   //========================Tour Detail Screen===================
-  static EdgeInsets iconHighLight(BuildContext context) =>
-      EdgeInsets.only(
-        top: context.sp(2),
-        right: context.sp(10),
-      );
+  static EdgeInsets iconHighLight(BuildContext context) => EdgeInsets.only(
+    top: context.rh(2),
+    right: context.rw(10),
+  );
 
   static EdgeInsets iconCancellation(BuildContext context) =>
-      EdgeInsets.only(top: context.sp(2));
+      EdgeInsets.only(top: context.rh(2));
 
   static EdgeInsets paddingHighLight(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.wp(4));
+      EdgeInsets.symmetric(horizontal: context.padding);
 
   static EdgeInsets paddingImageCarousel(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(10));
+      EdgeInsets.symmetric(horizontal: context.rw(10));
 
   static EdgeInsets reviewTourDetailSection(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(16));
+      EdgeInsets.symmetric(horizontal: context.padding);
 
   static EdgeInsets scheduleTourDetailSection(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(16));
+      EdgeInsets.symmetric(horizontal: context.padding);
 
   static EdgeInsets paddingExpadedDescriptionSchedule(BuildContext context) =>
       EdgeInsets.fromLTRB(
-        context.sp(16),
-        context.sp(8),
-        context.sp(16),
-        context.sp(16),
+        context.rw(16),
+        context.rh(8),
+        context.rw(16),
+        context.rw(16),
       );
 
   static EdgeInsets paddingFaqSection(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.wp(4));
+      EdgeInsets.symmetric(horizontal: context.padding);
 
   static EdgeInsets paddingContentScheduleItem(BuildContext context) =>
       EdgeInsets.symmetric(
-        horizontal: context.sp(16),
-        vertical: context.sp(14),
+        horizontal: context.rw(16),
+        vertical: context.rh(14),
       );
 
-  static EdgeInsets paddingTourDetailName(BuildContext context) =>
-      EdgeInsets.only(
-        left: context.sp(20),
-        right: context.sp(20),
-      );
+  static EdgeInsets paddingTourDetailName(BuildContext context) => EdgeInsets.only(
+    left: context.padding,
+    right: context.padding,
+  );
 
-  static EdgeInsets paddingBriefTourDetail(BuildContext context) =>
-      EdgeInsets.only(
-        left: context.sp(20),
-        top: context.sp(30),
-        right: context.sp(20),
-        bottom: context.sp(20),
-      );
+  static EdgeInsets paddingBriefTourDetail(BuildContext context) => EdgeInsets.only(
+    left: context.padding,
+    top: context.rh(30),
+    right: context.padding,
+    bottom: context.rh(20),
+  );
 
   static EdgeInsets paddingConsultationSection(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.wp(4));
+      EdgeInsets.symmetric(horizontal: context.padding);
 
   static EdgeInsets paddingConsultationForm(BuildContext context) =>
-      EdgeInsets.all(context.sp(16));
+      EdgeInsets.all(context.rw(16));
 
   static EdgeInsets paddingDepartureDate(BuildContext context) =>
       EdgeInsets.symmetric(
-        horizontal: context.sp(12),
-        vertical: context.sp(8),
+        horizontal: context.rw(12),
+        vertical: context.rh(8),
       );
 
   static EdgeInsets paddingDeparturePoint(BuildContext context) =>
       EdgeInsets.symmetric(
-        horizontal: context.sp(12),
-        vertical: context.sp(8),
+        horizontal: context.rw(12),
+        vertical: context.rh(8),
       );
 
   static EdgeInsets paddingTabSection(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(12));
+      EdgeInsets.symmetric(horizontal: context.rw(12));
 
   static EdgeInsets paddingTabItem(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(16));
+      EdgeInsets.symmetric(horizontal: context.rw(16));
 
   static EdgeInsets paddingTripTypeButton(BuildContext context) =>
-      EdgeInsets.symmetric(vertical: context.sp(12));
+      EdgeInsets.symmetric(vertical: context.rh(12));
 
   static EdgeInsets paddingtabform(BuildContext context) =>
-      EdgeInsets.symmetric(vertical: context.sp(10));
+      EdgeInsets.symmetric(vertical: context.rh(10));
 
   static EdgeInsets paddingContentInField(BuildContext context) =>
       EdgeInsets.symmetric(
-        horizontal: context.sp(15),
-        vertical: context.sp(15),
+        horizontal: context.rw(15),
+        vertical: context.rh(15),
       );
 
   static EdgeInsets paddingFaqsTitleAndItem(BuildContext context) =>
-      EdgeInsets.only(bottom: context.sp(16));
+      EdgeInsets.only(bottom: context.rh(16));
 
   static EdgeInsets paddingFaqItem(BuildContext context) =>
-      EdgeInsets.symmetric(vertical: context.sp(16));
+      EdgeInsets.symmetric(vertical: context.rh(16));
 
   //========================Indicator============================
   static EdgeInsets marginIndicator(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(4));
+      EdgeInsets.symmetric(horizontal: context.rw(4));
 
   //========================ShowAirportAndStationList============
   static EdgeInsets paddingHandleAndTitle(BuildContext context) =>
-      EdgeInsets.all(context.sp(12));
+      EdgeInsets.all(context.rw(12));
 
-  static EdgeInsets paddingSearchBox(BuildContext context) =>
-      EdgeInsets.symmetric(
-        horizontal: context.sp(16),
-        vertical: context.sp(8),
-      );
+  static EdgeInsets paddingSearchBox(BuildContext context) => EdgeInsets.symmetric(
+    horizontal: context.padding,
+    vertical: context.rh(8),
+  );
 
   static EdgeInsets paddingContentSearchBox(BuildContext context) =>
-      EdgeInsets.symmetric(vertical: context.sp(15));
+      EdgeInsets.symmetric(vertical: context.rh(15));
 
   //=======================SelectionPassenger===========================
   static EdgeInsets paddingContentSelectionPassenger(BuildContext context) =>
-      EdgeInsets.symmetric(horizontal: context.sp(16));
+      EdgeInsets.symmetric(horizontal: context.padding);
 
   static EdgeInsets paddingHeaderSelectionPassenger(BuildContext context) =>
-      EdgeInsets.all(context.sp(16));
+      EdgeInsets.all(context.rw(16));
 
   static EdgeInsets paddingContentCounterPassenger(BuildContext context) =>
-      EdgeInsets.symmetric(vertical: context.sp(16));
+      EdgeInsets.symmetric(vertical: context.rh(16));
 
   static EdgeInsets paddingConfirmPassengerButton(BuildContext context) =>
-      EdgeInsets.symmetric(
-        vertical: context.sp(35),
-        horizontal: context.sp(16),
+      EdgeInsets.fromLTRB(
+        context.padding,
+        context.rh(10),
+        context.padding,
+        context.rh(35), // Safe Area padding bottom cho máy thật
       );
 }

@@ -83,7 +83,7 @@ class _FeaturedDestinationSectionState extends State<FeaturedDestinationSection>
         ),
 
         // 4. Indicator có khả năng tương tác (Click để chuyển trang)
-        TourLayoutSpacing.itemAndPagination,
+        SizedBox(height: TourLayoutSpacing.itemAndPagination(context)),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(

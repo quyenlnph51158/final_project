@@ -1,4 +1,6 @@
-import 'package:final_project/core/design/flight/flight_size.dart';
+import 'package:final_project/core/constants/app_icons.dart';
+import 'package:final_project/core/design/flight/flight_size.dart'
+    hide FlightTab;
 import 'package:final_project/features/flight/presentation/modals/flight_filter_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -124,51 +126,82 @@ class _FlightResultsScreenState extends State<FlightResultsScreen> {
         );
       },
       child: Scaffold(
+        endDrawer: AppDrawer(
+          onTabSelected: (_) => controller.updateTab(FlightTab.flight),
+          onHomeSelected: controller.resetSearch,
+          onTabFlightSelected: controller.updateTab,
+        ),
         backgroundColor: Colors.white,
         body: SafeArea(
           child: CustomScrollView(
             controller: controller.scrollController,
             slivers: [
+              SliverToBoxAdapter(
+                child: CustomAppBar(
+                  image: ImageLink.logoAppHeaderBackgroundWhite,
+                  backgroundColor: kPrimaryColor,
+                ),
+              ),
               // 2. SEARCH SUMMARY
               const SliverToBoxAdapter(child: FlightInfoResult()),
-              SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: FlightSize.horizontalPadding(context)),
-                sliver: SliverToBoxAdapter( // Đảm bảo đặt trong SliverToBoxAdapter nếu dùng Container trực tiếp trong CustomScrollView
-                  child: InkWell( // Thêm InkWell để có hiệu ứng nhấn (Ripple Effect)
-                    onTap: () {
-                      showFlightFilter(context);
-                    },
-                    borderRadius: BorderRadius.circular(30), // Khớp với hình dạng của Container
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: FlightSize.verticalPadding(context), horizontal: FlightSize.horizontalPadding(context)),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF5F6F6), // Bạn có thể thay bằng FlightColor.grey50 nếu có
-                        borderRadius: BorderRadius.circular(30), // Hoặc FlightShape.borderRadiusLarge(context)
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Icon Lọc (Thay vì dùng Stack trống)
-                          Icon(
-                            Icons.tune_rounded, // Hoặc dùng SvgPicture nếu có file svg
-                            size: FlightSize.filterIconSize(context),
-                            color: kTextColor,
+              if (state.data.internationalFlights.isEmpty)
+                if (!isFillingInfoPassenger) ...[
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: FlightSize.horizontalPadding(context),
+                    ),
+
+                    sliver: SliverToBoxAdapter(
+                      // Đảm bảo đặt trong SliverToBoxAdapter nếu dùng Container trực tiếp trong CustomScrollView
+                      child: InkWell(
+                        // Thêm InkWell để có hiệu ứng nhấn (Ripple Effect)
+                        onTap: () {
+                          showFlightFilter(context);
+                        },
+                        borderRadius: BorderRadius.circular(30),
+                        // Khớp với hình dạng của Container
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                            vertical: FlightSize.verticalPadding(context),
+                            horizontal: FlightSize.horizontalPadding(context),
                           ),
-                          SizedBox(width: FlightSize.elementSpacing(context)), // Thay cho thuộc tính 'spacing' nếu Flutter version cũ hơn 3.24
-                          Text(
-                            AppLocalizations.of(context)!.filter,
-                            style: FlightStyle.sectionTitleBold(context).copyWith(
-                              fontSize: context.sp(14),
-                              color: kTextColor,
-                            ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE8E7E7),
+                            // Bạn có thể thay bằng FlightColor.grey50 nếu có
+                            borderRadius: BorderRadius.circular(
+                              30,
+                            ), // Hoặc FlightShape.borderRadiusLarge(context)
                           ),
-                        ],
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Icon Lọc (Thay vì dùng Stack trống)
+                              Icon(
+                                Icons.tune_rounded,
+                                // Hoặc dùng SvgPicture nếu có file svg
+                                size: FlightSize.filterIconSize(context),
+                                color: kTextColor,
+                              ),
+                              SizedBox(
+                                width: FlightSize.elementSpacing(context),
+                              ),
+                              // Thay cho thuộc tính 'spacing' nếu Flutter version cũ hơn 3.24
+                              Text(
+                                AppLocalizations.of(context)!.filter,
+                                style: FlightStyle.sectionTitleBold(context)
+                                    .copyWith(
+                                      fontSize: context.sp(14),
+                                      color: kTextColor,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
+                ],
 
               // 3. SELECTED TICKETS (Outbound / Return)
               if (!isFillingInfoPassenger) ...[
@@ -228,7 +261,7 @@ class _FlightResultsScreenState extends State<FlightResultsScreen> {
               if (_isSelectionComplete)
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: FlightLayoutSpacing.actionButtonPadding,
+                    padding: FlightLayoutSpacing.actionButtonPadding(context),
                     child: ContinueButton(
                       onPressed: () =>
                           setState(() => isFillingInfoPassenger = true),

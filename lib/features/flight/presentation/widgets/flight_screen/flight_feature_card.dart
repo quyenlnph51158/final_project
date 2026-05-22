@@ -31,12 +31,12 @@ class FlightFeatureCard extends StatelessWidget {
           side: BorderSide(color: kBorderColor, width: FlightShape.borderThin),
         ),
         child: Padding(
-          padding: FlightLayoutSpacing.featureCardPadding,
+          padding: FlightLayoutSpacing.featureCardPadding(context),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(FlightLayoutSpacing.iconWrapperPadding),
+                padding: EdgeInsets.all(FlightLayoutSpacing.iconWrapperPadding(context)),
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
                   borderRadius: FlightShape.borderRadiusSmall(context),

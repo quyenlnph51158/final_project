@@ -1,3 +1,4 @@
+import 'package:final_project/app/l10n/app_localizations.dart';
 import 'package:final_project/features/flight/presentation/controller/flight_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +51,7 @@ class _TicketFlightSectionState extends State<TicketFlightSection> {
     // 3. HIỂN THỊ DANH SÁCH QUỐC TẾ
     if (isInternational) {
       return SliverPadding(
-        padding: FlightLayoutSpacing.resultListPadding,
+        padding: FlightLayoutSpacing.resultListPadding(context),
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
             final pair = state.data.internationalFlights[index];
@@ -68,7 +69,7 @@ class _TicketFlightSectionState extends State<TicketFlightSection> {
 
     // 4. HIỂN THỊ DANH SÁCH NỘI ĐỊA
     return SliverPadding(
-      padding: FlightLayoutSpacing.resultListPadding,
+      padding: FlightLayoutSpacing.resultListPadding(context),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
           final flight = displayResults[index];
@@ -91,6 +92,7 @@ class _SliverEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SliverFillRemaining(
       hasScrollBody: false,
       child: Center(
@@ -100,12 +102,12 @@ class _SliverEmptyState extends StatelessWidget {
             Icon(Icons.flight_takeoff_outlined, size: 64, color: Colors.grey[300]),
             const SizedBox(height: 16),
             Text(
-              "Không tìm thấy chuyến bay",
+              l10n.no_flights_found,
               style: FlightStyle.sectionTitleBold(context).copyWith(color: Colors.grey[600]),
             ),
             const SizedBox(height: 8),
-            const Text(
-              "Vui lòng thay đổi lựa chọn hoặc bộ lọc.",
+            Text(
+              l10n.change_filter_instruction,
               style: TextStyle(color: Colors.grey),
             ),
           ],

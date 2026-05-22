@@ -30,7 +30,7 @@ class AboutUsSection extends StatelessWidget{
             textAlign: TextAlign.center,
             style: AppStyles.aboutUsTitle(context),
           ),
-          TourLayoutSpacing.labelandcontent,
+          SizedBox(height: TourLayoutSpacing.labelandcontent(context)),
           Padding(
             padding: TourLayoutSpacing.aboutUsDescription(context),
             child: Text(
@@ -39,7 +39,7 @@ class AboutUsSection extends StatelessWidget{
               style: AppStyles.aboutUsdescription(context),
             ),
           ),
-          TourLayoutSpacing.itemAndButtonAboutUs,
+          SizedBox(height: TourLayoutSpacing.itemAndButtonAboutUs(context)),
           AboutUsItem(
             icon: Icons.map_outlined,
             title: l10n.home_aboutUsGuideTitle,
@@ -51,7 +51,7 @@ class AboutUsSection extends StatelessWidget{
             title:  l10n.home_aboutUsMissionTitle,
             subtitle:  l10n.home_aboutUsMissionSubtitle,
           ),
-          TourLayoutSpacing.itemAndButtonAboutUs,
+          SizedBox(height: TourLayoutSpacing.itemAndButtonAboutUs(context)),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -69,7 +69,7 @@ class AboutUsSection extends StatelessWidget{
               ),
             ),
           ),
-          TourLayoutSpacing.buttonAboutUsAndCoFounder,
+          SizedBox(height: TourLayoutSpacing.buttonAboutUsAndCoFounder(context)),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -78,7 +78,7 @@ class AboutUsSection extends StatelessWidget{
                 backgroundImage: NetworkImage(
                     ImageLink.avatarCoFounder),
               ),
-              TourLayoutSpacing.imageAndIformation,
+              SizedBox(height: TourLayoutSpacing.imageAndIformation(context)),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

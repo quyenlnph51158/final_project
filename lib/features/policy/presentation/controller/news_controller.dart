@@ -1,3 +1,4 @@
+import 'package:final_project/features/auth/data/service/token_service.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../data/models/news_model.dart';
@@ -15,7 +16,8 @@ class NewsController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final rawList = await _service.fetchNewsRaw();
+      final token = await TokenService.getToken();
+      final rawList = await _service.fetchNewsRaw(token!);
       final news = rawList.map((e) => News.fromJson(e)).toList();
 
       _state = _state.copyWith(

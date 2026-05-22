@@ -19,7 +19,7 @@ class FeaturedListCheapFlightSection extends StatelessWidget{
     final controller = context.watch<FlightController>();
     final state = controller.state;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: FlightLayoutSpacing.screenHorizontalPadding),
+      padding: EdgeInsets.symmetric(horizontal: FlightLayoutSpacing.screenHorizontalPadding(context)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -37,9 +37,9 @@ class FeaturedListCheapFlightSection extends StatelessWidget{
                 padding: EdgeInsets.symmetric(
                   vertical: FlightLayoutSpacing.loadingVerticalPadding(context),
                 ),
-                child: const CircularProgressIndicator(
+                child: CircularProgressIndicator(
                   color: kPrimaryColor,
-                  strokeWidth: FlightSize.loadingIndicatorWidth,
+                  strokeWidth: FlightSize.loadingIndicatorWidth(context),
                 ),
               ),
             )

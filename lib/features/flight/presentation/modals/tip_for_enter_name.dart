@@ -74,7 +74,7 @@ class TipForEnterName extends StatelessWidget {
           _buildDragHandle(context),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: FlightLayoutSpacing.bottomSheetPadding),
+              padding: EdgeInsets.symmetric(horizontal: FlightLayoutSpacing.bottomSheetPadding(context)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -115,8 +115,8 @@ class TipForEnterName extends StatelessWidget {
       child: Center(
         child: Container(
           margin: const EdgeInsets.only(top: 12, bottom: 20),
-          height: FlightSize.dragHandleHeight,
-          width: FlightSize.dragHandleWidth,
+          height: FlightSize.dragHandleHeight(context),
+          width: FlightSize.dragHandleWidth(context),
           decoration: BoxDecoration(
             color: Colors.grey[300],
             borderRadius: BorderRadius.circular(10),
@@ -164,7 +164,7 @@ class TipForEnterName extends StatelessWidget {
   Widget _buildUnderstandButton(BuildContext context, String text) {
     return SizedBox(
       width: double.infinity,
-      height: FlightSize.btnUnderstandHeight,
+      height: FlightSize.btnUnderstandHeight(context),
       child: ElevatedButton(
         onPressed: () => Navigator.pop(context),
         style: ElevatedButton.styleFrom(
@@ -185,7 +185,7 @@ class _InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Container(
-      padding: const EdgeInsets.all(FlightLayoutSpacing.cardPaddingInner),
+      padding: EdgeInsets.all(FlightLayoutSpacing.cardPaddingInner(context)),
       decoration: BoxDecoration(
         color: const Color(0xFFF2F4F7),
         borderRadius: FlightShape.borderRadiusLarge(context),
@@ -245,7 +245,7 @@ class _FakeInput extends StatelessWidget {
         Text(label, style: TextStyle(fontSize: context.sp(11), color: Colors.black54)),
         const SizedBox(height: 4),
         Container(
-          height: FlightSize.inputHeight,
+          height: FlightSize.inputHeight(context),
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             color: Colors.white,

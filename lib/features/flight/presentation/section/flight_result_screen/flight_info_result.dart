@@ -1,9 +1,8 @@
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/constants/colors.dart'; // Import kPrimaryColor
+import '../../../../../core/constants/colors.dart';
 import '../../../../../core/design/flight/flight_divider.dart';
 import '../../../../../core/design/flight/flight_layout_spacing.dart';
 import '../../../../../core/design/flight/flight_size.dart';
@@ -49,7 +48,7 @@ class FlightInfoResult extends StatelessWidget {
           // 4. THÔNG TIN HÀNH KHÁCH
           _buildInfoItem(context, l10n.general_passengerLabel, _getPassengerText(criteria, l10n)),
 
-          const SizedBox(height: FlightLayoutSpacing.gapChangeBtn),
+          SizedBox(height: FlightLayoutSpacing.gapChangeBtn(context)),
 
           // 5. NÚT THAY ĐỔI
           _buildChangeButton(context, l10n),
@@ -71,10 +70,10 @@ class FlightInfoResult extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                _buildFlightLine(isForward: true),
+                _buildFlightLine(context, isForward: true),
                 if (isRoundTrip) ...[
-                  const SizedBox(height: FlightLayoutSpacing.gapLineVertical),
-                  _buildFlightLine(isForward: false),
+                  SizedBox(height: FlightLayoutSpacing.gapLineVertical(context)),
+                  _buildFlightLine(context, isForward: false),
                 ]
               ],
             ),
@@ -85,30 +84,30 @@ class FlightInfoResult extends StatelessWidget {
     );
   }
 
-  Widget _buildFlightLine({required bool isForward}) {
+  Widget _buildFlightLine(BuildContext context ,{required bool isForward}) {
     return Row(
       children: [
-        if (!isForward) _flightIcon(quarterTurns: 3),
+        if (!isForward) _flightIcon(context, quarterTurns: 3),
         Expanded(
           child: DottedLine(
-            dashLength: FlightSize.dashLength,
-            dashGapLength: FlightSize.dashGap,
-            lineThickness: FlightSize.dividerThin,
+            dashLength: FlightSize.dashLength(context),
+            dashGapLength: FlightSize.dashGap(context),
+            lineThickness: FlightSize.dividerThin(context),
             dashColor: kPrimaryColor, // Sử dụng màu thương hiệu thay vì teal cứng
           ),
         ),
         if (isForward) ...[
-          const SizedBox(width: FlightLayoutSpacing.gapIconText),
-          _flightIcon(quarterTurns: 1),
+          SizedBox(width: FlightLayoutSpacing.gapIconText(context)),
+          _flightIcon(context, quarterTurns: 1),
         ]
       ],
     );
   }
 
-  Widget _flightIcon({required int quarterTurns}) {
+  Widget _flightIcon(BuildContext context, {required int quarterTurns}) {
     return RotatedBox(
       quarterTurns: quarterTurns,
-      child: Icon(Icons.flight, color: kPrimaryColor, size: FlightSize.iconFlightSmall),
+      child: Icon(Icons.flight, color: kPrimaryColor, size: FlightSize.iconFlightSmall(context)),
     );
   }
 
@@ -127,7 +126,7 @@ class FlightInfoResult extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: FlightStyle.infoLabel(context)),
-        const SizedBox(height: FlightLayoutSpacing.gapInfoLabel),
+        SizedBox(height: FlightLayoutSpacing.gapInfoLabel(context)),
         Text(value, style: FlightStyle.infoValue(context)),
       ],
     );

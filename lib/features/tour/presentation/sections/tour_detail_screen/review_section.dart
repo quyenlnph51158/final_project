@@ -1,60 +1,77 @@
-import 'package:final_project/core/constants/app_icons.dart';
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/tour_sizes.dart';
 import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:final_project/core/utils/calculate_average_star.dart';
 import 'package:final_project/features/tour/presentation/screens/review_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/tour/tour_layout_spacing.dart';
+import '../../../../../core/utils/responsive_layout.dart'; // Import extension
 import '../../../data/models/tour_detail.dart';
 import '../../widgets/review_card.dart';
-
-// ... các import giữ nguyên
 
 class ReviewSection extends StatefulWidget {
   final TourDetail detail;
 
-  const ReviewSection({
-    super.key,
-    required this.detail,
-  });
+  const ReviewSection({super.key, required this.detail});
 
   @override
   State<ReviewSection> createState() => _ReviewSectionState();
 }
 
 class _ReviewSectionState extends State<ReviewSection> {
-  // Đã loại bỏ ScrollController và các hàm liên quan đến Scroll/Arrow
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
     // Lấy tối đa 3 review đầu tiên
     final displayReviews = widget.detail.reviews.take(3).toList();
+    final double averageRating = CalculateAverageStar.average(
+      widget.detail.reviews,
+    );
 
     return Padding(
-      padding: TourLayoutSpacing.reviewTourDetailSection(context),
+      // Sử dụng lề ngang chuẩn hệ thống và lề dọc pixel-scale
+      padding: EdgeInsets.symmetric(
+        horizontal: context.padding,
+        vertical: context.rh(20),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header: Tiêu đề và nút "Xem tất cả"
+          // 1. HEADER: Tiêu đề "Đánh giá"
           Text(
-            key: widget.key,
             l10n.general_reviews,
-            style: AppStyles.titleReviewSection(context),
+            style: TextStyle(
+              fontSize: context.sp(18),
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF1D2939),
+            ),
           ),
-          TourLayoutSpacing.titleReviewAndContent,
+
+          // Thay h(1.5) bằng rh(12)
+          SizedBox(height: context.rh(12)),
+
+          // 2. RATING SUMMARY
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${CalculateAverageStar.average(widget.detail.reviews).toStringAsFixed(1)}',
-                style: AppStyles.averageRatingValue(context),
+                averageRating.toStringAsFixed(1),
+                style: TextStyle(
+                  fontSize: context.sp(32),
+                  fontWeight: FontWeight.bold,
+                  color: kPrimaryColor,
+                ),
               ),
-              Text(
-                ' /5',
-                style: AppStyles.averageRatingSuffix(context),
+              Padding(
+                // Thay h(0.8) bằng rh(6)
+                padding: EdgeInsets.only(bottom: context.rh(6)),
+                child: Text(
+                  ' /5',
+                  style: TextStyle(
+                    fontSize: context.sp(16),
+                    color: Colors.grey.shade500,
+                  ),
+                ),
               ),
               const Spacer(),
               TextButton(
@@ -63,57 +80,93 @@ class _ReviewSectionState extends State<ReviewSection> {
                     MaterialPageRoute(
                       builder: (_) => AllReviewsScreen(
                         reviews: widget.detail.reviews,
-                        averageRating: CalculateAverageStar.average(widget.detail.reviews),
+                        averageRating: averageRating,
                       ),
                     ),
                   );
                 },
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 child: Text(
                   l10n.tour_detail_read_all_reviews,
-                  style: AppStyles.textReadAllReviewSection(context),
+                  style: TextStyle(
+                    fontSize: context.sp(14),
+                    fontWeight: FontWeight.w600,
+                    color: kPrimaryColor,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
               ),
             ],
           ),
-          _buildStarRating(CalculateAverageStar.average(widget.detail.reviews)),
-          TourLayoutSpacing.iconStarAndInfoReview,
+
+          // 3. STARS & COUNT
+          _buildStarRating(context, averageRating, size: 20),
+
+          // Thay h(1) bằng rh(8)
+          SizedBox(height: context.rh(8)),
+
           Text(
             '${l10n.tour_detail_based_on} ${widget.detail.reviews.length} ${l10n.tour_detail_reviews_count}',
-            style: AppStyles.textBasedOn(context),
+            style: TextStyle(
+              fontSize: context.sp(13),
+              color: Colors.grey.shade600,
+            ),
           ),
 
-          TourLayoutSpacing.reviewInfoAndReviewItem,
+          // Thay h(3) bằng rh(24)
+          SizedBox(height: context.rh(24)),
 
-          // Danh sách Review hiển thị theo chiều dọc
+          // 4. LIST REVIEWS
           ListView.separated(
-            shrinkWrap: true, // Quan trọng: Để ListView nằm trong Column
-            physics: const NeverScrollableScrollPhysics(), // Để scroll theo trang chính
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: displayReviews.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 16), // Khoảng cách giữa các card
+            // Thay h(2) bằng rh(16) cho khoảng cách giữa các card
+            separatorBuilder: (context, index) =>
+                SizedBox(height: context.rh(16)),
             itemBuilder: (context, index) {
               final review = displayReviews[index];
 
               return ReviewCard(
-                width: double.infinity, // Chiều rộng full màn hình
+                width: double.infinity,
                 child: Padding(
-                  padding: TourLayoutSpacing.contentInReviewCard(context),
+                  // Dùng rw để padding bên trong card ổn định
+                  padding: EdgeInsets.all(context.rw(16)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (review.name?.isNotEmpty ?? false)
                         Text(
                           review.name!,
-                          style: AppStyles.nameCustomerInCard(context),
+                          style: TextStyle(
+                            fontSize: context.sp(15),
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF2D2D2D),
+                          ),
                         ),
+
+                      // Thay h(0.5) bằng rh(4)
+                      SizedBox(height: context.rh(4)),
+
                       _buildStarRating(
+                        context,
                         double.tryParse(review.rating.toString()) ?? 0,
+                        size: 14,
                       ),
-                      TourLayoutSpacing.starAndComment,
+
+                      // Thay h(1.5) bằng rh(12)
+                      SizedBox(height: context.rh(12)),
+
                       Text(
-                        review.positive ?? review.comment ?? '',
-                        maxLines: 5,
+                        review.positive,
+                        maxLines: 4,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(height: 1.4),
+                        style: TextStyle(
+                          fontSize: context.sp(14),
+                          height: 1.5,
+                          color: Colors.black87,
+                        ),
                       ),
                     ],
                   ),
@@ -126,20 +179,36 @@ class _ReviewSectionState extends State<ReviewSection> {
     );
   }
 
-  // Widget _buildStarRating giữ nguyên như cũ...
-  Widget _buildStarRating(double rating) {
+  // Widget hiển thị sao tối ưu
+  Widget _buildStarRating(
+    BuildContext context,
+    double rating, {
+    double size = 18,
+  }) {
     final fullStars = rating.floor();
     final hasHalfStar = rating - fullStars >= 0.5;
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: List.generate(5, (index) {
+        IconData iconData;
+        Color iconColor;
+
         if (index < fullStars) {
-          return Icon(AppIcons.star.icon, color: Colors.orange, size: 18); // Giả định AppIcons trả về IconData
+          iconData = Icons.star;
+          iconColor = Colors.orange;
         } else if (index == fullStars && hasHalfStar) {
-          return Icon(AppIcons.half_star.icon, color: Colors.orange, size: 18);
+          iconData = Icons.star_half;
+          iconColor = Colors.orange;
         } else {
-          return Icon(AppIcons.star_border.icon, color: Colors.grey, size: 18);
+          iconData = Icons.star_border;
+          iconColor = Colors.grey.shade400;
         }
+
+        return Padding(
+          padding: EdgeInsets.only(right: context.rw(2)),
+          child: Icon(iconData, color: iconColor, size: context.icon(size)),
+        );
       }),
     );
   }

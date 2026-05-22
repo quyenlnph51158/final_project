@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../../app/l10n/app_localizations.dart';
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../../core/design/flight/flight_size.dart';
+import '../../../../../core/design/flight/flight_size.dart' hide FlightTab;
 import '../../../../../core/design/flight/flight_style.dart';
 import '../../controller/flight_controller.dart';
 
@@ -33,12 +33,12 @@ class FlightTabsWidget extends StatelessWidget {
           child: InkWell(
             onTap: () => controller.selectFlightTab(tab, l10n),
             child: Container(
-              padding: FlightLayoutSpacing.tabItemPadding,
+              padding: FlightLayoutSpacing.tabItemPadding(context),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
                     color: isSelected ? kPrimaryColor : Colors.transparent,
-                    width: FlightSize.tabIndicatorHeight,
+                    width: FlightSize.tabIndicatorHeight(context),
                   ),
                 ),
               ),

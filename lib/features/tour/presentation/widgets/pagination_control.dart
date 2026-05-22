@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/utils/responsive_layout.dart';
 import '../controller/travel_booking_controller.dart';
 
 class PaginationControl extends StatelessWidget {
@@ -7,20 +8,23 @@ class PaginationControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Sử dụng watch để UI tự động cập nhật khi trang thay đổi
     final controller = context.watch<TravelBookingController>();
     final state = controller.state;
-    // Trong build của PaginationControl
-    final int totalPages = state.tour.totalPages; // Lấy từ state sau khi loadTourPage chạy xong
+    final int totalPages = state.tour.totalPages;
 
-    // Nếu chỉ có 1 trang thì không hiện phân trang
     if (totalPages <= 1) return const SizedBox.shrink();
 
+    // Thay vì dùng % (w(11)), ta dùng rw(40) để nút có kích thước ~40px
+    // tỉ lệ thuận với chiều rộng màn hình thiết kế.
+    final double buttonSize = context.rw(40).clamp(32.0, 48.0);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: Wrap( // Sử dụng Wrap để tự động xuống dòng nếu quá nhiều số trang
-        spacing: 8, // Khoảng cách ngang giữa các số
-        runSpacing: 8, // Khoảng cách dọc
+      // Thay h(2.5) bằng rh(24) để khoảng cách dọc ổn định theo pixel scale
+      padding: EdgeInsets.symmetric(vertical: context.rh(24)),
+      child: Wrap(
+        // Thay w(2) bằng rw(8) để khoảng cách giữa các nút không bị dãn quá rộng trên máy to
+        spacing: context.rw(8),
+        runSpacing: context.rw(8),
         alignment: WrapAlignment.center,
         children: List.generate(totalPages, (index) {
           final pageNumber = index + 1;
@@ -31,24 +35,33 @@ class PaginationControl extends StatelessWidget {
               await controller.loadTourPage(pageNumber);
               controller.scrollToTop();
             },
-            borderRadius: BorderRadius.circular(8),
+            // Sử dụng radius chuẩn (10px cho máy nhỏ, 14px cho máy thường)
+            borderRadius: BorderRadius.circular(context.radius),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              width: 40,
-              height: 40,
+              width: buttonSize,
+              height: buttonSize,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                // Màu nền: Xanh đậm nếu được chọn, ngược lại để trong suốt
-                color: isSelected ? const Color(0xFF006677) : Colors.transparent,
-                borderRadius: BorderRadius.circular(12), // Bo góc giống ảnh
+                color: isSelected
+                    ? const Color(0xFF006677)
+                    : Colors.transparent,
+                border: isSelected
+                    ? null
+                    : Border.all(
+                        color: const Color(0xFF006677).withOpacity(0.3),
+                      ),
+                borderRadius: BorderRadius.circular(
+                  context.radius * 0.8,
+                ), // Bo góc nhẹ hơn card một chút
               ),
               child: Text(
                 '$pageNumber',
                 style: TextStyle(
-                  // Màu chữ: Trắng nếu được chọn, ngược lại dùng màu xanh chủ đạo
                   color: isSelected ? Colors.white : const Color(0xFF006677),
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  // Dùng sp() để font chữ không bị tràn nút khi người dùng chỉnh font hệ thống lớn
+                  fontSize: context.sp(15),
                 ),
               ),
             ),
