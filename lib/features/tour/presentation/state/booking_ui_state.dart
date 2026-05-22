@@ -24,6 +24,7 @@ class BookingUIState {
       isLoading: true,
       isSearching: false,
       isInitialized: false,
+      errorMessage: '',
     );
   }
 

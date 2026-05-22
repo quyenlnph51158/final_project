@@ -1,3 +1,5 @@
+key.properties
+**/*.jks
 .env
 # Miscellaneous
 *.class

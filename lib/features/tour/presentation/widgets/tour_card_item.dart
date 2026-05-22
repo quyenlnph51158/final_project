@@ -54,14 +54,14 @@ class TourCardItem extends StatelessWidget{
                   tour.name,
                   style: AppStyles.tourNameCardItem(context)
                 ),
-                TourLayoutSpacing.tourNameAndTourDescription ,
+                SizedBox(height: TourLayoutSpacing.tourNameAndTourDescription(context)),
                 Text(
                   tour.description,
                   style: AppStyles.tourDescriptionCardItem(context),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
-                TourLayoutSpacing.tourNameAndTourDescription,
+                SizedBox(height: TourLayoutSpacing.tourNameAndTourDescription(context)),
                 Row(
                   // Dùng mainAxisAlignment.spaceBetween để đẩy hai nhóm ra hai phía
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -71,7 +71,7 @@ class TourCardItem extends StatelessWidget{
                       mainAxisSize: MainAxisSize.min, // Giữ cho Row này chỉ chiếm diện tích cần thiết
                       children: [
                         AppIcons.duration,
-                        TourLayoutSpacing.durationIconAndValue,
+                        SizedBox(height: TourLayoutSpacing.durationIconAndValue(context)),
                         Text(
                           tour.duration,
                           style: AppStyles.durationIcon,
@@ -87,7 +87,7 @@ class TourCardItem extends StatelessWidget{
                           tour.avarageRating.toString(), // Giá trị đánh giá
                           style: AppStyles.reviewCountValue(context),
                         ),
-                        TourLayoutSpacing.averageRatingAndStar,
+                        SizedBox(height: TourLayoutSpacing.averageRatingAndStar(context)),
                         AppIcons.tourCardItemStar
                       ],
                     ),

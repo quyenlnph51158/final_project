@@ -1,5 +1,4 @@
 import 'package:dotted_line/dotted_line.dart';
-import 'package:final_project/core/data/constants/flight_policy_data.dart';
 import 'package:final_project/core/utils/format_date.dart';
 import 'package:final_project/core/utils/format_duration.dart';
 import 'package:final_project/core/utils/format_price.dart';
@@ -10,11 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../../../app/l10n/app_localizations.dart';
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/data/constants/flight_policy_translate.dart';
-import '../../../../../core/design/flight/flight_divider.dart';
-import '../../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../../core/design/flight/flight_shape.dart';
-import '../../../../../core/design/flight/flight_size.dart';
-import '../../../../../core/design/flight/flight_style.dart';
+import '../../../../../core/data/constants/flight_policy_data.dart';
 import '../../../../../core/utils/responsive_layout.dart';
 import '../../../../policy/presentation/screens/policy_screen.dart';
 import '../../../data/models/inventory.dart';
@@ -39,7 +34,6 @@ class FlightResultCard extends StatefulWidget {
 }
 
 class _FlightResultCardState extends State<FlightResultCard> {
-  // Sử dụng late và đảm bảo khởi tạo trong initState để không bao giờ null
   late Inventory _selectedInventory;
   int _activeTabIndex = 0;
 
@@ -50,16 +44,11 @@ class _FlightResultCardState extends State<FlightResultCard> {
   }
 
   void _initializeSelectedInventory() {
-    // 1. Ưu tiên Inventory được truyền vào từ widget
     if (widget.SelectedInventory != null) {
       _selectedInventory = widget.SelectedInventory!;
-    }
-    // 2. Nếu không có, lấy phần tử đầu tiên của danh sách inventories nếu không rỗng
-    else if (widget.flight.inventories.isNotEmpty) {
+    } else if (widget.flight.inventories.isNotEmpty) {
       _selectedInventory = widget.flight.inventories.first;
-    }
-    // 3. TRƯỜNG HỢP PHÒNG THỦ: Nếu API lỗi trả về inventories rỗng, tạo dữ liệu dummy để tránh Crash
-    else {
+    } else {
       _selectedInventory = Inventory(
         features: [],
         seatClass: '',
@@ -77,7 +66,6 @@ class _FlightResultCardState extends State<FlightResultCard> {
     final l10n = AppLocalizations.of(context)!;
     final state = context.watch<FlightController>().state;
 
-    // Xác định Inventory đang được chọn toàn cục (nếu có)
     Inventory? globalSelectedInventory;
     if (state.data.selectedOutboundFlight?.flightCode ==
         widget.flight.flightCode) {
@@ -88,19 +76,11 @@ class _FlightResultCardState extends State<FlightResultCard> {
     }
 
     final bool isSummaryMode = globalSelectedInventory != null;
-    // Đảm bảo currentDisplayInventory luôn có dữ liệu (không bao giờ null)
     final currentDisplayInventory =
         globalSelectedInventory ?? _selectedInventory;
 
-    // Định dạng thời gian/ngày tháng an toàn
     final String depTime = widget.flight.timeStart;
     final String arrTime = widget.flight.timeEnd;
-    final String depDate = FormatDate.formatDateDDMMYYYY(
-      DateTime.tryParse(widget.flight.departureDate) ?? DateTime.now(),
-    );
-    final String arrDate = FormatDate.formatDateDDMMYYYY(
-      DateTime.tryParse(widget.flight.arrivalDate) ?? DateTime.now(),
-    );
     final String duration = FormatDuration.formatDuration(
       widget.flight.totalDuration,
       l10n,
@@ -108,98 +88,98 @@ class _FlightResultCardState extends State<FlightResultCard> {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
-      curve: Curves.easeInOut,
       margin: EdgeInsets.symmetric(
-        vertical: FlightLayoutSpacing.cardMarginV(context),
+        vertical: context.rh(8),
+        horizontal: context.padding,
       ),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: FlightShape.borderRadiusLarge(context),
-        border: Border.all(color: kBorderColor, width: FlightShape.borderThin),
+        borderRadius: BorderRadius.circular(context.radius),
+        border: Border.all(color: kBorderColor.withOpacity(0.5)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
           InkWell(
             onTap: widget.onTap,
+            borderRadius: BorderRadius.circular(context.radius),
             child: Padding(
-              padding: EdgeInsets.all(FlightLayoutSpacing.paddingAll(context)),
-              child: Row(
+              padding: EdgeInsets.all(context.rw(16)),
+              child: Column(
                 children: [
-                  Image.network(
-                    widget.flight.logo,
-                    width: FlightSize.logoMain(context),
-                    height: FlightSize.logoMain(context),
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) =>
-                        const Icon(Icons.flight_takeoff, color: kPrimaryColor),
+                  Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: Image.network(
+                          widget.flight.logo,
+                          width: context.icon(35),
+                          height: context.icon(35),
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => Icon(
+                            Icons.flight_takeoff,
+                            color: kPrimaryColor,
+                            size: context.icon(30),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: context.rw(12)),
+                      Expanded(
+                        child: _buildRouteBrief(
+                          context,
+                          depTime,
+                          arrTime,
+                          widget.flight.departureCode,
+                          widget.flight.arrivalCode,
+                          duration,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: FlightLayoutSpacing.gapMedium(context)),
-                  Expanded(
-                    child: _buildRouteBrief(
-                      context,
-                      depTime,
-                      arrTime,
-                      widget.flight.departureCode,
-                      widget.flight.arrivalCode,
-                      duration,
-                    ),
+                  Divider(
+                    height: context.rh(24),
+                    color: kBorderColor.withOpacity(0.5),
                   ),
-                  SizedBox(width: FlightLayoutSpacing.gapMedium(context)),
-                  _buildPriceBrief(context, currentDisplayInventory.totalPrice),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${widget.flight.airlineSystemText} | ${widget.flight.flightCode}',
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontSize: context.sp(12),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      _buildPriceBrief(
+                        context,
+                        currentDisplayInventory.totalPrice,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
           ),
 
-          // Phần nội dung mở rộng
+          // Phần nội dung mở rộng (Tab Class & Timeline)
           AnimatedCrossFade(
-            duration: const Duration(milliseconds: 400),
-            sizeCurve: Curves.easeInOut,
-            firstChild: const SizedBox(width: double.infinity, height: 0),
+            duration: const Duration(milliseconds: 300),
+            firstChild: const SizedBox(width: double.infinity),
             secondChild: Column(
               children: [
-                Padding(
-                  padding: FlightLayoutSpacing.tabPadding,
-                  child: Row(
-                    children: [
-                      _buildTabItem(
-                        context,
-                        l10n.selectSeatClass,
-                        isActive: _activeTabIndex == 0,
-                        onTap: () => setState(() => _activeTabIndex = 0),
-                      ),
-                      SizedBox(width: FlightLayoutSpacing.tabGap),
-                      _buildTabItem(
-                        context,
-                        l10n.flightDetails,
-                        isActive: _activeTabIndex == 1,
-                        onTap: () => setState(() => _activeTabIndex = 1),
-                        icon: Icons.flight_takeoff,
-                      ),
-                    ],
-                  ),
-                ),
-
-                AnimatedCrossFade(
-                  duration: const Duration(milliseconds: 300),
-                  firstChild: _buildTicketClassSelector(
-                    context,
-                    state,
-                    isSummaryMode,
-                    currentDisplayInventory,
-                  ),
-                  secondChild: _buildFlightDetailTimeline(
-                    context,
-                    depTime,
-                    arrTime,
-                    depDate,
-                    arrDate,
-                  ),
-                  crossFadeState: _activeTabIndex == 0
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-                ),
-                SizedBox(height: FlightLayoutSpacing.gapMedium(context)),
+                const Divider(height: 1),
+                _buildTabHeader(context, l10n),
+                _activeTabIndex == 0
+                    ? _buildTicketClassSelector(context, state)
+                    : _buildFlightDetailTimeline(context),
+                SizedBox(height: context.rh(16)),
               ],
             ),
             crossFadeState: widget.isExpanded
@@ -211,7 +191,48 @@ class _FlightResultCardState extends State<FlightResultCard> {
     );
   }
 
-  // --- WIDGETS CON ---
+  Widget _buildTabHeader(BuildContext context, AppLocalizations l10n) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: context.rh(12),
+        horizontal: context.rw(16),
+      ),
+      child: Row(
+        children: [
+          _tabButton(context, l10n.selectSeatClass, 0),
+          SizedBox(width: context.rw(20)),
+          _tabButton(context, l10n.flightDetails, 1),
+        ],
+      ),
+    );
+  }
+
+  Widget _tabButton(BuildContext context, String title, int index) {
+    final bool isActive = _activeTabIndex == index;
+    return InkWell(
+      onTap: () => setState(() => _activeTabIndex = index),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: context.sp(14),
+              fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+              color: isActive ? kPrimaryColor : Colors.grey,
+            ),
+          ),
+          SizedBox(height: context.rh(4)),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: 2,
+            width: isActive ? context.rw(30) : 0,
+            color: kPrimaryColor,
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildRouteBrief(
     BuildContext context,
@@ -224,261 +245,226 @@ class _FlightResultCardState extends State<FlightResultCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildTimeNode(context, dep, depCode),
+        _buildTimeNode(context, dep, depCode, CrossAxisAlignment.start),
         Expanded(
           child: Column(
             children: [
-              Text(duration, style: FlightStyle.durationSmall(context)),
-              const Padding(
-                padding: FlightLayoutSpacing.dottedLinePadding,
+              Text(
+                duration,
+                style: TextStyle(
+                  fontSize: context.sp(11),
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.rw(8),
+                  vertical: context.rh(4),
+                ),
                 child: DottedLine(
-                  dashColor: kTextColor,
-                  lineThickness: FlightDivider.dashThickness,
+                  dashColor: Colors.grey.shade400,
+                  lineThickness: 1,
                 ),
               ),
             ],
           ),
         ),
-        _buildTimeNode(context, arr, arrCode),
+        _buildTimeNode(context, arr, arrCode, CrossAxisAlignment.end),
       ],
     );
   }
 
-  Widget _buildTimeNode(BuildContext context, String time, String code) {
+  Widget _buildTimeNode(
+    BuildContext context,
+    String time,
+    String code,
+    CrossAxisAlignment align,
+  ) {
     return Column(
+      crossAxisAlignment: align,
       children: [
-        Text(time, style: FlightStyle.timeLarge(context)),
-        Text(code, style: FlightStyle.codeGrey(context)),
+        Text(
+          time,
+          style: TextStyle(
+            fontSize: context.sp(18),
+            fontWeight: FontWeight.bold,
+            color: kTextColor,
+          ),
+        ),
+        Text(
+          code,
+          style: TextStyle(fontSize: context.sp(13), color: Colors.grey),
+        ),
       ],
     );
   }
 
   Widget _buildPriceBrief(BuildContext context, int price) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+    return Row(
       children: [
         Text(
           FormatPrice.formatPrice(price),
-          style: FlightStyle.priceMedium(context),
+          style: TextStyle(
+            fontSize: context.sp(18),
+            fontWeight: FontWeight.bold,
+            color: kPrimaryColor,
+          ),
         ),
+        SizedBox(width: context.rw(4)),
         AnimatedRotation(
           turns: widget.isExpanded ? 0.5 : 0,
           duration: const Duration(milliseconds: 250),
-          child: const Icon(Icons.keyboard_arrow_down),
+          child: Icon(
+            Icons.keyboard_arrow_down,
+            size: context.icon(24),
+            color: kPrimaryColor,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildTabItem(
-    BuildContext context,
-    String title, {
-    required bool isActive,
-    required VoidCallback onTap,
-    IconData? icon,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              if (icon != null)
-                Icon(
-                  icon,
-                  size: FlightSize.iconTab(context),
-                  color: isActive ? kPrimaryColor : Colors.grey,
-                ),
-              SizedBox(width: FlightLayoutSpacing.gapSmall(context) / 2),
-              Text(
-                title,
-                style: isActive
-                    ? FlightStyle.tabActive(context)
-                    : FlightStyle.tabInactive(context),
-              ),
-            ],
-          ),
-          SizedBox(height: FlightLayoutSpacing.gapSmall(context) / 2),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            height: FlightSize.tabIndicatorHeight,
-            width: isActive ? FlightSize.tabIndicatorWidth : 0,
-            color: kPrimaryColor,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTicketClassSelector(
-    BuildContext context,
-    dynamic state,
-    bool isSummaryMode,
-    Inventory displayInventory,
-  ) {
-    if (widget.flight.inventories.isEmpty) {
-      return const Center(child: Text("Không có hạng vé khả dụng"));
-    }
+  Widget _buildTicketClassSelector(BuildContext context, dynamic state) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Container(
-        constraints: BoxConstraints(
-          minWidth: MediaQuery.of(context).size.width,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: widget.flight.inventories.map((inventory) {
-            // So sánh dựa trên object hoặc ID/FareType để xác định trạng thái chọn
-            bool isSelected = _selectedInventory == inventory;
-            return _buildTicketCard(context, state, isSelected, inventory);
-          }).toList(),
-        ),
+      physics: const BouncingScrollPhysics(),
+      padding: EdgeInsets.symmetric(horizontal: context.rw(8)),
+      child: Row(
+        children: widget.flight.inventories.map((inventory) {
+          bool isSelected = _selectedInventory == inventory;
+          return _buildTicketCard(context, isSelected, inventory);
+        }).toList(),
       ),
     );
   }
 
   Widget _buildTicketCard(
     BuildContext context,
-    dynamic state,
     bool isSelected,
     Inventory inventory,
   ) {
     final l10n = AppLocalizations.of(context)!;
     return Container(
-      width: FlightSize.fareCardWidth(context),
-      margin: EdgeInsets.symmetric(
-        horizontal: FlightLayoutSpacing.gapSmall(context),
-        vertical: FlightLayoutSpacing.cardMarginV(context),
-      ),
-      padding: EdgeInsets.all(FlightLayoutSpacing.paddingAll(context)),
+      width: context.rw(260).clamp(240.0, 300.0),
+      margin: EdgeInsets.all(context.rw(8)),
+      padding: EdgeInsets.all(context.rw(16)),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: FlightShape.borderRadiusLarge(context),
+        borderRadius: BorderRadius.circular(context.radius),
         border: Border.all(
           color: isSelected ? kPrimaryColor : kBorderColor,
-          width: isSelected ? FlightShape.borderThick : FlightShape.borderThin,
+          width: isSelected ? 2 : 1,
         ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: Column(
-              children: [
-                Text(
-                  FormatPrice.formatPrice(inventory.totalPrice),
-                  style: FlightStyle.priceLarge(context),
-                ),
-                Text(
-                  inventory.fareType,
-                  style: FlightStyle.fareTypeBold(context),
-                ),
-              ],
+          Text(
+            FormatPrice.formatPrice(inventory.totalPrice),
+            style: TextStyle(
+              fontSize: context.sp(20),
+              fontWeight: FontWeight.bold,
+              color: kTextColor,
             ),
           ),
-          Divider(height: FlightDivider.dividerHeight),
+          Text(
+            inventory.fareType,
+            style: TextStyle(
+              fontSize: context.sp(13),
+              color: kPrimaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Divider(height: context.rh(24)),
           ...FlightPolicyData.policyFlight
               .take(3)
               .map((f) => _buildFeatureRow(context, f.text)),
-          SizedBox(height: FlightLayoutSpacing.gapMedium(context)),
+          SizedBox(height: context.rh(16)),
           ElevatedButton(
             onPressed: () {
               setState(() => _selectedInventory = inventory);
-              if (widget.SelectedInventory == null) {
+              if (widget.SelectedInventory == null)
                 _selectFlight(context, widget.flight, inventory);
-              } else {
+              else
                 _updateClassSelector(context, widget.flight, inventory);
-              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: kPrimaryColor,
-              minimumSize: Size(
-                double.infinity,
-                FlightSize.btnSelectHeight(context),
-              ),
+              minimumSize: Size(double.infinity, context.rh(40)),
               shape: RoundedRectangleBorder(
-                borderRadius: FlightShape.borderRadiusSmall(context),
+                borderRadius: BorderRadius.circular(context.radius * 0.6),
               ),
+              elevation: 0,
             ),
             child: Text(
               isSelected ? l10n.currentlySelected : l10n.selectThisJourney,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                fontSize: context.sp(14),
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
           ),
-          SizedBox(height: FlightLayoutSpacing.gapSmall(context)),
-          _buildPolicyAndBooking(context),
+          SizedBox(height: context.rh(8)),
+          GestureDetector(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PolicyScreen(postId: 37),
+              ),
+            ),
+            child: Text(
+              l10n.viewDetails,
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontSize: context.sp(13),
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildPolicyAndBooking(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Center(
-      child: GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const PolicyScreen(postId: 37),
+  Widget _buildFeatureRow(BuildContext context, String text) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: context.rh(6)),
+      child: Row(
+        children: [
+          Icon(
+            FlightPolicyTranslate.getIcon(text),
+            size: context.icon(14),
+            color: Colors.green,
           ),
-        ),
-        child: Text(
-          l10n.viewDetails,
-          style: TextStyle(color: kPrimaryColor, fontSize: context.sp(16)),
-        ),
+          SizedBox(width: context.rw(8)),
+          Expanded(
+            child: Text(
+              FlightPolicyTranslate.getTranslation(context, text),
+              style: TextStyle(
+                fontSize: context.sp(12),
+                color: Colors.grey.shade700,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildFlightDetailTimeline(
-    BuildContext context,
-    String depT,
-    String arrT,
-    String depD,
-    String arrD,
-  ) {
-    final l10n = AppLocalizations.of(context)!;
-
+  Widget _buildFlightDetailTimeline(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(context.padding),
       child: Column(
         children: List.generate(widget.flight.stopInfos.length, (index) {
           final segment = widget.flight.stopInfos[index];
-
           return Column(
             children: [
-              // Vẽ chặng bay hiện tại
-              _buildFlightSegment(
-                context,
-                timeStart: segment.timeStart,
-                dateStart: FormatDate.formatDateDDMMYYYY(
-                  DateTime.parse(segment.dateTimeStart),
-                ),
-                timeEnd: segment.timeEnd,
-                dateEnd: FormatDate.formatDateDDMMYYYY(
-                  DateTime.parse(segment.dateTimeEnd),
-                ),
-                airportStart: segment.departureCode,
-                airportEnd: segment.arrivalCode,
-                airportNameStart: segment.originAirportObject.airline,
-                airportNameEnd: segment.destinationAirportObject.airline,
-                flightCode: segment.flightCode,
-                // Số hiệu riêng từng chặng (VD: VJ165, VJ085)
-                planeModel:
-                    segment.airPlaneModel, // Loại máy bay (VD: 321, 330)
-              ),
-
-              // Nếu chưa phải chặng cuối, vẽ thông tin Transit (Layover)
+              _buildFlightSegment(context, segment),
               if (index < widget.flight.stopInfos.length - 1)
                 _buildStopPoint(
                   context,
-                  l10n,
-                  segment.layoverDuration, // Thời gian chờ (phút)
-                  segment.destinationAirportObject.desc, // Tên thành phố chờ
+                  segment.layoverDuration,
+                  segment.destinationAirportObject.desc,
                 ),
             ],
           );
@@ -487,93 +473,67 @@ class _FlightResultCardState extends State<FlightResultCard> {
     );
   }
 
-  Widget _buildFlightSegment(
-    BuildContext context, {
-    required String timeStart,
-    required String dateStart,
-    required String timeEnd,
-    required String dateEnd,
-    required String airportStart,
-    required String airportEnd,
-    required String airportNameStart,
-    required String airportNameEnd,
-    required String flightCode, // Thêm số hiệu chặng
-    required String planeModel, // Thêm loại máy bay
-  }) {
-    final l10n = AppLocalizations.of(context)!;
+  Widget _buildFlightSegment(BuildContext context, dynamic segment) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Cột thời gian
         Column(
           children: [
-            _buildTimelineTime(context, timeStart, dateStart),
-            SizedBox(
-              height:
-                  FlightDivider.timelineConnectorHeight -
-                  FlightLayoutSpacing.timelineTimeGap,
+            _timeText(
+              context,
+              segment.timeStart,
+              FormatDate.formatDateDDMMYYYY(
+                DateTime.parse(segment.dateTimeStart),
+              ),
             ),
-            // Tăng chiều cao để đủ chỗ cho thông tin ở giữa
-            _buildTimelineTime(context, timeEnd, dateEnd),
-          ],
-        ),
-        SizedBox(width: FlightLayoutSpacing.timelineGap(context)),
-        // Cột đường kẻ Timeline
-        Column(
-          children: [
-            Icon(Icons.circle, size: 10, color: kPrimaryColor),
             Container(
-              width: FlightDivider.timelineLineThickness,
-              height: FlightDivider.timelineConnectorHeight,
+              width: 1,
+              height: context.rh(60),
               color: kPrimaryColor.withOpacity(0.3),
             ),
-            Icon(
-              Icons.circle,
-              size: FlightSize.iconTimelineDot(context),
-              color: kPrimaryColor,
+            _timeText(
+              context,
+              segment.timeEnd,
+              FormatDate.formatDateDDMMYYYY(
+                DateTime.parse(segment.dateTimeEnd),
+              ),
             ),
           ],
         ),
-        SizedBox(width: FlightLayoutSpacing.timelineGap(context)),
-        // Cột thông tin sân bay và máy bay
+        SizedBox(width: context.rw(12)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildAirportText(context, airportStart, airportNameStart),
-              SizedBox(height: FlightLayoutSpacing.gapMedium(context)),
-
-              // Thông tin hãng và máy bay chặng này
+              _airportTitle(
+                context,
+                segment.departureCode,
+                segment.originAirportObject.airline,
+              ),
+              SizedBox(height: context.rh(15)),
               Row(
                 children: [
                   Image.network(
                     widget.flight.logo,
-                    width: FlightSize.logoSmall(context),
-                    height: FlightSize.logoSmall(context),
-                    fit: BoxFit.contain,
+                    width: context.icon(24),
+                    height: context.icon(24),
                   ),
-                  SizedBox(width: FlightLayoutSpacing.gapSmall(context)),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.flight.airlineSystemText,
-                        style: FlightStyle.segmentFlightCode(context),
-                      ),
-                      Text(
-                        l10n.flight_fareAndCode(
-                          _selectedInventory.fareType,
-                          flightCode,
-                        ),
-                        style: FlightStyle.segmentSubText(context),
-                      ),
-                    ],
+                  SizedBox(width: context.rw(8)),
+                  Text(
+                    "${widget.flight.airlineSystemText} • ${segment.flightCode}",
+                    style: TextStyle(
+                      fontSize: context.sp(13),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
-
-              SizedBox(height: context.hp(2)),
-              _buildAirportText(context, airportEnd, airportNameEnd),
+              SizedBox(height: context.rh(15)),
+              _airportTitle(
+                context,
+                segment.arrivalCode,
+                segment.destinationAirportObject.airline,
+              ),
             ],
           ),
         ),
@@ -581,82 +541,69 @@ class _FlightResultCardState extends State<FlightResultCard> {
     );
   }
 
-  Widget _buildTimelineTime(BuildContext context, String time, String date) {
+  Widget _timeText(BuildContext context, String time, String date) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(time, style: FlightStyle.timelineTime(context)),
-        Text(date, style: FlightStyle.timelineDate(context)),
+        Text(
+          time,
+          style: TextStyle(
+            fontSize: context.sp(14),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          date,
+          style: TextStyle(fontSize: context.sp(10), color: Colors.grey),
+        ),
       ],
     );
   }
 
-  Widget _buildAirportText(BuildContext context, String code, String name) {
+  Widget _airportTitle(BuildContext context, String code, String name) {
     return RichText(
       text: TextSpan(
+        style: TextStyle(fontSize: context.sp(14), color: kTextColor),
         children: [
-          TextSpan(text: code, style: FlightStyle.airportCode(context)),
-          TextSpan(text: " • ", style: FlightStyle.airportName(context)),
-          TextSpan(text: name, style: FlightStyle.airportName(context)),
+          TextSpan(
+            text: code,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          TextSpan(
+            text: " • $name",
+            style: TextStyle(color: Colors.grey.shade700),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildStopPoint(
-    BuildContext context,
-    AppLocalizations l10n,
-    int layoverMinutes,
-    String cityName,
-  ) {
-    // Chuyển đổi phút sang giờ:phút
-    final hours = layoverMinutes ~/ 60;
-    final minutes = layoverMinutes % 60;
-    final durationStr = hours > 0 ? "${hours}h ${minutes}m" : "${minutes}m";
-
+  Widget _buildStopPoint(BuildContext context, int duration, String city) {
+    final h = duration ~/ 60;
+    final m = duration % 60;
     return Container(
-      margin: FlightLayoutSpacing.stopPointMargin,
-      padding: FlightLayoutSpacing.stopPointPadding,
+      margin: EdgeInsets.symmetric(vertical: context.rh(12)),
+      padding: EdgeInsets.symmetric(
+        vertical: context.rh(6),
+        horizontal: context.rw(12),
+      ),
       decoration: BoxDecoration(
         color: Colors.orange.withOpacity(0.1),
-        borderRadius: FlightShape.borderRadiusSmall(context),
+        borderRadius: BorderRadius.circular(context.radius / 2),
       ),
       child: Row(
         children: [
           Icon(
             Icons.timer_outlined,
             color: Colors.orange,
-            size: FlightSize.iconSmall(context),
+            size: context.icon(16),
           ),
-          SizedBox(width: FlightLayoutSpacing.gapIcon),
+          SizedBox(width: context.rw(8)),
           Text(
-            l10n.stopAt(cityName, durationStr),
-            style: FlightStyle.stopPointText(context),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureRow(BuildContext context, String text) {
-    final String translatedText = FlightPolicyTranslate.getTranslation(
-      context,
-      text,
-    );
-    final IconData icon = FlightPolicyTranslate.getIcon(text);
-
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: FlightLayoutSpacing.featurePaddingBottom,
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: FlightSize.iconSmall(context), color: kPrimaryColor),
-          SizedBox(width: FlightLayoutSpacing.gapIcon),
-          Flexible(
-            child: Text(
-              translatedText,
-              style: FlightStyle.featureText(context),
+            "Dừng tại $city trong ${h}h ${m}m",
+            style: TextStyle(
+              fontSize: context.sp(12),
+              color: Colors.orange.shade900,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -664,6 +611,7 @@ class _FlightResultCardState extends State<FlightResultCard> {
     );
   }
 
+  // --- Logic Điều hướng giữ nguyên ---
   void _updateClassSelector(
     BuildContext context,
     FlightInfo flight,
@@ -671,11 +619,10 @@ class _FlightResultCardState extends State<FlightResultCard> {
   ) {
     final controller = context.read<FlightController>();
     if (controller.state.data.selectedOutboundFlight?.flightCode ==
-        flight.flightCode) {
+        flight.flightCode)
       controller.updateOutboundFlightClassSelector(inven);
-    } else {
+    else
       controller.updateReturnFlightClassSelector(inven);
-    }
   }
 
   void _selectFlight(

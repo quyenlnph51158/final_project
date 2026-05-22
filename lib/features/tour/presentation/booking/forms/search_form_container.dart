@@ -2,6 +2,7 @@ import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
 import 'package:final_project/features/flight/presentation/form/flight_form.dart';
 import 'package:final_project/features/tour/presentation/booking/forms/tour_search_form.dart';
 import 'package:final_project/features/tour/presentation/controller/travel_booking_controller.dart';
+import 'package:final_project/features/train/presentation/form/train_form.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../core/constants/colors.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,7 +26,7 @@ class SearchFormContainer extends StatelessWidget {
         currentForm = FlightForm();
         break;
       case TravelTab.train:
-        currentForm = FlightForm();
+        currentForm = TrainForm();
         break;
       case TravelTab.tour:
         currentForm = TourSearchForm(
@@ -53,7 +54,7 @@ class SearchFormContainer extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           TravelBookingTab(),
-          TourLayoutSpacing.tabAndForm,
+          SizedBox(height: TourLayoutSpacing.tabAndForm(context)),
           currentForm,
         ],
       ),

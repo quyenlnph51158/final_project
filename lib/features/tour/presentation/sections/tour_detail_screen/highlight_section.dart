@@ -26,7 +26,7 @@ class HighlightSection extends StatelessWidget{
             l10n.tour_detail_highlights,
             style: AppStyles.hightLightTitle(context),
           ),
-          TourLayoutSpacing.labelandcontent,
+          SizedBox(height: TourLayoutSpacing.labelandcontent(context)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: detail.extensions.map((highlight) {

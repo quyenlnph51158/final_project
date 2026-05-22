@@ -6,7 +6,7 @@ import '../../../../../core/constants/colors.dart';
 import '../../../../../core/design/flight/flight_divider.dart';
 import '../../../../../core/design/flight/flight_layout_spacing.dart';
 import '../../../../../core/design/flight/flight_shape.dart';
-import '../../../../../core/design/flight/flight_size.dart';
+import '../../../../../core/design/flight/flight_size.dart' hide FlightTab;
 import '../../../../../core/design/flight/flight_style.dart';
 import '../../../../../core/utils/responsive_layout.dart';
 import '../../../data/models/list_cheap_flight.dart';
@@ -161,7 +161,7 @@ class CheapFlightCard extends StatelessWidget {
           size: FlightSize.iconSizeSmall(context),
           color: Colors.grey,
         ),
-        SizedBox(width: FlightLayoutSpacing.iconTextGap),
+        SizedBox(width: FlightLayoutSpacing.iconTextGap(context)),
         Text(
           flight.type == 'OW'
               ? l10n.form_tripOneWay

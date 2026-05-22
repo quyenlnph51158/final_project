@@ -303,6 +303,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String no_review(Object selectedRating) {
+    return 'There are no star ratings for $selectedRating';
+  }
+
+  @override
   String get tour_detail_tab_intro => 'Introduce';
 
   @override
@@ -324,10 +329,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menu_tourTitle => 'TOUR';
 
   @override
-  String get menu_flightTitle => 'PLANE';
+  String get menu_flightTitle => 'PLANE TICKET';
 
   @override
-  String get menu_trainTitle => 'TRAIN';
+  String get menu_trainTitle => 'TRAIN TICKET';
 
   @override
   String get menu_blogTitle => 'BLOG';
@@ -984,4 +989,398 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tip4Ex => 'Example: Name on passport: William Smith Jr';
+
+  @override
+  String get train_headerTitle => 'Search for your trip';
+
+  @override
+  String get train_form_label_departure => 'Departure from';
+
+  @override
+  String get train_form_label_arrive => 'Arrive at';
+
+  @override
+  String get train_form_departure_date => 'Departure date';
+
+  @override
+  String get train_form_return_date => 'Arrive date';
+
+  @override
+  String get trip_information => 'Trip Information';
+
+  @override
+  String get itinerary => 'Itinerary';
+
+  @override
+  String get departure => 'DEPARTURE';
+
+  @override
+  String get return_trip => 'RETURN';
+
+  @override
+  String get to => 'to';
+
+  @override
+  String get enter_passenger_info => 'Enter Passenger Information';
+
+  @override
+  String get personal_info => 'Personal Information';
+
+  @override
+  String get passenger_name_note =>
+      '* Please ensure you enter the name as it appears on the passport. Maximum 32 characters.';
+
+  @override
+  String get adult => 'Adult';
+
+  @override
+  String get child => 'Child';
+
+  @override
+  String get infant => 'Infant';
+
+  @override
+  String get contact_info => 'Contact Information';
+
+  @override
+  String get contact_note =>
+      '* Please provide contact details to receive itinerary notifications.';
+
+  @override
+  String get country_code => 'Country Code';
+
+  @override
+  String get phone_number => 'Phone Number';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get special_request => 'Special Request';
+
+  @override
+  String get request_content => 'Content';
+
+  @override
+  String get select_title => 'Select Title';
+
+  @override
+  String get mr => 'Mr.';
+
+  @override
+  String get mrs => 'Mrs.';
+
+  @override
+  String get ms => 'Ms.';
+
+  @override
+  String get first_middle_name => 'First & Middle Name';
+
+  @override
+  String get last_name => 'Last Name';
+
+  @override
+  String get passport_number => 'Passport Number';
+
+  @override
+  String get birthday => 'Date of Birth';
+
+  @override
+  String get continue_button => 'Continue';
+
+  @override
+  String get search => 'Search...';
+
+  @override
+  String get select => 'Select';
+
+  @override
+  String get tip_enter_name => 'Name tips';
+
+  @override
+  String get salutation => 'Title';
+
+  @override
+  String get select_salutation => 'Select title';
+
+  @override
+  String get last_name_passport => 'Last name (as on passport)';
+
+  @override
+  String get first_middle_name_passport =>
+      'First & Middle name (as on passport)';
+
+  @override
+  String get example_last_name => 'e.g., NGUYEN';
+
+  @override
+  String get example_first_middle_name => 'e.g., VAN AN';
+
+  @override
+  String get accompanying_adult => 'Accompanying adult';
+
+  @override
+  String get select_accompanying_adult => 'Select accompanying adult';
+
+  @override
+  String get frequent_flyer_card => 'Frequent Flyer Card';
+
+  @override
+  String get airline => 'Airline';
+
+  @override
+  String get select_airline => 'Select airline';
+
+  @override
+  String get card_number => 'Card number';
+
+  @override
+  String get enter_card_number => 'Enter card number';
+
+  @override
+  String get titles => 'Mr,Mrs,Ms,Mr,Ms';
+
+  @override
+  String get airlines => 'Airlines';
+
+  @override
+  String get stop => 'Stops';
+
+  @override
+  String get departure_time => 'Departure Time';
+
+  @override
+  String get direct_flight => 'Direct';
+
+  @override
+  String get one_stop => '1 Stop';
+
+  @override
+  String get two_stops => '2 Stops';
+
+  @override
+  String get time_early => 'Early (0 AM - 5:59 AM)';
+
+  @override
+  String get time_morning => 'Morning (6 AM - 11:59 AM)';
+
+  @override
+  String get time_afternoon => 'Afternoon (12 PM - 5:59 PM)';
+
+  @override
+  String get time_evening => 'Evening (6 PM - 11:59 PM)';
+
+  @override
+  String get no_flights_found => 'No flights found';
+
+  @override
+  String get change_filter_instruction =>
+      'Please try changing your selection or filters.';
+
+  @override
+  String get noSeatClassAvailable => 'No seat class available';
+
+  @override
+  String get understood => 'Understood';
+
+  @override
+  String get arrivalTime => 'Arrival time';
+
+  @override
+  String get vip_seat_explanation_title => 'VIP Seat Class Explanation';
+
+  @override
+  String get vip_seat_intro =>
+      'VIP seat classes include: 2 Berth, King Size, and Queen Size. Below are the rules and conditions for each seat type:';
+
+  @override
+  String get vip_2_berth_title => 'VIP 2 Berth:';
+
+  @override
+  String get vip_2_berth_desc =>
+      'Pricing is for the VIP 2 Berth cabin. Passengers will be charged for the full cabin even if traveling alone. This ensures the privacy and comfort of the cabin environment.';
+
+  @override
+  String get queen_size_title => 'Queen Size:';
+
+  @override
+  String get queen_size_desc =>
+      'Queen Size seats offer a balance of comfort and space. Similar to King Size, solo travelers will be charged full price for the entire cabin.';
+
+  @override
+  String get king_size_title => 'King Size:';
+
+  @override
+  String get king_size_desc =>
+      'King Size seats are designed for those desiring more space and comfort. If traveling alone, full fees for the King Size cabin apply, as cabins are sold as a whole.';
+
+  @override
+  String get note_title => 'Note:';
+
+  @override
+  String get note_desc =>
+      'When booking, please note that if traveling alone, you will still be charged full fees for the entire cabin in these seat classes. This applies regardless of whether you are a solo traveler or part of a group (1, 3, 5, or 7 passengers), as cabins are sold as a whole rather than by individual seats.';
+
+  @override
+  String get loading_data => 'Loading data...';
+
+  @override
+  String get no_trains_found => 'No suitable trains found';
+
+  @override
+  String selected_trip_from_to(Object dep, Object dest) {
+    return 'Selected trip from $dep to $dest';
+  }
+
+  @override
+  String select_trip_from(Object station) {
+    return 'Select trip from $station';
+  }
+
+  @override
+  String get from_price => 'From';
+
+  @override
+  String get one_way => 'One way';
+
+  @override
+  String get view_details_short => 'Details';
+
+  @override
+  String station_with_name(Object name) {
+    return '$name Station';
+  }
+
+  @override
+  String get device => 'Device:';
+
+  @override
+  String get carrier => 'Carrier:';
+
+  @override
+  String get distance => 'Distance:';
+
+  @override
+  String get duration_label => 'Duration:';
+
+  @override
+  String get seat_class_default => 'Seat Class';
+
+  @override
+  String get select_seat_class_hint => 'Select seat class';
+
+  @override
+  String get best_seller => 'Best Seller';
+
+  @override
+  String get tour_activities => 'Tour & Activities';
+
+  @override
+  String get best_hotel => 'Best Hotel';
+
+  @override
+  String get favorite_destinations => 'Favorite Destinations';
+
+  @override
+  String get cheap_trips_offers => 'Special Trip Offers';
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get passWord => 'Password';
+
+  @override
+  String get forgotPassword => 'Forgot password?';
+
+  @override
+  String get noAccountYet => 'No account yet?';
+
+  @override
+  String get createAccount => 'Create account';
+
+  @override
+  String get yourAccount => 'Your account';
+
+  @override
+  String get register => 'Register';
+
+  @override
+  String get fullName => 'Full name';
+
+  @override
+  String get yourPhoneNumber => 'Your phone number';
+
+  @override
+  String get confirmPassword => 'Confirm password';
+
+  @override
+  String get success => 'Success';
+
+  @override
+  String get fail => 'Fail';
+
+  @override
+  String get alreadyAccount => 'Already account?';
+
+  @override
+  String get agree => 'Agree';
+
+  @override
+  String get faq_q1 =>
+      'If the tour is canceled due to objective reasons (weather, natural disaster, national mourning, etc.), will I get a refund?';
+
+  @override
+  String get faq_a1 =>
+      'In case of force majeure (natural disasters, epidemics, etc.), the company will provide a refund but may deduct expenses already paid to partners (hotels, airlines, etc.) that are non-refundable. Certain services depend on the specific refund/cancellation/change policies of the providers. If the cancellation is due to the company\'s fault, you will receive a 100% refund or be offered an alternative tour as requested.';
+
+  @override
+  String get faq_q2 => 'What are the available payment methods?';
+
+  @override
+  String get faq_a2 =>
+      'Wondering Vietnam provides the following deposit/payment methods:<br><ul><li>Direct payment at the Wondering Vietnam Office</li><li>Online bank transfer (E-banking)</li></ul>';
+
+  @override
+  String get faq_q3 => 'Is my personal information kept private?';
+
+  @override
+  String get faq_a3 =>
+      'Wondering Vietnam commits to not disclosing any of your information to third parties, except for necessary details provided to hotel partners for mandatory local residence registration as required by local authorities.';
+
+  @override
+  String get faq_q4 =>
+      'Can I make special requests regarding accommodation, meals, etc.?';
+
+  @override
+  String get faq_a4 =>
+      'You can contact us directly or fill in the \'Other Requests\' section when booking your tour.';
+
+  @override
+  String get faq_q5 => 'Can I request a VAT invoice?';
+
+  @override
+  String get faq_a5 =>
+      'Wondering Vietnam will issue VAT invoices in accordance with the regulations of the Ministry of Finance.';
+
+  @override
+  String get errorDepartureEmpty => 'Please select a departure point !!!';
+
+  @override
+  String get errorDestinationEmpty => 'Please select a destination !!!';
+
+  @override
+  String get errorSameLocation =>
+      'Departure and destination cannot be the same !!!';
+
+  @override
+  String get errorReturnDateEmpty => 'Please select a return date !!!';
+
+  @override
+  String get errorReturnBeforeDeparture =>
+      'Return date cannot be before departure date !!!';
+
+  @override
+  String get errorSameDate =>
+      'Departure and return dates cannot be the same !!!';
 }

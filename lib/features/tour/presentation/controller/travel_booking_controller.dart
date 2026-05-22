@@ -1,14 +1,15 @@
+import 'dart:ui';
+import 'package:final_project/app/service/get_access_key_service.dart';
 import 'package:final_project/core/data/model/home_tour_model.dart';
+import 'package:final_project/features/auth/data/service/token_service.dart';
 import 'package:final_project/features/tour/presentation/screens/tour_screen.dart';
 import 'package:final_project/features/tour/presentation/state/booking_form_state.dart';
+import 'package:final_project/features/tour/presentation/state/booking_ui_state.dart';
 import 'package:flutter/material.dart';
 import '../../../../app/l10n/app_localizations.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/navigation/navigation_service.dart';
 import '../../../../core/utils/format_date.dart';
-import '../../../flight/data/models/list_airport.dart';
-import '../../../flight/data/service/listairport_service.dart';
-import '../../data/models/location_item.dart';
 import '../../data/models/tour_category.dart';
 import '../../data/models/tour_destination.dart';
 import '../../data/models/tour_item.dart';
@@ -39,8 +40,7 @@ class TravelBookingController extends ChangeNotifier {
   // =========================================================
   // 2. SERVICES (CALL API / DATA)
   // =========================================================
-
-  final ListAirportService _airportService = ListAirportService();
+  final Locale locale = PlatformDispatcher.instance.locale;
   final TourService _tourService = TourService();
   final CategoryService _categoryService = CategoryService();
   final ApiService _apiService = ApiService();
@@ -59,7 +59,6 @@ class TravelBookingController extends ChangeNotifier {
   // =========================================================
   // 4. INIT DATA
   // =========================================================
-
   /// Hàm khởi tạo dữ liệu ban đầu cho màn hình
   /// - Load airport
   /// - Load category
@@ -84,17 +83,19 @@ class TravelBookingController extends ChangeNotifier {
     );
 
     try {
+      final token = await TokenService.getToken();
       final results = await Future.wait([
-        _airportService.fetchListAirport(),
-        _categoryService.fetchTourCategories(),
-        _apiService.fetchTourDestinations(),
+        _categoryService.fetchTourCategories(locale, token!),
+        _apiService.fetchTourDestinations(locale, token!),
       ]);
-
+      final categories = List<TourCategory>.from(results[0] as List);
+      final destinations = List<TourDestination>.from(results[1] as List);
       final tourData = await _tourService.fetchTours(
         page: 1,
         sortBy: "priceSmallest",
+        locale: locale,
+        token: token
       );
-
       final rawTours = tourData['tours'] as List<TourItem>;
       final pagination = tourData['pagination'];
 
@@ -112,8 +113,8 @@ class TravelBookingController extends ChangeNotifier {
             initialList: rawTours,
             totalPages: pagination['last_page'] ?? 1,
             currentPage: 1,
-            categories: results[1] as List<TourCategory>,
-            destinations: results[2] as List<TourDestination>,
+            categories: categories,
+            destinations: destinations,
           ),
         ),
       );
@@ -141,8 +142,8 @@ class TravelBookingController extends ChangeNotifier {
     );
 
     try {
-      final detail =
-      await _tourDetailService.fetchTourDetail(q: name);
+      final token = await TokenService.getToken();
+      final detail = await _tourDetailService.fetchTourDetail(q: name, locale: locale, token: token);
 
       _updateState(
         _state.copyWith(
@@ -280,6 +281,7 @@ class TravelBookingController extends ChangeNotifier {
     ));
 
     try {
+      final token = await TokenService.getToken();
       final filters = state.filter;
 
       String sortParam = "ratingHighToLow";
@@ -305,6 +307,8 @@ class TravelBookingController extends ChangeNotifier {
         typeTours: filters.selectedTourTypes,
         propertyRatings: filters.selectedRatings,
         sortBy: sortParam,
+        locale: locale,
+        token: token
       );
 
       final List<TourItem> tours = result['tours'];
@@ -395,6 +399,7 @@ class TravelBookingController extends ChangeNotifier {
       ),
     );
     loadTourPage(1);
+    scrollToTop();
   }
 
   // =========================================================
@@ -483,10 +488,16 @@ class TravelBookingController extends ChangeNotifier {
   }
 
   /// Reset toàn bộ về trạng thái ban đầu
-  void resetToHome() {
-    _state = TravelBookingState.initial();
-    departureController.clear();
-    notifyListeners();
+  void resetToHome( String defaultDeparture) {
+    _updateState(_state.copyWith(
+      ui: BookingUIState.initial().copyWith(isInitialized: true),
+      filter: TravelFilterState.initial(),
+      form: BookingFormState.initial(),
+      tour: _state.tour.copyWith(
+        tourList: state.tour.initialList
+      )
+    ));
+    departureController.text = defaultDeparture;
   }
 
   /// Reset form nhưng giữ lại danh sách tour ban đầu
@@ -501,6 +512,7 @@ class TravelBookingController extends ChangeNotifier {
       ),
     );
   }
+
 
   // =========================================================
   // 12. DISPOSE

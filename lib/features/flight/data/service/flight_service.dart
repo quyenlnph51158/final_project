@@ -1,12 +1,23 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:final_project/features/flight/data/models/response/flight_search_response.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../models/flight_info.dart';
 import '../models/international_flight_pair.dart';
 
 class FlightService {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? '';
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: dotenv.env['BASE_URL'] ?? '',
+      connectTimeout: const Duration(seconds: 30),
+      headers:{
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    )
+  );
 
   Future<FlightSearchResponse> fetchFlightInfo({
     required String startAirport,
@@ -18,28 +29,36 @@ class FlightService {
     required int children,
     required int infant,
     String provider = 'VNA',
+    required String token
   }) async {
     final List<String> airlines = ['VIETJET', 'VNA', 'BAMBOO'];
 
     // Cập nhật: Gọi API song song với timeout riêng cho từng hãng
-    final results = await Future.wait(airlines.map((airline) => _searchByAirline(
-      airline: airline,
-      startAirport: startAirport,
-      endAirport: endAirport,
-      startDate: startDate,
-      returnDate: returnDate,
-      typeAirport: typeAirport,
-      adults: adults,
-      children: children,
-      infant: infant,
-      provider: provider,
-    ).timeout(
-      const Duration(seconds: 45), // Tăng lên 45s cho các chặng quốc tế phức tạp
-      onTimeout: () {
-        print("⚠️ Timeout hãng $airline - Bỏ qua kết quả hãng này");
-        return FlightSearchResponse(); // Trả về object rỗng nếu quá thời gian
-      },
-    )));
+    final results = await Future.wait(
+      airlines.map(
+        (airline) =>
+            _searchByAirline(
+              airline: airline,
+              startAirport: startAirport,
+              endAirport: endAirport,
+              startDate: startDate,
+              returnDate: returnDate,
+              typeAirport: typeAirport,
+              adults: adults,
+              children: children,
+              infant: infant,
+              provider: provider,
+              token: token
+            ).timeout(
+              const Duration(seconds: 45),
+              // Tăng lên 45s cho các chặng quốc tế phức tạp
+              onTimeout: () {
+                debugPrint("⚠️ Timeout hãng $airline - Bỏ qua kết quả hãng này");
+                return FlightSearchResponse(); // Trả về object rỗng nếu quá thời gian
+              },
+            ),
+      ),
+    );
 
     List<FlightInfo> allOutbound = [];
     List<FlightInfo> allReturn = [];
@@ -53,9 +72,9 @@ class FlightService {
     }
 
     return FlightSearchResponse(
-        outboundFlights: allOutbound,
-        returnFlights: allReturn,
-        internationalPairs: allInternationalPair
+      outboundFlights: allOutbound,
+      returnFlights: allReturn,
+      internationalPairs: allInternationalPair,
     );
   }
 
@@ -70,12 +89,11 @@ class FlightService {
     required int children,
     required int infant,
     required String provider,
+    required String token,
   }) async {
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/flight/search'),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode({
+      final response = await _dio.post('/flight/search',
+        queryParameters: {
           "start_airport": startAirport,
           "end_airport": endAirport,
           "start_date": startDate,
@@ -86,15 +104,20 @@ class FlightService {
           "infant": infant,
           "airline": airline,
           "provider": provider,
-        }),
+        },
+        options: Options(
+          headers: {
+            'Access-Token': token
+          }
+        )
       );
+
 
       if (response.statusCode != 200) {
         return FlightSearchResponse();
       }
 
-      final decoded = json.decode(response.body);
-      final data = decoded['data'];
+      final data = response.data['data'];
 
       // Kiểm tra dữ liệu thô: Nếu data là mảng rỗng [] (như Vietjet hay trả về khi lỗi) thì bỏ qua
       if (data == null || data is List || data['listAirport'] == null) {
@@ -137,7 +160,7 @@ class FlightService {
         internationalPairs: internationalPairs,
       );
     } catch (e) {
-      print("❌ Lỗi parse dữ liệu hãng $airline: $e");
+      debugPrint("❌ Lỗi parse dữ liệu hãng $airline: $e");
       return FlightSearchResponse();
     }
   }

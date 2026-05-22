@@ -1,107 +1,127 @@
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/shared/app_spacing.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
-import 'package:final_project/features/tour/presentation/widgets/widget_tour_screen.dart';
-import 'package:final_project/features/tour/presentation/widgets/pagination_control.dart';
-import 'package:flutter/foundation.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../../../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/shared/app_layout_spacing.dart';
-import '../../../../../core/design/tour/tour_layout_spacing.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../controller/travel_booking_controller.dart';
 import '../../state/travel_filter_state.dart';
 import '../../widgets/tour_card_item.dart';
+import '../../widgets/pagination_control.dart';
+import '../../widgets/widget_tour_screen.dart';
 
-class ListTourSection extends StatelessWidget{
+class ListTourSection extends StatelessWidget {
   const ListTourSection({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final controller=context.watch<TravelBookingController>();
+    final controller = context.watch<TravelBookingController>();
     final l10n = AppLocalizations.of(context)!;
+
     return Padding(
-      padding: TourLayoutSpacing.paddingFeaturedTourSection(context),
+      // Sử dụng lề chuẩn 12/16px đã được scale theo rw
+      padding: EdgeInsets.symmetric(horizontal: context.padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // 1. TIÊU ĐỀ DANH SÁCH
           Center(
             child: Text(
               controller.state.ui.isSearching
                   ? '${l10n.home_tourSectionTitleSearch} ${controller.state.form.destination}'
                   : l10n.tour_screenTourTitle,
-              style: AppStyles.tourSectionTitle(context),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _buildFilterButton(
-                    icon: Icons.tune, // Biểu tượng Lọc
-                    label: l10n.filter,
-                    onTap: () => _showFilterBottomSheet(context),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildFilterButton(
-                    icon: Icons.sort, // Biểu tượng Sắp xếp
-                    label: l10n.sort,
-                    onTap: () => _showSortBottomSheet(context),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SharedAppLayoutSpacing.labelandCard,
-          if (controller.state.tour.tourList.isEmpty)
-            Center(
-              child: Padding(
-                padding: TourLayoutSpacing.paddingTourCardError(context),
-                child: Text(l10n.error_tourNotFound,
-                    style: AppStyles.errorNotFound(context)),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: context.sp(22), // Dùng sp có clamp để tránh vỡ font
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF1D2939),
               ),
-            )
+            ),
+          ),
+
+          SizedBox(height: context.rh(16)), // Khoảng cách dọc ổn định
+          // 2. BỘ ĐÔI NÚT LỌC VÀ SẮP XẾP
+          Row(
+            children: [
+              Expanded(
+                child: _buildActionButton(
+                  context,
+                  icon: Icons.tune_rounded,
+                  label: l10n.filter,
+                  onTap: () => _showFilterBottomSheet(context),
+                ),
+              ),
+              SizedBox(width: context.rw(12)), // Khoảng cách ngang ổn định
+              Expanded(
+                child: _buildActionButton(
+                  context,
+                  icon: Icons.sort_rounded,
+                  label: l10n.sort,
+                  onTap: () => _showSortBottomSheet(context),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: context.rh(20)),
+
+          // 3. HIỂN THỊ KẾT QUẢ
+          if (controller.state.tour.tourList.isEmpty)
+            _buildEmptyState(context, l10n)
           else
-            ...controller.currentTours.map((tour) {
-              return Padding(
-                padding: TourLayoutSpacing.paddingTourCard(context),
-                child: TourCardItem(tour: tour,),
-              );
-            }).toList(),
-          AppSpacing.h4,
-          PaginationControl(),
+            Column(
+              children: controller.currentTours.map((tour) {
+                return Padding(
+                  padding: EdgeInsets.only(bottom: context.rh(16)),
+                  child: TourCardItem(tour: tour),
+                );
+              }).toList(),
+            ),
+
+          const PaginationControl(),
+          SizedBox(height: context.rh(20)),
         ],
       ),
     );
   }
-  // Widget tạo nút bo tròn như trong ảnh
-  Widget _buildFilterButton({
+
+  // --- WIDGET HELPER TỐI ƯU PIXEL-SCALE ---
+
+  Widget _buildActionButton(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(context.radius),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        // Chiều cao nút tối thiểu ~44px để đạt chuẩn Touch Target
+        padding: EdgeInsets.symmetric(vertical: context.rh(10)),
         decoration: BoxDecoration(
-          color: Colors.grey[100], // Màu nền nhạt
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: Colors.grey[300]!),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(context.radius),
+          border: Border.all(color: kBorderColor.withOpacity(0.6)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 18, color: Colors.black87),
-            const SizedBox(width: 8),
+            Icon(icon, size: context.icon(18), color: kPrimaryColor),
+            SizedBox(width: context.rw(8)),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: Colors.black87,
+                fontSize: context.sp(14),
+                color: kTextColor,
               ),
             ),
           ],
@@ -109,47 +129,105 @@ class ListTourSection extends StatelessWidget{
       ),
     );
   }
+
+  Widget _buildEmptyState(BuildContext context, AppLocalizations l10n) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: context.rh(40)),
+        child: Column(
+          children: [
+            Icon(
+              Icons.search_off_rounded,
+              size: context.icon(48),
+              color: Colors.grey[300],
+            ),
+            SizedBox(height: context.rh(12)),
+            Text(
+              l10n.error_tourNotFound,
+              style: TextStyle(fontSize: context.sp(14), color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showSortBottomSheet(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(context.radius * 1.5),
+        ),
       ),
       builder: (context) {
         return Consumer<TravelBookingController>(
           builder: (context, controller, child) {
-            // Định nghĩa danh sách option kèm theo Enum tương ứng
-            final List<Map<String, dynamic>> sortOptions = [
-              {'label': l10n.sort_highestRating, 'value': SortOption.highestRating},
-              {'label': l10n.sort_priceHighToLow, 'value': SortOption.priceHighToLow},
-              {'label': l10n.sort_priveLowToHigh, 'value': SortOption.priceLowToHigh},
-              {'label': l10n.sort_durationShortToLong, 'value': SortOption.durationShortToLong},
-              {'label': l10n.sort_durationLongToShort, 'value': SortOption.durationLongToShort},
+            final sortOptions = [
+              {
+                'label': l10n.sort_highestRating,
+                'value': SortOption.highestRating,
+              },
+              {
+                'label': l10n.sort_priceHighToLow,
+                'value': SortOption.priceHighToLow,
+              },
+              {
+                'label': l10n.sort_priveLowToHigh,
+                'value': SortOption.priceLowToHigh,
+              },
+              {
+                'label': l10n.sort_durationShortToLong,
+                'value': SortOption.durationShortToLong,
+              },
+              {
+                'label': l10n.sort_durationLongToShort,
+                'value': SortOption.durationLongToShort,
+              },
             ];
 
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 20),
+            return SafeArea(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(l10n.sort, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const Divider(),
+                  SizedBox(height: context.rh(12)),
+                  Text(
+                    l10n.sort,
+                    style: TextStyle(
+                      fontSize: context.sp(18),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Divider(height: context.rh(24)),
                   ...sortOptions.map((option) {
-                    final bool isSelected = controller.state.filter.sortBy == option['value'];
-
+                    final bool isSelected =
+                        controller.state.filter.sortBy == option['value'];
                     return ListTile(
-                      title: Text(option['label']),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: context.padding,
+                      ),
+                      title: Text(
+                        option['label'] as String,
+                        style: TextStyle(fontSize: context.sp(15)),
+                      ),
                       trailing: isSelected
-                          ? const Icon(Icons.check, color: Colors.teal)
+                          ? Icon(
+                              Icons.check_circle,
+                              color: kPrimaryColor,
+                              size: context.icon(20),
+                            )
                           : null,
                       onTap: () {
-                        // Truyền đúng kiểu SortOption (Enum) vào controller
-                        controller.updateSortOption(option['value']);
+                        controller.updateSortOption(
+                          option['value'] as SortOption,
+                        );
                         Navigator.pop(context);
                       },
                     );
                   }),
+                  SizedBox(height: context.rh(12)),
                 ],
               ),
             );
@@ -158,61 +236,90 @@ class ListTourSection extends StatelessWidget{
       },
     );
   }
+
   void _showFilterBottomSheet(BuildContext context) {
-    // final categories= context.watch<TravelBookingController>().state.tour.categories;
     final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Để sheet cao hơn
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(context.radius * 1.5),
+        ),
+      ),
       builder: (context) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.9,
+          initialChildSize: 0.75,
+          maxChildSize: 0.9,
+          minChildSize: 0.5,
           expand: false,
           builder: (context, scrollController) {
             return Column(
               children: [
-                // Header
-                Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(l10n.filter, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                // Handle bar
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: context.rh(12)),
+                  width: context.rw(40),
+                  height: context.rh(4),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                Text(
+                  l10n.filter,
+                  style: TextStyle(
+                    fontSize: context.sp(18),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Expanded(
                   child: ListView(
                     controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.all(context.padding),
                     children: [
                       FilterSectionTitle(title: l10n.review),
-                      RatingFilterGroup(),
-
-                      // _buildSectionTitle("Khu vực"),
-                      // const ExpansionTile(title: Text("Miền Bắc")),
-                      // const ExpansionTile(title: Text("Miền Trung")),
-                      // const ExpansionTile(title: Text("Miền Nam")),
-
+                      const RatingFilterGroup(),
+                      SizedBox(height: context.rh(24)),
                       FilterSectionTitle(title: l10n.sort),
-                      // Sử dụng Consumer để tối ưu việc rebuild chỉ trong vùng này
-                      TourTypeFilterGroup(),
+                      const TourTypeFilterGroup(),
                     ],
                   ),
                 ),
-                // Nút Áp dụng (Floating at bottom)
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+                // Nút Áp dụng (Sticky)
+                SafeArea(
+                  child: Padding(
+                    padding: EdgeInsets.all(context.padding),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: context.rh(48).clamp(45, 55),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kPrimaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(context.radius),
+                          ),
+                          elevation: 0,
+                        ),
+                        onPressed: () {
+                          context
+                              .read<TravelBookingController>()
+                              .applyFilters();
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          l10n.apply,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: context.sp(16),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
-                    onPressed: () {
-                      context.read<TravelBookingController>().applyFilters(); // Thực thi lọc dữ liệu
-                      Navigator.pop(context);    // Đóng BottomSheet
-                    },
-                    child: Text(l10n.apply, style: TextStyle(color: Colors.white, fontSize: 16)),
                   ),
-                )
+                ),
               ],
             );
           },

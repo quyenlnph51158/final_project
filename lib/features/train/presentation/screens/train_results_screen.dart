@@ -1,261 +1,325 @@
-import 'package:flutter/material.dart';
+import 'package:final_project/app/l10n/app_localizations.dart';
 import 'package:final_project/core/constants/colors.dart';
+import 'package:final_project/core/constants/image_link.dart';
+import 'package:final_project/features/flight/presentation/widgets/flight_result_card/button_continue.dart';
+import 'package:final_project/features/train/presentation/form/input_passenger_form.dart';
+import 'package:final_project/features/train/presentation/modals/train_filter_bottom_sheet.dart';
+import 'package:final_project/features/train/presentation/section/header_train_result.dart';
+import 'package:final_project/features/train/presentation/widgets/train_ticket_card.dart';
+import 'package:final_project/shared/footer/app_footer.dart';
+import 'package:final_project/shared/header/custom_app_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../../shared/header/app_drawer.dart';
+import '../../../../core/utils/responsive_layout.dart';
+import '../../data/models/train_model.dart';
+import '../controller/train_controller.dart';
 
-// ======================= MODEL TÀU HỎA =======================
-class TrainResult {
-  final String trainCompany;
-  final String trainCompanyLogoUrl;
-  final String trainNumber; // Số hiệu tàu (SE1, TN2, v.v.)
-  final String departureTime;
-  final String arrivalTime;
-  final String departureStation;
-  final String arrivalStation;
-  final String duration;
-  final String lowestPrice; // Giá vé thấp nhất
-  final String price; // Giá vé hiển thị
+class TrainResultScreen extends StatefulWidget {
+  const TrainResultScreen({super.key});
 
-  TrainResult({
-    required this.trainCompany,
-    required this.trainCompanyLogoUrl,
-    required this.trainNumber,
-    required this.departureTime,
-    required this.arrivalTime,
-    required this.departureStation,
-    required this.arrivalStation,
-    required this.duration,
-    required this.lowestPrice,
-    required this.price,
-  });
+  @override
+  State<TrainResultScreen> createState() => _TrainResultScreenState();
 }
 
-// ======================= HÀM TẠO CARD =======================
-Widget buildTrainResultCard(BuildContext context, TrainResult train) {
-  void _selectTrainAndContinue(BuildContext context, TrainResult selectedTrain) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Đã chọn tàu ${selectedTrain.trainNumber} (${selectedTrain.departureStation} → ${selectedTrain.arrivalStation})',
+class _TrainResultScreenState extends State<TrainResultScreen> {
+  bool isFillingInfoPassenger = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final controller = context.read<TrainController>();
+      controller.fetchTrain();
+      controller.scrollToKey(controller.departureTrainList);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = context.watch<TrainController>();
+    final state = controller.state;
+    final l10n = AppLocalizations.of(context)!;
+
+    List<TrainModel> currentTrains;
+    String currentStation;
+
+    if (state.form.isRoundTrip) {
+      currentStation = state.ui.isViewingReturnTrain
+          ? " ${state.form.Destination} ${l10n.to} ${state.form.Departure}"
+          : " ${state.form.Departure} ${l10n.to} ${state.form.Destination}";
+      currentTrains = state.ui.isViewingReturnTrain
+          ? state.data.ReturnListTrain ?? []
+          : state.data.DepartureListTrain ?? [];
+    } else {
+      currentStation =
+          "${state.form.Departure} ${l10n.to} ${state.form.Destination}";
+      currentTrains = state.data.DepartureListTrain ?? [];
+    }
+
+    return Scaffold(
+      endDrawer: const AppDrawer(),
+      backgroundColor: kBackgroundColor,
+      body: SafeArea(
+        child: CustomScrollView(
+          controller: controller.scrollController,
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // 1. APP BAR
+            const SliverToBoxAdapter(
+              child: CustomAppBar(
+                image: ImageLink.logoAppHeaderBackgroundWhite,
+                backgroundColor: kPrimaryColor,
+              ),
+            ),
+
+            // 2. HEADER TÌM KIẾM
+            const SliverToBoxAdapter(child: HeaderTrainResult()),
+
+            if (isFillingInfoPassenger) ...[
+              const SliverToBoxAdapter(child: InputPassengerForm()),
+            ] else ...[
+              // 3. NÚT LỌC (Sử dụng rh và rw thay cho %)
+              SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.padding,
+                  vertical: context.rh(8), // Cố định 8px theo tỷ lệ thiết kế
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: InkWell(
+                    onTap: () => TrainFilterBottomSheet.show(context),
+                    borderRadius: BorderRadius.circular(context.radius * 2),
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: context.rh(10)),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEFEDED),
+                        borderRadius: BorderRadius.circular(context.radius * 2),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.tune_rounded,
+                            size: context.icon(18),
+                            color: kTextColor,
+                          ),
+                          SizedBox(width: context.rw(8)),
+                          Text(
+                            l10n.filter,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: context.sp(16),
+                              color: kTextColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // 4. CHUYẾN ĐI ĐÃ CHỌN
+              if (state.ui.isSelectedDepartureTrain) ...[
+                _buildTitle(
+                  context,
+                  l10n.selected_trip_from_to(
+                    state.form.Departure,
+                    state.form.Destination,
+                  ),
+                ),
+                _buildTextChangeButton(
+                  context,
+                  l10n,
+                  onTap: controller.backToSelectDepartureTrain,
+                ),
+                SliverToBoxAdapter(
+                  child: TrainTicketCard(
+                    key: const ValueKey('_selected_departure'),
+                    train: state.data.SelectedDepartureTrain!,
+                    seat: state.data.SelectedDepartureSeatClass,
+                  ),
+                ),
+              ],
+
+              if (state.ui.isSelectedReturnTrain) ...[
+                _buildTitle(
+                  context,
+                  l10n.selected_trip_from_to(
+                    state.form.Destination,
+                    state.form.Departure,
+                  ),
+                ),
+                _buildTextChangeButton(
+                  context,
+                  l10n,
+                  onTap: controller.backToSelectReturnTrain,
+                ),
+                SliverToBoxAdapter(
+                  child: TrainTicketCard(
+                    key: const ValueKey('selected_return'),
+                    train: state.data.SelectedReturnTrain!,
+                    seat: state.data.SelectedReturnSeatClass,
+                  ),
+                ),
+              ],
+
+              // 5. DANH SÁCH KẾT QUẢ
+              if ((state.form.isRoundTrip &&
+                      (!state.ui.isSelectedDepartureTrain ||
+                          !state.ui.isSelectedReturnTrain)) ||
+                  (!state.form.isRoundTrip &&
+                      !state.ui.isSelectedDepartureTrain)) ...[
+                if (!state.ui.isSelectedDepartureTrain)
+                  _buildTitle(
+                    context,
+                    l10n.select_trip_from(currentStation),
+                    key: controller.departureTrainList,
+                  ),
+                if (state.form.isRoundTrip &&
+                    state.ui.isSelectedDepartureTrain &&
+                    !state.ui.isSelectedReturnTrain)
+                  _buildTitle(
+                    context,
+                    l10n.select_trip_from(currentStation),
+                    key: controller.returnTrainList,
+                  ),
+
+                if (state.ui.isLoading)
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: CircularProgressIndicator(color: kPrimaryColor),
+                    ),
+                  )
+                else if (currentTrains.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Text(
+                        l10n.no_trains_found,
+                        style: TextStyle(
+                          fontSize: context.sp(15),
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return TrainTicketCard(
+                        key: ValueKey(
+                          '${currentTrains[index].trainCode}_${state.ui.isViewingReturnTrain}',
+                        ),
+                        train: currentTrains[index],
+                      );
+                    }, childCount: currentTrains.length),
+                  ),
+              ],
+
+              // 6. NÚT TIẾP TỤC
+              if (state.form.isRoundTrip) ...[
+                if (state.ui.isSelectedDepartureTrain &&
+                    state.ui.isSelectedReturnTrain)
+                  _buildStickyButton(
+                    key: controller.continueButton,
+                    context,
+                    child: ContinueButton(
+                      onPressed: () =>
+                          setState(() => isFillingInfoPassenger = true),
+
+                    ),
+                  ),
+              ] else ...[
+                if (state.ui.isSelectedDepartureTrain)
+                  _buildStickyButton(
+                    key: controller.continueButton,
+                    context,
+                    child: ContinueButton(
+                      onPressed: () =>
+                          setState(() => isFillingInfoPassenger = true),
+                    ),
+                  ),
+              ],
+            ],
+            SliverToBoxAdapter(child: SizedBox(height: context.rh(35))),
+            const SliverToBoxAdapter(child: AppFooter()),
+          ],
         ),
-        duration: const Duration(seconds: 2),
       ),
     );
   }
 
-  return GestureDetector(
-    onTap: () => _selectTrainAndContinue(context, train),
-    child: Container(
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.15),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.train, color: kPrimaryColor, size: 28),
-          const SizedBox(width: 8),
-          Text(
-            train.trainNumber,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kPrimaryColor),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      train.departureTime,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(width: 4),
-                    const Text("–", style: TextStyle(color: Colors.grey, fontSize: 14)),
-                    const SizedBox(width: 4),
-                    Text(
-                      train.arrivalTime,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  "${train.departureStation} → ${train.arrivalStation}",
-                  style: const TextStyle(fontSize: 13, color: Colors.grey),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  "Thời gian: ${train.duration}",
-                  style: const TextStyle(fontSize: 13, color: Colors.grey),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                train.lowestPrice,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepOrange,
-                ),
-              ),
-              const SizedBox(height: 4),
-              ElevatedButton(
-                onPressed: () => _selectTrainAndContinue(context, train),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kPrimaryColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  'Chọn tàu',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                  ),
-                ),
-              )
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
-}
+  // --- WIDGET HELPER (Đã tối ưu pixel-scale) ---
 
-// ======================= MÀN HÌNH CHÍNH =======================
-class TrainResultScreen extends StatelessWidget {
-  const TrainResultScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    final trains = [
-      TrainResult(
-        trainCompany: 'Đường Sắt Việt Nam',
-        trainCompanyLogoUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5b/VNR_logo.png',
-        trainNumber: 'SE1',
-        departureStation: 'Hà Nội',
-        arrivalStation: 'Đà Nẵng',
-        departureTime: '06:00',
-        arrivalTime: '13:45',
-        duration: '7h 45m',
-        lowestPrice: '450.000đ',
-        price: '450.000đ',
+  Widget _buildTitle(BuildContext context, String content, {Key? key}) {
+    return SliverToBoxAdapter(
+      key: key,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: context.padding,
+          right: context.padding,
+          top: context.rh(20),
+          bottom: context.rh(8),
+        ),
+        child: Text(
+          content,
+          style: TextStyle(
+            fontSize: context.sp(18),
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF1D2939),
+          ),
+        ),
       ),
-      TrainResult(
-        trainCompany: 'VietRail Express',
-        trainCompanyLogoUrl: 'https://cdn-icons-png.flaticon.com/512/1061/1061810.png',
-        trainNumber: 'TN2',
-        departureStation: 'Hà Nội',
-        arrivalStation: 'Đà Nẵng',
-        departureTime: '09:15',
-        arrivalTime: '17:05',
-        duration: '7h 50m',
-        lowestPrice: '520.000đ',
-        price: '520.000đ',
-      ),
-      TrainResult(
-        trainCompany: 'Saigon Railway',
-        trainCompanyLogoUrl: 'https://cdn-icons-png.flaticon.com/512/786/786432.png',
-        trainNumber: 'SE3',
-        departureStation: 'Hà Nội',
-        arrivalStation: 'Đà Nẵng',
-        departureTime: '12:30',
-        arrivalTime: '20:20',
-        duration: '7h 50m',
-        lowestPrice: '490.000đ',
-        price: '490.000đ',
-      ),
-    ];
+    );
+  }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chọn chuyến tàu'),
-        backgroundColor: kPrimaryColor,
-        foregroundColor: Colors.white,
-      ),
-      backgroundColor: const Color(0xFFF7F8FA),
-      body: SingleChildScrollView(
-        child: Column(
+  Widget _buildTextChangeButton(
+    BuildContext context,
+    AppLocalizations l10n, {
+    required VoidCallback onTap,
+  }) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: context.padding,
+          vertical: context.rh(4),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    blurRadius: 5,
-                    offset: const Offset(0, 2))
-              ]),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    '20-11-2025: Hà Nội → Sài Gòn',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(4),
+              child: Padding(
+                padding: EdgeInsets.all(context.rw(4)),
+                child: Text(
+                  l10n.text_change_btn,
+                  style: TextStyle(
+                    color: kPrimaryColor,
+                    fontSize: context.sp(14),
+                    fontWeight: FontWeight.w600,
+                    decoration: TextDecoration.underline,
                   ),
-                  SizedBox(height: 6),
-                  Text(
-                    '1 Người lớn | 1 Chiều',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  SizedBox(height: 6),
-                  Text(
-                    'Thay đổi',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w500,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: trains.length,
-              itemBuilder: (context, index) =>
-                  buildTrainResultCard(context, trains[index]),
             ),
           ],
         ),
       ),
     );
   }
-}
 
-// ======================= MAIN =======================
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Ứng dụng Đặt vé Tàu',
-      theme: ThemeData(
-        primaryColor: kPrimaryColor,
-        useMaterial3: true,
+  Widget _buildStickyButton(BuildContext context, {required Widget child, Key? key}) {
+    return SliverToBoxAdapter(
+      child: Container(
+        key: key,
+        padding: EdgeInsets.all(context.padding),
+        decoration: const BoxDecoration(color: kBackgroundColor),
+        child: child,
       ),
-      home: const TrainResultScreen(),
     );
   }
 }

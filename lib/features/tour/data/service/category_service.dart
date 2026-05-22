@@ -1,37 +1,57 @@
-import 'dart:convert';
+import 'dart:ui';
+import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
 import '../models/tour_category.dart';
-import 'package:final_project/features/tour/data/models/response/api_category_response.dart';
 
 class CategoryService {
-  // Thay thế bằng URL API thực tế của bạn
-  final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: dotenv.env['BASE_URL'] ?? '',
+      connectTimeout: const Duration(seconds: 30),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    ),
+  );
 
   // Hàm lấy danh sách danh mục tour
-  Future<List<TourCategory>> fetchTourCategories() async {
-    final url = Uri.parse('$_baseUrl/tour/category'); // Thay đổi endpoint
+  Future<List<TourCategory>> fetchTourCategories(
+    Locale locale,
+    String token,
+  ) async {
 
     try {
-      final response = await http.get(url);
-
+      final response = await _dio.get(
+          '/tour/category',
+          queryParameters: {
+            'locale': locale.languageCode
+          },
+          options: Options(
+              headers: {
+                'Access-Token': token
+              }
+          )
+      );
       if (response.statusCode == 200) {
-        // Giải mã body phản hồi từ JSON string sang Map
-        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-
-        // Tạo đối tượng ApiResponse từ json
-        final apiResponse = ApiResponse.fromJson(jsonResponse);
-
         // Kiểm tra status nếu cần
-        if (apiResponse.status == 1) {
-          return apiResponse.data;
+        if (response.data['data']['data'] != null) {
+          List<dynamic> data = response.data['data']['data'];
+          return data
+              .map(
+                (item) =>
+                    TourCategory.fromJson(Map<String, dynamic>.from(item)),
+              )
+              .toList();
         } else {
           // Xử lý lỗi từ API (ví dụ: status != 1)
-          throw Exception('Lỗi từ API: ${apiResponse.message}');
+          throw Exception('Lỗi từ API: ${response.data['message']}');
         }
       } else {
         // Xử lý lỗi HTTP status code
-        throw Exception('Không thể tải danh mục tour. Status code: ${response.statusCode}');
+        throw Exception(
+          'Không thể tải danh mục tour. Status code: ${response.statusCode}',
+        );
       }
     } catch (e) {
       // Xử lý lỗi kết nối, giải mã JSON, v.v.

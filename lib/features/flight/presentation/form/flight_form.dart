@@ -1,6 +1,5 @@
 import 'package:final_project/core/constants/colors.dart';
 import 'package:final_project/features/flight/presentation/controller/flight_controller.dart';
-import 'package:final_project/features/flight/presentation/modals/passenger_selection%20_flightScreen_modal.dart';
 import 'package:final_project/features/flight/presentation/modals/show_airport_list.dart';
 import 'package:final_project/features/flight/presentation/section/flight_screen/flight_date_picker_section.dart';
 import 'package:final_project/features/flight/presentation/widgets/flight_screen/search_flight_button.dart';
@@ -13,6 +12,7 @@ import '../../../../core/design/flight/flight_shape.dart';
 import '../../../tour/presentation/booking/input/flight_train_location_input.dart';
 import '../../../tour/presentation/booking/widgets/trip_type_button.dart';
 import '../inputs/passenger_input_field.dart';
+import '../modals/passenger_selection_flightScreen_modal.dart';
 
 class FlightForm extends StatelessWidget {
   const FlightForm({super.key});
@@ -31,17 +31,17 @@ class FlightForm extends StatelessWidget {
             TripTypeButton(
               text: l10n.form_tripRoundTrip,
               isSelected: state.criteria.roundTrip==true,
-              onPressed: () => controller.updateTripType(true,l10n),
+              onPressed: () => controller.updateTripType(true),
             ),
-            const SizedBox(width: FlightLayoutSpacing.gapTripType),
+            SizedBox(width: FlightLayoutSpacing.gapTripType(context)),
             TripTypeButton(
               text: l10n.form_tripOneWay,
               isSelected: state.criteria.roundTrip==false,
-              onPressed: () => controller.updateTripType(false,l10n),
+              onPressed: () => controller.updateTripType(false),
             ),
           ],
         ),
-        const SizedBox(height: FlightLayoutSpacing.gapFormField),
+        SizedBox(height: FlightLayoutSpacing.gapFormField(context)),
         // 3. Điểm khởi hành
         FormFieldWrapper(
           child: FlightTrainLocationInput(

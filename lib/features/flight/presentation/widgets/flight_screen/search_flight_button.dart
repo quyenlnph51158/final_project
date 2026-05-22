@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../../../../../core/constants/colors.dart';
 import '../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/flight/flight_shape.dart';
 import '../../../../../core/design/flight/flight_size.dart';
 import '../../../../../core/design/flight/flight_style.dart';
 import '../../controller/flight_controller.dart';
@@ -16,7 +14,7 @@ class SearchFlightButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final controller = context.read<FlightController>();
+    final controller = context.watch<FlightController>();
     return SizedBox(
       width: double.infinity,
       height: FlightSize.btnSearchHeight(context),
@@ -29,13 +27,19 @@ class SearchFlightButton extends StatelessWidget {
         ),
         label: Text(text, style: FlightStyle.buttonSearch),
         onPressed: () {
-          if (controller.state.ui.selectedFlightTab == FlightTab.flight) {
-            controller.navigateToFlightResults(context);
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.home_trainSearchSnackbar)),
-            );
-          }
+            controller.validateForm(l10n);
+            if (controller.state.ui.errorMessage != '') {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(controller.state.ui.errorMessage),
+                  backgroundColor: Colors.red,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            } else {
+              controller.navigateToFlightResults(context);
+            }
+
         },
       ),
     );

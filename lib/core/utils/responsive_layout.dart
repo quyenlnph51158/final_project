@@ -1,80 +1,34 @@
 import 'package:flutter/material.dart';
 
-class ResponsiveLayout extends StatelessWidget {
-  final Widget mobile;
-  final Widget? tablet;
-  final Widget? desktop;
+extension ResponsiveLayout on BuildContext {
+  MediaQueryData get _media => MediaQuery.of(this);
 
-  const ResponsiveLayout({
-    super.key,
-    required this.mobile,
-    this.tablet,
-    this.desktop,
-  });
+  double get screenWidth => _media.size.width;
+  double get screenHeight => _media.size.height;
 
-  static bool isSmallMobile(BuildContext context) =>
-      MediaQuery.sizeOf(context).width < 350;
+  static const double _baseWidth = 375;
+  static const double _baseHeight = 812;
 
-  static bool isMobile(BuildContext context) =>
-      MediaQuery.sizeOf(context).width < 600;
+  double get _widthScale =>
+      (screenWidth / _baseWidth).clamp(0.85, 1.2);
 
-  static bool isTablet(BuildContext context) =>
-      MediaQuery.sizeOf(context).width >= 600 &&
-          MediaQuery.sizeOf(context).width < 1024;
+  double get _heightScale =>
+      (screenHeight / _baseHeight).clamp(0.85, 1.1);
 
-  static bool isDesktop(BuildContext context) =>
-      MediaQuery.sizeOf(context).width >= 1024;
+  bool get isSmallPhone => screenWidth < 360;
 
-  static double screenWidth(BuildContext context) =>
-      MediaQuery.sizeOf(context).width;
+  /// scale theo thiết kế
+  double rw(double size) => size * _widthScale;
+  double rh(double size) => size * _heightScale;
 
-  static double screenHeight(BuildContext context) =>
-      MediaQuery.sizeOf(context).height;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth >= 1024) {
-          return desktop ?? tablet ?? mobile;
-        }
-        if (constraints.maxWidth >= 600) {
-          return tablet ?? mobile;
-        }
-        return mobile;
-      },
-    );
+  double sp(double size) {
+    final textScale = _media.textScaleFactor.clamp(1.0, 1.05);
+    return (size * _widthScale * textScale).clamp(10.0, 40.0);
   }
-}
 
-extension ResponsiveContext on BuildContext {
-  bool get isSmallMobile => ResponsiveLayout.isSmallMobile(this);
-  bool get isMobile => ResponsiveLayout.isMobile(this);
-  bool get isTablet => ResponsiveLayout.isTablet(this);
-  bool get isDesktop => ResponsiveLayout.isDesktop(this);
+  double get padding => rw(isSmallPhone ? 12 : 16);
 
-  bool get isLandscape =>
-      MediaQuery.of(this).orientation == Orientation.landscape;
+  double get radius => rw(isSmallPhone ? 10 : 14);
 
-  double get width => ResponsiveLayout.screenWidth(this);
-  double get height => ResponsiveLayout.screenHeight(this);
-
-  /// Width percentage
-  double wp(double percent) => width * (percent / 100);
-
-  /// Height percentage
-  double hp(double percent) => height * (percent / 100);
-
-  /// Scalable text size
-  double sp(double baseSize) {
-    final media = MediaQuery.of(this);
-    const baseWidth = 375.0;
-
-    double scale = media.size.width / baseWidth;
-    scale = scale.clamp(0.8, 2.0);
-
-    double finalSize = baseSize * scale * media.textScaleFactor;
-
-    return finalSize.clamp(8.0, 200.0); // tránh quá nhỏ hoặc quá lớn
-  }
+  double icon(double size) => size * _widthScale;
 }

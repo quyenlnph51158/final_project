@@ -27,7 +27,7 @@ class PromotionSection extends StatelessWidget {
               style: AppStyles.promotionSectionTitle(context),
             ),
           ),
-          TourLayoutSpacing.titleAndPromotionCard,
+          SizedBox(height: TourLayoutSpacing.titleAndPromotionCard(context)),
           ...PromotionData.promotions.map((promotion) {
             return Padding(
               padding: TourLayoutSpacing.paddingBottomPromotionCard(context),

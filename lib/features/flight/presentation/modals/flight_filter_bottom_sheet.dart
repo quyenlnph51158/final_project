@@ -1,6 +1,6 @@
+import 'package:final_project/app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/constants/colors.dart'; // Giả định chứa kPrimaryColor
-import '../../../../../core/design/flight/flight_shape.dart';
 import '../../../../../core/design/flight/flight_style.dart';
 import 'package:provider/provider.dart';
 import '../controller/flight_controller.dart';
@@ -22,15 +22,15 @@ class FlightFilterBottomSheet extends StatefulWidget {
 }
 
 class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
-  // Trạng thái giả lập (Nên đưa vào một FilterModel trong thực tế)
-  final Map<String, String> _airlines = {"Vietnam Airlines": "Vietnam Airlines", "Vietjet Air": "Vietjet Air", "Bamboo Airways": "Bamboo Airways"};
-  final Map<String, int> _stops = {"Bay thẳng": 0, "1 Chặng dừng": 1, "2 Chặng dừng": 2};
-  final Map<String, String> _timeRanges = {"Sớm (0 AM - 5:59 AM)": "Sớm", "Sáng (6 AM - 11:59 AM)": "Sáng", "Trưa (12 PM - 5:59 PM)": "Trưa", "Tối (6 PM - 11:59 PM)": "Tối"};
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<FlightController>();
     final filter = controller.state.filter;
+    final l10n = AppLocalizations.of(context)!;
+    final Map<String, String> _airlines = {"Vietnam Airlines": "Vietnam Airlines", "Vietjet Air": "Vietjet Air", "Bamboo Airways": "Bamboo Airways"};
+    final Map<String, int> _stops = {l10n.direct_flight: 0, l10n.one_stop: 1, l10n.two_stops: 2};
+    final Map<String, String> _timeRanges = {l10n.time_early: "Sớm", l10n.time_morning: "Sáng", l10n.time_afternoon: "Trưa", l10n.time_evening: "Tối"};
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -40,7 +40,7 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
       child: Column(
         children: [
           // 1. Header
-          _buildHeader(context),
+          _buildHeader(context, l10n),
 
           // 2. Nội dung cuộn
           Expanded(
@@ -49,15 +49,15 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle(context, "Hãng hàng không"),
+                  _buildSectionTitle(context, l10n.airlines),
                   ..._airlines.entries.map((e) => _buildCheckboxRow(title: e.key, isSelected: filter.selectedAirlineSystem.contains(e.value), onToggle: () => controller.toggleAirlineSystem(e.value))),
 
                   const SizedBox(height: 24),
-                  _buildSectionTitle(context, "Chặng dừng"),
+                  _buildSectionTitle(context, l10n.stop),
                   ..._stops.entries.map((e) => _buildCheckboxRow(title: e.key, isSelected: filter.selectedStopPoint.contains(e.value), onToggle: () => controller.toggleStopPoint(e.value))),
 
                   const SizedBox(height: 24),
-                  _buildSectionTitle(context, "Giờ khởi hành"),
+                  _buildSectionTitle(context, l10n.departure_time),
                   ..._timeRanges.entries.map((e) => _buildCheckboxRow(title: e.key, isSelected: filter.selectedTimeDeparture.contains(e.value), onToggle: () => controller.toggleTimeDeparture(e.value))),
                 ],
               ),
@@ -65,13 +65,13 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
           ),
 
           // 3. Nút Áp dụng
-          _buildApplyButton(context),
+          _buildApplyButton(context, l10n),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       decoration: BoxDecoration(
@@ -84,7 +84,7 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
           const Icon(Icons.tune_rounded, size: 20),
           const SizedBox(width: 12),
           Text(
-            'Lọc',
+            l10n.filter,
             style: FlightStyle.sectionTitleBold(context).copyWith(fontSize: 18),
           ),
           const Spacer(),
@@ -135,7 +135,7 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
     );
   }
 
-  Widget _buildApplyButton(BuildContext context) {
+  Widget _buildApplyButton(BuildContext context, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -154,8 +154,8 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
             backgroundColor: const Color(0xFF006677), // Màu Teal đậm trong ảnh
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          child: const Text(
-            'Áp dụng',
+          child: Text(
+            l10n.apply,
             style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),

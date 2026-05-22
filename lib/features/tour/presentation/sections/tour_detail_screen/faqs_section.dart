@@ -34,7 +34,6 @@ class _FaqSectionState extends State<FaqSection> {
           Padding(
             padding: TourLayoutSpacing.paddingFaqsTitleAndItem(context),
             child: Text(
-              key: widget.key,
               l10n.consultation_faqs,
               style: AppStyles.faqTitle(context),
             ),
@@ -77,7 +76,7 @@ class _FaqSectionState extends State<FaqSection> {
                       style: AppStyles.faqQuestion(context),
                     ),
                   ),
-                  TourLayoutSpacing.iconAndValue,
+                  SizedBox(height: TourLayoutSpacing.iconAndValue(context)),
                   // Icon xoay mượt mà giống NewsCard
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,

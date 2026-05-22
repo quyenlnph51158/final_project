@@ -1,5 +1,4 @@
 import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:final_project/core/utils/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../core/constants/colors.dart';
@@ -18,36 +17,37 @@ class TripTypeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget button = OutlinedButton(
-      onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        // Sử dụng các màu sắc từ hằng số của bạn
-        backgroundColor: isSelected ? kPrimaryColor : kBackgroundColor,
-        side: BorderSide(
-          color: isSelected ? kPrimaryColor : kBorderColor,
-          width: 1.5,
+    // Luôn sử dụng Expanded vì trên Mobile các nút loại hình tour thường chia đều theo hàng ngang
+    return Expanded(
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          backgroundColor: isSelected ? kPrimaryColor : kBackgroundColor,
+          side: BorderSide(
+            color: isSelected ? kPrimaryColor : kBorderColor,
+            width: 1.5,
+          ),
+          // Sử dụng độ bo góc từ extension (context.radius)
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(context.radius),
+          ),
+          // Sử dụng padding đã định nghĩa theo sp()
+          padding: TourLayoutSpacing.paddingTripTypeButton(context),
+          elevation: 0,
         ),
-        shape: AppStyles.tripTypeButton,
-        padding: TourLayoutSpacing.paddingTripTypeButton(context),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          // Nếu chọn thì màu trắng (hoặc kHeaderTextColor), không chọn thì màu đen
-          color: isSelected ? kHeaderTextColor : kTextColor,
-          fontWeight: FontWeight.bold,
+        child: Text(
+          text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            // Nếu chọn thì chữ đậm và màu sáng, không chọn thì chữ thường
+            color: isSelected ? Colors.white : kTextColor,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            // Font chữ co giãn theo màn hình bằng context.sp
+            fontSize: context.sp(14),
+          ),
         ),
       ),
-    );
-    /// MOBILE → full width
-    if (context.isMobile==true) {
-    return Expanded(child: button);
-    }
-
-    /// TABLET / DESKTOP → fixed width
-    return SizedBox(
-    width: 180,
-    child: button,
     );
   }
 }

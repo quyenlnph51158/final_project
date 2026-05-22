@@ -1,3 +1,4 @@
+import 'package:final_project/app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,7 @@ import '../../../../core/design/flight/flight_shape.dart';
 import '../../../../core/design/flight/flight_size.dart';
 import '../../../../core/design/flight/flight_style.dart';
 import '../../../../core/utils/date_picker.dart';
-import '../../../../core/utils/responsive_layout.dart';
+import '../../../../core/utils/responsive_layout.dart'; // Import extension
 
 // Controller & Models
 import '../controller/flight_controller.dart';
@@ -51,57 +52,64 @@ class _PassengerInfoFormState extends State<PassengerInfoForm> {
     final int adultCount = state.criteria.adultCount;
     final int childCount = state.criteria.childCount;
     final int infantCount = state.criteria.infantCount;
+    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: FlightLayoutSpacing.screenHorizontalPadding,
+      padding: EdgeInsets.symmetric(
+        // Sử dụng rw cho padding ngang
+        horizontal: context.rw(16),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: FlightLayoutSpacing.gapHeader(context)),
+          SizedBox(height: context.rh(20)), // Khoảng cách header responsive
           Text(
-            'Nhập thông tin khách hàng',
-            style: FlightStyle.sectionHeader(context),
+            l10n.enter_passenger_info,
+            style: FlightStyle.sectionHeader(context).copyWith(
+              fontSize: context.sp(18), // Responsive font size
+            ),
           ),
-          SizedBox(height: FlightLayoutSpacing.gapSection(context)),
+          SizedBox(height: context.rh(16)),
 
           // 1. KHỐI THÔNG TIN CÁ NHÂN
           _buildInfoBox(
-            title: 'Thông tin cá nhân',
-            description: '* Vui lòng đảm bảo rằng bạn nhập tên như trên hộ chiếu. Số ký tự tối đa là 32.',
+            l10n,
+            title: l10n.personal_info,
+            description: l10n.passenger_name_note,
             child: Column(
               children: [
                 for (int i = 1; i <= adultCount; i++)
-                  _buildPassengerInputGroup(context, 'Người lớn $i', isInfant: false),
+                  _buildPassengerInputGroup(l10n, context, '${l10n.adult} $i', isInfant: false),
                 for (int i = 1; i <= childCount; i++)
-                  _buildPassengerInputGroup(context, 'Trẻ em $i', isInfant: false),
+                  _buildPassengerInputGroup(l10n, context, '${l10n.child} $i', isInfant: false),
                 for (int i = 1; i <= infantCount; i++)
-                  _buildPassengerInputGroup(context, 'Em bé $i', isInfant: true, adultCount: adultCount),
+                  _buildPassengerInputGroup(l10n, context, '${l10n.infant} $i', isInfant: true, adultCount: adultCount),
               ],
             ),
-            tip: 'Mẹo nhập tên',
+            tip: l10n.tip_enter_name,
           ),
-          SizedBox(height: FlightLayoutSpacing.gapSection(context)),
+          SizedBox(height: context.rh(20)),
 
           // 2. KHỐI THÔNG TIN LIÊN HỆ
           _buildInfoBox(
-            title: 'Thông tin liên hệ',
-            description: '* Vui lòng điền thông tin để nhận thông báo hành trình.',
+            l10n,
+            title: l10n.contact_info,
+            description: l10n.contact_note,
             child: _buildContactSection(context),
           ),
 
-          SizedBox(height: FlightLayoutSpacing.gapPassengerGroup),
+          SizedBox(height: context.rh(24)),
           // 3. NÚT TIẾP TỤC
-          _buildContinueButton(context),
+          _buildContinueButton(context, l10n),
 
-          SizedBox(height: FlightLayoutSpacing.gapFooter(context)),
+          SizedBox(height: context.rh(40)),
         ],
       ),
     );
   }
 
   Widget _buildContactSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -113,79 +121,81 @@ class _PassengerInfoFormState extends State<PassengerInfoForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildLabel('Mã quốc gia'),
-                  SizedBox(height: FlightLayoutSpacing.gapLabel(context)),
+                  _buildLabel(l10n.country_code),
+                  SizedBox(height: context.rh(8)),
                   _buildCountryPicker(context),
                 ],
               ),
             ),
-            SizedBox(width: FlightLayoutSpacing.gapInputHorizontal(context)),
+            SizedBox(width: context.rw(12)), // Responsive gap giữa input
             Expanded(
               flex: 5,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildLabel('Số điện thoại'),
-                  SizedBox(height: FlightLayoutSpacing.gapLabel(context)),
+                  _buildLabel(l10n.phone_number),
+                  SizedBox(height: context.rh(8)),
                   TextField(
-                    decoration: _inputDecoration(context, 'Số điện thoại'),
+                    decoration: _inputDecoration(context, l10n.phone_number),
                     keyboardType: TextInputType.phone,
-                    style: FlightStyle.fieldValue(context),
+                    style: TextStyle(fontSize: context.sp(14)),
                   ),
                 ],
               ),
             ),
           ],
         ),
-        SizedBox(height: FlightLayoutSpacing.gapInput(context)),
-        _buildLabel('Email'),
-        SizedBox(height: FlightLayoutSpacing.gapLabel(context)),
+        SizedBox(height: context.rh(16)),
+        _buildLabel(l10n.email),
+        SizedBox(height: context.rh(8)),
         TextField(
-          decoration: _inputDecoration(context, 'Email'),
+          decoration: _inputDecoration(context, l10n.email),
           keyboardType: TextInputType.emailAddress,
-          style: FlightStyle.fieldValue(context),
+          style: TextStyle(fontSize: context.sp(14)),
         ),
-        SizedBox(height: FlightLayoutSpacing.gapInput(context)),
-        _buildLabel('Yêu cầu đặc biệt'),
-        SizedBox(height: FlightLayoutSpacing.gapLabel(context)),
+        SizedBox(height: context.rh(16)),
+        _buildLabel(l10n.special_request),
+        SizedBox(height: context.rh(8)),
         TextField(
-          decoration: _inputDecoration(context, 'Nội dung'),
+          decoration: _inputDecoration(context, l10n.request_content),
           maxLines: 3,
-          style: FlightStyle.fieldValue(context),        ),
+          style: TextStyle(fontSize: context.sp(14)),
+        ),
       ],
     );
   }
 
   Widget _buildCountryPicker(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return DropdownSearch<CountryCodeModel>(
       items: (filter, loadProps) => CountryCodeData.countries,
       compareFn: (item, selectedItem) => item.code == selectedItem.code,
       dropdownBuilder: (context, selectedItem) {
         return Container(
-          height: FlightLayoutSpacing.dropdownBuilderHeight,
+          height: context.rh(48), // Responsive height
           alignment: Alignment.centerLeft,
           child: Text(
             selectedItem != null ? "${selectedItem.flag} ${selectedItem.dialCode}" : "Chọn",
-            style: FlightStyle.fieldValue(context),
+            style: TextStyle(fontSize: context.sp(14)),
           ),
         );
       },
       popupProps: PopupProps.menu(
         showSearchBox: true,
         searchFieldProps: TextFieldProps(
-          decoration: _inputDecoration(context, 'Tìm tên...').copyWith(
-            prefixIcon: Icon(Icons.search, size: FlightSize.iconSizeSmall(context)),
+          decoration: _inputDecoration(context, l10n.search).copyWith(
+            prefixIcon: Icon(Icons.search, size: context.icon(20)),
           ),
         ),
         itemBuilder: (context, country, isSelected, isHighlighted) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: context.rw(12), vertical: context.rh(8)),
             child: Row(
               children: [
-                Text(country.flag, style: FlightStyle.countryFlag(context)),
-                const SizedBox(width: 12),
-                Expanded(child: Text(country.name, style: FlightStyle.countryName(context), overflow: TextOverflow.ellipsis)),
-                Text(country.dialCode, style: FlightStyle.countryDialCode(context)),
+                Text(country.flag, style: TextStyle(fontSize: context.sp(20))),
+                SizedBox(width: context.rw(12)),
+                Expanded(child: Text(country.name, style: TextStyle(fontSize: context.sp(14)), overflow: TextOverflow.ellipsis)),
+                Text(country.dialCode, style: TextStyle(fontSize: context.sp(14), fontWeight: FontWeight.bold)),
               ],
             ),
           );
@@ -195,110 +205,110 @@ class _PassengerInfoFormState extends State<PassengerInfoForm> {
     );
   }
 
-  Widget _buildContinueButton(BuildContext context) {
+  Widget _buildContinueButton(BuildContext context, AppLocalizations l10n) {
     return SizedBox(
       width: double.infinity,
-      height: FlightSize.btnContinueHeight(context),
+      height: context.rh(50), // Chiều cao nút responsive
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          // Trigger logic thanh toán OnePAY tại đây
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: kPrimaryColor,
           shape: RoundedRectangleBorder(
-            borderRadius: FlightShape.borderRadiusSmall(context),
+            borderRadius: BorderRadius.circular(context.rw(8)),
           ),
         ),
         child: Text(
-          'Tiếp tục',
-          style: FlightStyle.buttonLarge(context),
+          l10n.continue_button,
+          style: TextStyle(fontSize: context.sp(16), fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
     );
   }
 
-  Widget _buildInfoBox({required String title, required String description, required Widget child, String? tip}) {
+  Widget _buildInfoBox(AppLocalizations l10n, {required String title, required String description, required Widget child, String? tip}) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(FlightLayoutSpacing.cardPaddingInner),
+      padding: EdgeInsets.all(context.rw(16)),
       decoration: BoxDecoration(
         color: kBackgroundColor,
-        borderRadius: FlightShape.borderRadiusLarge(context),
-        border: Border.all(color: kBorderColor, width: FlightShape.borderThin),
+        borderRadius: BorderRadius.circular(context.rw(12)),
+        border: Border.all(color: kBorderColor, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: FlightStyle.infoBoxTitle(context)),
-          Divider(height: FlightLayoutSpacing.gapDivider(context), color: kBorderColor.withOpacity(0.5)),
-          Text(description, style: FlightStyle.infoBoxDescription(context)),
+          Text(title, style: TextStyle(fontSize: context.sp(16), fontWeight: FontWeight.bold)),
+          Divider(height: context.rh(24), color: kBorderColor.withOpacity(0.5)),
+          Text(description, style: TextStyle(fontSize: context.sp(13), color: Colors.grey[700])),
           if (tip != null && tip.isNotEmpty) ...[
-            SizedBox(height: FlightLayoutSpacing.gapLabel(context)),
+            SizedBox(height: context.rh(8)),
             GestureDetector(
               onTap: () => showModalBottomSheet(
                 context: context,
-                shape: RoundedRectangleBorder(borderRadius: FlightShape.borderRadiusBottomSheet),
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
                 builder: (context) => const TipForEnterName(),
               ),
-              child: Text(tip, style: FlightStyle.linkButton(context)),
+              child: Text(tip, style: TextStyle(fontSize: context.sp(13), color: kPrimaryColor, decoration: TextDecoration.underline)),
             ),
           ],
-          SizedBox(height: FlightLayoutSpacing.gapInput(context)),
+          SizedBox(height: context.rh(16)),
           child,
         ],
       ),
     );
   }
 
-  Widget _buildPassengerInputGroup(BuildContext context, String label, {required bool isInfant, int? adultCount}) {
+  Widget _buildPassengerInputGroup(AppLocalizations l10n, BuildContext context, String label, {required bool isInfant, int? adultCount}) {
     final controller = _getController(label);
     return Padding(
-      padding: const EdgeInsets.only(bottom: FlightLayoutSpacing.gapPassengerGroup),
+      padding: EdgeInsets.only(bottom: context.rh(20)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: FlightStyle.passengerGroupLabel(context)),
-          SizedBox(height: FlightLayoutSpacing.gapInput(context)),
-          _buildLabel('Danh xưng'),
+          Text(label, style: TextStyle(fontSize: context.sp(15), fontWeight: FontWeight.bold, color: kPrimaryColor)),
+          SizedBox(height: context.rh(12)),
+          _buildLabel(l10n.salutation),
           DropdownButtonFormField<String>(
-            decoration: _inputDecoration(context, 'Chọn danh xưng'),
-            style: TextStyle(fontSize: context.sp(16), color: Colors.black),
-            items: ['Ông', 'Bà', 'Cô', 'Anh', 'Chị'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+            decoration: _inputDecoration(context, l10n.select_salutation),
+            items: l10n.titles.split(',').map((e) => DropdownMenuItem(value: e, child: Text(e, style: TextStyle(fontSize: context.sp(14))))).toList(),
             onChanged: (v) {},
           ),
-          SizedBox(height: FlightLayoutSpacing.gapInput(context)),
-          _buildLabel('Họ (như trên hộ chiếu)'),
-          TextField(decoration: _inputDecoration(context, 'VD: NGUYEN'), style: FlightStyle.fieldValue(context)),
-          SizedBox(height: FlightLayoutSpacing.gapInput(context)),
-          _buildLabel('Tên đệm & Tên (như trên hộ chiếu)'),
-          TextField(decoration: _inputDecoration(context, 'VD: VAN AN'), style: FlightStyle.fieldValue(context)),
-          SizedBox(height: FlightLayoutSpacing.gapInput(context)),
-          _buildLabel('Ngày sinh'),
+          SizedBox(height: context.rh(12)),
+          _buildLabel(l10n.last_name_passport),
+          TextField(decoration: _inputDecoration(context, l10n.example_last_name), style: TextStyle(fontSize: context.sp(14))),
+          SizedBox(height: context.rh(12)),
+          _buildLabel(l10n.first_middle_name_passport),
+          TextField(decoration: _inputDecoration(context, l10n.example_first_middle_name), style: TextStyle(fontSize: context.sp(14))),
+          SizedBox(height: context.rh(12)),
+          _buildLabel(l10n.birthday),
           TextField(
             controller: controller,
             keyboardType: TextInputType.number,
-            style: FlightStyle.fieldValue(context),
+            style: TextStyle(fontSize: context.sp(14)),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(8), DateInputFormatter()],
             decoration: _inputDecoration(context, 'dd-mm-yyyy').copyWith(
               suffixIcon: IconButton(
-                icon: Icon(Icons.calendar_today_outlined, size: FlightSize.iconSizeSmall(context)),
+                icon: Icon(Icons.calendar_today_outlined, size: context.icon(18)),
                 onPressed: () => _handlePickDate(context, controller),
               ),
             ),
           ),
           if (isInfant && adultCount != null && adultCount > 0) ...[
-            SizedBox(height: FlightLayoutSpacing.gapInput(context)),
-            _buildLabel('Đi cùng người lớn'),
+            SizedBox(height: context.rh(12)),
+            _buildLabel(l10n.accompanying_adult),
             DropdownButtonFormField<String>(
-              decoration: _inputDecoration(context, 'Chọn người lớn đi cùng'),
-              items: List.generate(adultCount, (index) => DropdownMenuItem(value: 'Adult $index', child: Text('Người lớn ${index + 1}'))).toList(),
+              decoration: _inputDecoration(context, l10n.select_accompanying_adult),
+              items: List.generate(adultCount, (index) => DropdownMenuItem(value: 'Adult $index', child: Text('${l10n.adult} ${index + 1}', style: TextStyle(fontSize: context.sp(14))))).toList(),
               onChanged: (v) {},
             ),
           ],
-          SizedBox(height: FlightLayoutSpacing.gapSection(context)),
-          _buildFrequentFlyerCard(),
+          SizedBox(height: context.rh(20)),
+          _buildFrequentFlyerCard(l10n),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: FlightLayoutSpacing.gapPassengerGroup),
+            padding: EdgeInsets.symmetric(vertical: context.rh(16)),
             child: Divider(color: kBorderColor.withOpacity(0.5)),
           ),
         ],
@@ -306,34 +316,34 @@ class _PassengerInfoFormState extends State<PassengerInfoForm> {
     );
   }
 
-  Widget _buildFrequentFlyerCard() {
+  Widget _buildFrequentFlyerCard(AppLocalizations l10n) {
     return Container(
-      padding: const EdgeInsets.all(FlightLayoutSpacing.cardPaddingInner),
+      padding: EdgeInsets.all(context.rw(12)),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: FlightShape.borderRadiusLarge(context),
-        border: Border.all(color: kBorderColor, width: FlightShape.borderThin),
+        borderRadius: BorderRadius.circular(context.rw(10)),
+        border: Border.all(color: kBorderColor, width: 0.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.card_membership, size: FlightSize.iconSizeSmall(context), color: kTextColor),
-              const SizedBox(width: 8),
-              Text('Thẻ bay thường xuyên', style: FlightStyle.frequentFlyerTitle(context)),
+              Icon(Icons.card_membership, size: context.icon(18), color: kTextColor),
+              SizedBox(width: context.rw(8)),
+              Text(l10n.frequent_flyer_card, style: TextStyle(fontSize: context.sp(14), fontWeight: FontWeight.w600)),
             ],
           ),
-          const Divider(height: FlightLayoutSpacing.gapPassengerGroup),
-          _buildLabel('Hãng bay'),
+          Divider(height: context.rh(20)),
+          _buildLabel(l10n.airline),
           DropdownButtonFormField<String>(
-            decoration: _inputDecoration(context, 'Chọn hãng bay'),
-            items: ['Vietnam Airlines', 'Bamboo Airways', 'Vietjet Air'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+            decoration: _inputDecoration(context, l10n.select_airline),
+            items: ['Vietnam Airlines', 'Bamboo Airways', 'Vietjet Air'].map((e) => DropdownMenuItem(value: e, child: Text(e, style: TextStyle(fontSize: context.sp(14))))).toList(),
             onChanged: (v) {},
           ),
-          SizedBox(height: FlightLayoutSpacing.gapInput(context)),
-          _buildLabel('Số thẻ'),
-          TextField(decoration: _inputDecoration(context, 'Nhập số thẻ'), style: FlightStyle.fieldValue(context)),
+          SizedBox(height: context.rh(12)),
+          _buildLabel(l10n.card_number),
+          TextField(decoration: _inputDecoration(context, l10n.enter_card_number), style: TextStyle(fontSize: context.sp(14))),
         ],
       ),
     );
@@ -341,8 +351,8 @@ class _PassengerInfoFormState extends State<PassengerInfoForm> {
 
   Widget _buildLabel(String text) {
     return Padding(
-      padding: EdgeInsets.only(bottom: FlightLayoutSpacing.gapLabel(context)),
-      child: Text(text, style: FlightStyle.inputLabel(context)),
+      padding: EdgeInsets.only(bottom: context.rh(4)),
+      child: Text(text, style: TextStyle(fontSize: context.sp(13), fontWeight: FontWeight.w500, color: Colors.black87)),
     );
   }
 
@@ -351,13 +361,13 @@ class _PassengerInfoFormState extends State<PassengerInfoForm> {
       hintText: hint,
       filled: true,
       fillColor: Colors.white,
-      hintStyle: FlightStyle.hintStyle(context),
+      hintStyle: TextStyle(fontSize: context.sp(13), color: Colors.grey),
       contentPadding: EdgeInsets.symmetric(
-        horizontal: FlightSize.inputContentPaddingH,
-        vertical: FlightSize.inputContentPaddingV,
+        horizontal: context.rw(12),
+        vertical: context.rh(12),
       ),
-      border: FlightShape.inputOutlineBorder(context),
-      enabledBorder: FlightShape.inputOutlineBorder(context),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(context.rw(8)), borderSide: const BorderSide(color: kBorderColor)),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(context.rw(8)), borderSide: const BorderSide(color: kBorderColor)),
     );
   }
 

@@ -20,7 +20,7 @@ class DestinationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(FlightLayoutSpacing.destinationPadding),
+      padding: EdgeInsets.all(FlightLayoutSpacing.destinationPadding(context)),
       // **Không sử dụng InkWell/GestureDetector**
       child: Container(
         width: itemWidth,
@@ -63,9 +63,9 @@ class DestinationItem extends StatelessWidget {
 
             // 3. Tên điểm đến (Định vị ở dưới cùng)
             Positioned(
-              bottom: FlightLayoutSpacing.destinationContentOffset,
-              left: FlightLayoutSpacing.destinationContentOffset,
-              right: FlightLayoutSpacing.destinationContentOffset,
+              bottom: FlightLayoutSpacing.destinationContentOffset(context),
+              left: FlightLayoutSpacing.destinationContentOffset(context),
+              right: FlightLayoutSpacing.destinationContentOffset(context),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -78,8 +78,8 @@ class DestinationItem extends StatelessWidget {
                     margin: EdgeInsets.only(
                       top: FlightLayoutSpacing.gapSmall(context) / 2,
                     ),
-                    width: FlightSize.destinationIndicatorWidth,
-                    height: FlightSize.destinationIndicatorHeight,
+                    width: FlightSize.destinationIndicatorWidth(context),
+                    height: FlightSize.destinationIndicatorHeight(context),
                     color: Colors.white,
                   ),
                 ],

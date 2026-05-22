@@ -19,7 +19,7 @@ class AboutUsItem extends StatelessWidget{
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, color: kIconAboutUsItem, size: AppSizes.iconAboutUsItem(context)),
-        TourLayoutSpacing.iconAndtitleAboutUsItem,
+        SizedBox(height: TourLayoutSpacing.iconAndtitleAboutUsItem(context)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +29,7 @@ class AboutUsItem extends StatelessWidget{
                 style:
                 AppStyles.titleAboutUsItem(context),
               ),
-              TourLayoutSpacing.titleAndSubtitleAboutUsItem,
+              SizedBox(height: TourLayoutSpacing.titleAndSubtitleAboutUsItem(context)),
               Text(
                 subtitle,
                 style: AppStyles.subtitleAboutUsItem(context),

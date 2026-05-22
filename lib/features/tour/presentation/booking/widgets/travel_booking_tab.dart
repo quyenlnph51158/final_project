@@ -39,7 +39,7 @@ class TravelBookingTab extends StatelessWidget {
                 border: Border(
                   bottom: BorderSide(
                     color: isSelected ? kPrimaryColor : Colors.transparent,
-                    width: AppSizes.wTabBorder,
+                    width: AppSizes.wTabBorder(context),
                   ),
                 ),
               ),

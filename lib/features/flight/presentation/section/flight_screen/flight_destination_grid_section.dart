@@ -10,8 +10,8 @@ class FlightDestinationGridSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: FlightLayoutSpacing.gridHorizontalPadding,
+      padding: EdgeInsets.symmetric(
+        horizontal: FlightLayoutSpacing.gridHorizontalPadding(context),
       ),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate((context, index) {
@@ -21,8 +21,8 @@ class FlightDestinationGridSection extends StatelessWidget {
         }, childCount: InternationalDestinationData.interDestination.length),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
-          crossAxisSpacing: FlightLayoutSpacing.gridGap,
-          mainAxisSpacing: FlightLayoutSpacing.gridGap,
+          crossAxisSpacing: FlightLayoutSpacing.gridGap(context),
+          mainAxisSpacing: FlightLayoutSpacing.gridGap(context),
           childAspectRatio: FlightSize.destinationAspectRatio,
         ),
       ),
