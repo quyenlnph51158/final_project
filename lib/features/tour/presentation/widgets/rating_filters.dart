@@ -1,8 +1,7 @@
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_sizes.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../app/l10n/app_localizations.dart';
+import '../../../../core/utils/responsive_layout.dart';
 
 class RatingFilters extends StatefulWidget {
   final List<dynamic> reviews; // Thay 'dynamic' bằng kiểu dữ liệu Review của bạn
@@ -21,11 +20,13 @@ class _RatingFiltersState extends State<RatingFilters> {
     const List<int> ratings = [0, 5, 4, 3, 2, 1];
 
     return Container(
-      padding: TourLayoutSpacing.paddingRatingFilter(context),
-      height: AppSizes.ratingFilters(context),
+      padding: EdgeInsets.symmetric(
+        vertical: context.rh(10),
+      ),
+      height: context.rh(55),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: TourLayoutSpacing.paddingRatingFilterState(context),
+        padding: EdgeInsets.symmetric(horizontal: context.padding),
         itemCount: ratings.length,
         itemBuilder: (context, index) {
           final rating = ratings[index];
@@ -44,7 +45,7 @@ class _RatingFiltersState extends State<RatingFilters> {
           }
 
           return Padding(
-            padding: TourLayoutSpacing.paddingRatingFilterItem(context),
+            padding: EdgeInsets.only(right: context.rw(8)),
             child: ChoiceChip(
               label: Text(text),
               selected: isSelected,

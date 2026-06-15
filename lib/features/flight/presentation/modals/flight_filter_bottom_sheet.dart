@@ -1,8 +1,8 @@
+import 'package:final_project/app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/constants/colors.dart'; // Giả định chứa kPrimaryColor
-import '../../../../../core/design/flight/flight_shape.dart';
-import '../../../../../core/design/flight/flight_style.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/utils/responsive_layout.dart';
 import '../controller/flight_controller.dart';
 
 void showFlightFilter(BuildContext context) {
@@ -18,19 +18,32 @@ class FlightFilterBottomSheet extends StatefulWidget {
   const FlightFilterBottomSheet({super.key});
 
   @override
-  State<FlightFilterBottomSheet> createState() => _FlightFilterBottomSheetState();
+  State<FlightFilterBottomSheet> createState() =>
+      _FlightFilterBottomSheetState();
 }
 
 class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
-  // Trạng thái giả lập (Nên đưa vào một FilterModel trong thực tế)
-  final Map<String, String> _airlines = {"Vietnam Airlines": "Vietnam Airlines", "Vietjet Air": "Vietjet Air", "Bamboo Airways": "Bamboo Airways"};
-  final Map<String, int> _stops = {"Bay thẳng": 0, "1 Chặng dừng": 1, "2 Chặng dừng": 2};
-  final Map<String, String> _timeRanges = {"Sớm (0 AM - 5:59 AM)": "Sớm", "Sáng (6 AM - 11:59 AM)": "Sáng", "Trưa (12 PM - 5:59 PM)": "Trưa", "Tối (6 PM - 11:59 PM)": "Tối"};
-
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<FlightController>();
     final filter = controller.state.filter;
+    final l10n = AppLocalizations.of(context)!;
+    final Map<String, String> _airlines = {
+      "Vietnam Airlines": "Vietnam Airlines",
+      "Vietjet Air": "Vietjet Air",
+      "Bamboo Airways": "Bamboo Airways",
+    };
+    final Map<String, int> _stops = {
+      l10n.direct_flight: 0,
+      l10n.one_stop: 1,
+      l10n.two_stops: 2,
+    };
+    final Map<String, String> _timeRanges = {
+      l10n.time_early: "Sớm",
+      l10n.time_morning: "Sáng",
+      l10n.time_afternoon: "Trưa",
+      l10n.time_evening: "Tối",
+    };
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -40,7 +53,7 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
       child: Column(
         children: [
           // 1. Header
-          _buildHeader(context),
+          _buildHeader(context, l10n),
 
           // 2. Nội dung cuộn
           Expanded(
@@ -49,29 +62,54 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle(context, "Hãng hàng không"),
-                  ..._airlines.entries.map((e) => _buildCheckboxRow(title: e.key, isSelected: filter.selectedAirlineSystem.contains(e.value), onToggle: () => controller.toggleAirlineSystem(e.value))),
+                  _buildSectionTitle(context, l10n.airlines),
+                  ..._airlines.entries.map(
+                    (e) => _buildCheckboxRow(
+                      title: e.key,
+                      isSelected: filter.selectedAirlineSystem.contains(
+                        e.value,
+                      ),
+                      onToggle: () => ()
+                          // controller.toggleAirlineSystem(e.value),
+                    ),
+                  ),
 
                   const SizedBox(height: 24),
-                  _buildSectionTitle(context, "Chặng dừng"),
-                  ..._stops.entries.map((e) => _buildCheckboxRow(title: e.key, isSelected: filter.selectedStopPoint.contains(e.value), onToggle: () => controller.toggleStopPoint(e.value))),
+                  _buildSectionTitle(context, l10n.stop),
+                  ..._stops.entries.map(
+                    (e) => _buildCheckboxRow(
+                      title: e.key,
+                      isSelected: filter.selectedStopPoint.contains(e.value),
+                      onToggle: () =>()
+                          // controller.toggleStopPoint(e.value),
+                    ),
+                  ),
 
                   const SizedBox(height: 24),
-                  _buildSectionTitle(context, "Giờ khởi hành"),
-                  ..._timeRanges.entries.map((e) => _buildCheckboxRow(title: e.key, isSelected: filter.selectedTimeDeparture.contains(e.value), onToggle: () => controller.toggleTimeDeparture(e.value))),
+                  _buildSectionTitle(context, l10n.departure_time),
+                  ..._timeRanges.entries.map(
+                    (e) => _buildCheckboxRow(
+                      title: e.key,
+                      isSelected: filter.selectedTimeDeparture.contains(
+                        e.value,
+                      ),
+                      onToggle: () => ()
+                          // controller.toggleTimeDeparture(e.value),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
 
           // 3. Nút Áp dụng
-          _buildApplyButton(context),
+          _buildApplyButton(context, l10n),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       decoration: BoxDecoration(
@@ -84,14 +122,18 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
           const Icon(Icons.tune_rounded, size: 20),
           const SizedBox(width: 12),
           Text(
-            'Lọc',
-            style: FlightStyle.sectionTitleBold(context).copyWith(fontSize: 18),
+            l10n.filter,
+            style: TextStyle(
+              fontSize: context.sp(16),
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ).copyWith(fontSize: 18),
           ),
           const Spacer(),
           IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.close),
-          )
+          ),
         ],
       ),
     );
@@ -102,16 +144,20 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
       padding: const EdgeInsets.only(bottom: 12),
       child: Text(
         title,
-        style: FlightStyle.sectionTitleBold(context).copyWith(
-          color: const Color(0xFF01171B),
-          fontSize: 16,
-        ),
+        style: TextStyle(
+          fontSize: context.sp(16),
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ).copyWith(color: const Color(0xFF01171B), fontSize: 16),
       ),
     );
   }
 
-  Widget _buildCheckboxRow({ required String title, required bool isSelected, required VoidCallback onToggle}) {
-
+  Widget _buildCheckboxRow({
+    required String title,
+    required bool isSelected,
+    required VoidCallback onToggle,
+  }) {
     return InkWell(
       onTap: onToggle,
       child: Padding(
@@ -119,23 +165,29 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
         child: Row(
           children: [
             SizedBox(
-              height: 24, width: 24,
+              height: 24,
+              width: 24,
               child: Checkbox(
                 value: isSelected,
                 activeColor: kPrimaryColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
                 onChanged: (_) => onToggle(),
               ),
             ),
             const SizedBox(width: 12),
-            Text(title, style: const TextStyle(fontSize: 14, color: kTextColor)),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 14, color: kTextColor),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildApplyButton(BuildContext context) {
+  Widget _buildApplyButton(BuildContext context, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -147,16 +199,22 @@ class _FlightFilterBottomSheetState extends State<FlightFilterBottomSheet> {
         height: 50,
         child: ElevatedButton(
           onPressed: () {
-            context.read<FlightController>().applyFilter();
+            // context.read<FlightController>().applyFilter();
             Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF006677), // Màu Teal đậm trong ảnh
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
-          child: const Text(
-            'Áp dụng',
-            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          child: Text(
+            l10n.apply,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),

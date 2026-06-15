@@ -1,10 +1,7 @@
 import 'package:final_project/core/constants/colors.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../../core/design/flight/flight_shape.dart';
-import '../../../../../core/design/flight/flight_size.dart';
-import '../../../../../core/design/flight/flight_style.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 
 class FlightFeatureCard extends StatelessWidget {
   final IconData icon;
@@ -22,43 +19,43 @@ class FlightFeatureCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 361,
-      height: FlightSize.featureCardHeight(context),
+      height: context.rh(200),
       child: Card(
         color: kBackgroundColor,
         elevation: 2,
         shape: RoundedRectangleBorder(
-          borderRadius: FlightShape.borderRadiusLarge(context),
-          side: BorderSide(color: kBorderColor, width: FlightShape.borderThin),
+          borderRadius: BorderRadius.circular(context.sp(16)),
+          side:  BorderSide(width: 1.0),
         ),
         child: Padding(
-          padding: FlightLayoutSpacing.featureCardPadding,
+          padding: EdgeInsets.symmetric(horizontal: context.rw(16.0)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(FlightLayoutSpacing.iconWrapperPadding),
+                padding: EdgeInsets.all(context.rw(12.0)),
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
-                  borderRadius: FlightShape.borderRadiusSmall(context),
+                  borderRadius: BorderRadius.circular(context.sp(8)),
                 ),
                 child: Icon(
                   icon,
-                  size: FlightSize.featureIconSize(context),
+                  size: context.icon(40),
                   color: Colors.blue.shade700,
                 ),
               ),
-              SizedBox(height: FlightLayoutSpacing.gapMedium(context)),
+              SizedBox(height: context.rw(16.0)),
               Text(
                 title,
-                style: FlightStyle.featureCardTitle(context),
+                style: TextStyle(fontSize: context.sp(16), fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              SizedBox(height: FlightLayoutSpacing.gapSmall(context)),
+              SizedBox(height: context.rw(8.0)),
               Text(
                 subtitle,
-                style: FlightStyle.featureCardSubtitle(context),
+                style: TextStyle(fontSize: context.sp(14), color: Colors.grey.shade700),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

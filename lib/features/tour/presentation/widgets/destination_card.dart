@@ -1,11 +1,9 @@
 import 'package:final_project/core/constants/app_icons.dart';
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_sizes.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../app/l10n/app_localizations.dart';
+import '../../../../core/utils/responsive_layout.dart';
 import '../../data/models/tour_category.dart';
 import '../controller/travel_booking_controller.dart';
 
@@ -20,12 +18,11 @@ class DestinationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final controller = context.read<TravelBookingController>();
 
     return Container(
-      width: AppSizes.imageCategory(context),
-      margin: TourLayoutSpacing.marginDestinationCard(context),
+      width: context.rw(130),
+      margin: EdgeInsets.symmetric(horizontal: context.rw(4)),
       child: InkWell(
         onTap: () {
           // ✅ GỌI CONTROLLER – KHÔNG setState
@@ -40,7 +37,7 @@ class DestinationCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
                   category.image,
-                  width: AppSizes.imageCategory(context),
+                  width: context.rw(130),
                   fit: BoxFit.cover,
                   loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) return child;
@@ -57,13 +54,13 @@ class DestinationCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: TourLayoutSpacing.categoryNameAndImage(context),
+              padding: EdgeInsets.only(top: context.rh(4)),
               child: Center(
                 child: Text(
                   category.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppStyles.categoryName(context)
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: context.sp(20))
                 ),
               ),
             ),

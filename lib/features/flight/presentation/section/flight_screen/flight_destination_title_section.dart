@@ -1,7 +1,6 @@
-import 'package:final_project/core/design/shared/app_layout_spacing.dart';
 import 'package:flutter/material.dart';
 import '../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/shared/app_style.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 
 class FlightDestinationTitleSection extends StatelessWidget {
   const FlightDestinationTitleSection({super.key});
@@ -13,13 +12,16 @@ class FlightDestinationTitleSection extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Column(
         children: [
-          SharedAppLayoutSpacing.section,
+          SizedBox(height: context.rh(32)),
           Text(
             l10n.flight_screen_top_destinations,
-            style: SharedAppStyle.titleSection(context),
+            style: TextStyle(
+              fontSize: context.sp(20),
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
           ),
-          SharedAppLayoutSpacing.labelandCard,
+          SizedBox(height: context.rh(16)),
         ],
       ),
     );

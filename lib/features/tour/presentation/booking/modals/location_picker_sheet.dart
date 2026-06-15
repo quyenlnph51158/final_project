@@ -1,14 +1,10 @@
 import 'package:final_project/core/constants/app_icons.dart';
-import 'package:final_project/core/design/tour/tour_dividers.dart';
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_shape.dart';
-import 'package:final_project/core/design/tour/tour_sizes.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:final_project/features/tour/data/models/tour_destination.dart';
 import 'package:final_project/shared/widgets/drag_indicator.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../core/constants/colors.dart';
 import '../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 
 class LocationPickerSheet<T extends TourDestination>
     extends StatefulWidget {
@@ -50,20 +46,23 @@ class _LocationPickerSheetState<T extends TourDestination>
         children: [
           // Thanh kéo (Handle) và Tiêu đề
           Padding(
-            padding: TourLayoutSpacing.paddingHandleAndTitle(context),
+            padding: EdgeInsets.all(context.rw(12)),
             child: Column(
               children: [
                 const DragIndicator(),
-                TourLayoutSpacing.handleAndTitle,
+                SizedBox(height: context.rh(8)),
                 Text(widget.title,
-                    style: AppStyles.titleShowList(context)
+                    style: TextStyle(fontSize: context.sp(18), fontWeight: FontWeight.bold)
                 ),
               ],
             ),
           ),
           // SEARCH
           Padding(
-            padding: TourLayoutSpacing.paddingSearchBox(context),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.padding,
+              vertical: context.rh(8),
+            ),
             child: TextField(
               controller: _searchController,
               onChanged: (_) => setState(() {}),
@@ -72,8 +71,10 @@ class _LocationPickerSheetState<T extends TourDestination>
                 prefixIcon: AppIcons.iconSearchBox,
                 filled: true,
                 fillColor: kFormFieldBackground,
-                border: AppShape.borderSearchBox,
-                contentPadding: TourLayoutSpacing.paddingContentSearchBox(context)
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: kBorderColor)),
+                contentPadding: EdgeInsets.symmetric(vertical: context.rh(15))
               ),
             ),
           ),
@@ -90,18 +91,34 @@ class _LocationPickerSheetState<T extends TourDestination>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ListTile(
-                      leading: item.image != null
-                        ? Image.network(
-                        item.image!,
-                        width: AppSizes.wImageLocation(context),
-                        height: AppSizes.hImageLocation(context),
-                        fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return const Center(child: CircularProgressIndicator());
-                        },
-                        errorBuilder: (_, __, ___) =>
-                        AppIcons.iconLocation,
+                      leading: item.image != null? ClipRRect( // Nên bọc ClipRRect ở đây để ảnh và loading đều bo góc
+                        borderRadius: BorderRadius.circular(8), // Hoặc dùng design system của bạn
+                        child: Image.network(
+                          item.image!,
+                          width: context.rw(37),
+                          height: context.rh(36),
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            // SỬA TẠI ĐÂY: Dùng SizedBox thay vì Center đơn thuần
+                            return SizedBox(
+                              width: context.rw(37),
+                              height: context.rh(36),
+                              child: const Center(
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (_, __, ___) => SizedBox(
+                            width: context.rw(37),
+                            height: context.rh(36),
+                            child: AppIcons.iconLocation,
+                          ),
+                        ),
                       )
                           : AppIcons.iconLocation,
                       title: Text(item.label),
@@ -111,7 +128,9 @@ class _LocationPickerSheetState<T extends TourDestination>
                         Navigator.pop(context);
                       },
                     ),
-                    TourDividers.AirportAndStationName
+                    Divider(
+                      thickness: 1.0,
+                    )
                   ],
                 );
               },

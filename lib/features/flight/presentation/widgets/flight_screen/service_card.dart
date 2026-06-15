@@ -2,10 +2,7 @@ import 'package:final_project/core/data/model/extra_service_model.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 
-import '../../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../../core/design/flight/flight_shape.dart';
-import '../../../../../core/design/flight/flight_size.dart';
-import '../../../../../core/design/flight/flight_style.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 
 class ServiceCard extends StatelessWidget {
   final ExtraServiceModel service;
@@ -23,11 +20,11 @@ class ServiceCard extends StatelessWidget {
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
-        borderRadius: FlightShape.borderRadiusLarge(context),
+        borderRadius: BorderRadius.circular(context.sp(16)),
       ),
       elevation: 4,
       child: SizedBox(
-        height: FlightSize.serviceCardHeight(context),
+        height: context.rh(240),
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -60,20 +57,29 @@ class ServiceCard extends StatelessWidget {
 
             /// Text
             Positioned(
-              left: FlightLayoutSpacing.overlayPadding(context),
-              right: FlightLayoutSpacing.overlayPadding(context),
-              bottom: FlightLayoutSpacing.overlayPadding(context),
+              left: context.rw(20.0),
+              right: context.rw(20.0),
+              bottom: context.rw(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     service.title,
-                    style: FlightStyle.cardTitleOverlay(context),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: context.sp(28),
+                      fontWeight: FontWeight.bold,
+                      shadows: [const Shadow(color: Colors.black, blurRadius: 2)],
+                    ),
                   ),
-                  SizedBox(height: FlightLayoutSpacing.gapSmall(context) / 2),
+                  SizedBox(height: context.rw(8.0) / 2),
                   Text(
                     service.subTitle,
-                    style: FlightStyle.cardSubTitleOverlay(context),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: context.sp(16),
+                      shadows: [const Shadow(color: Colors.black, blurRadius: 2)],
+                    ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),

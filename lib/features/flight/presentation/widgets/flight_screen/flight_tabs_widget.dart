@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../app/l10n/app_localizations.dart';
 import '../../../../../core/constants/colors.dart';
-import '../../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../../core/design/flight/flight_size.dart';
-import '../../../../../core/design/flight/flight_style.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../controller/flight_controller.dart';
 
 class FlightTabsWidget extends StatelessWidget {
@@ -31,14 +29,14 @@ class FlightTabsWidget extends StatelessWidget {
 
         return Expanded(
           child: InkWell(
-            onTap: () => controller.selectFlightTab(tab, l10n),
+            onTap: () => controller.selectFlightTab(tab),
             child: Container(
-              padding: FlightLayoutSpacing.tabItemPadding,
+              padding: EdgeInsets.symmetric(vertical: context.rh(10.0)),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
                     color: isSelected ? kPrimaryColor : Colors.transparent,
-                    width: FlightSize.tabIndicatorHeight,
+                    width: context.rh(3),
                   ),
                 ),
               ),
@@ -48,9 +46,10 @@ class FlightTabsWidget extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     text,
-                    style: FlightStyle.tabLabel(
-                      context,
-                      isSelected: isSelected,
+                    style: TextStyle(
+                      fontSize: context.sp(12),
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      color: isSelected ? kPrimaryColor : Colors.grey,
                     ),
                   ),
                 ],

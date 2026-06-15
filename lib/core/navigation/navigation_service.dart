@@ -15,4 +15,8 @@ class NavigationService {
   static void pop<T>([T? result]) {
     navigatorKey.currentState!.pop(result);
   }
+  // --- THÊM HÀM NÀY VÀO ---
+  static Future<T?> pushAndRemoveUntil<T>(Route<T> route, bool Function(Route<dynamic>) predicate) {
+    return navigatorKey.currentState!.pushAndRemoveUntil(route, predicate);
+  }
 }

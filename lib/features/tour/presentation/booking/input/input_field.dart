@@ -1,5 +1,3 @@
-import 'package:final_project/core/design/tour/tour_shape.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:final_project/core/utils/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../core/constants/colors.dart';
@@ -27,11 +25,14 @@ class InputField extends StatelessWidget {
         hintText: hint,
         filled: true,
         fillColor: kFormFieldBackground,
-        border: AppShape.selectionField,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: kFormBackgroundColor),
+        ),
         labelStyle: TextStyle(fontSize: context.sp(16)),
         hintStyle: TextStyle(fontSize: context.sp(14), color: kHintTextColor),
       ),
-      style: AppStyles.textValue(context),
+      style: TextStyle(fontSize: context.sp(14), color: kTextColor),
     );
   }
 }

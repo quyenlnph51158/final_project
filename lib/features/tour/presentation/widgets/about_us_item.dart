@@ -1,39 +1,39 @@
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_sizes.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/core/constants/colors.dart';
 
-class AboutUsItem extends StatelessWidget{
-      final IconData icon;
-      final String title;
-      final  subtitle;
-  const AboutUsItem({super.key,
+import '../../../../core/utils/responsive_layout.dart';
+
+class AboutUsItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final subtitle;
+
+  const AboutUsItem({
+    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
   });
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: kIconAboutUsItem, size: AppSizes.iconAboutUsItem(context)),
-        TourLayoutSpacing.iconAndtitleAboutUsItem,
+        Icon(icon, color: kIconAboutUsItem, size: context.icon(40)),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style:
-                AppStyles.titleAboutUsItem(context),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: context.sp(16),
+                ),
               ),
-              TourLayoutSpacing.titleAndSubtitleAboutUsItem,
-              Text(
-                subtitle,
-                style: AppStyles.subtitleAboutUsItem(context),
-              ),
+              SizedBox(height: context.rh(4)),
+              Text(subtitle, style: TextStyle(color: Colors.grey, fontSize: context.sp(14))),
             ],
           ),
         ),

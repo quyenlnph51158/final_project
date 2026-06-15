@@ -1,10 +1,9 @@
 import 'package:final_project/core/constants/app_icons.dart';
-import 'package:final_project/core/design/tour/tour_sizes.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../controller/travel_booking_controller.dart';
 
 class SearchTourButton extends StatelessWidget{
@@ -16,13 +15,19 @@ class SearchTourButton extends StatelessWidget{
     final controller=context.read<TravelBookingController>();
     return SizedBox(
       width: double.infinity,
-      height: AppSizes.searchButton(context),
+      height: context.rh(50),
       child: ElevatedButton.icon(
-        style: AppStyles.searchButton,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: kPrimaryColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         icon: AppIcons.iconSearch,
         label: Text(
           text,
-          style: AppStyles.textSearchButton,
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         onPressed: () {
           controller.performTourSearch(l10n.form_defaultDestination);

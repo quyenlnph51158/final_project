@@ -654,6 +654,12 @@ abstract class AppLocalizations {
   /// **' stars ({count})'**
   String reviews_filter_star(Object count);
 
+  /// No description provided for @no_review.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no star ratings for {selectedRating}'**
+  String no_review(Object selectedRating);
+
   /// No description provided for @tour_detail_tab_intro.
   ///
   /// In en, this message translates to:
@@ -699,13 +705,13 @@ abstract class AppLocalizations {
   /// No description provided for @menu_flightTitle.
   ///
   /// In en, this message translates to:
-  /// **'PLANE'**
+  /// **'PLANE TICKET'**
   String get menu_flightTitle;
 
   /// No description provided for @menu_trainTitle.
   ///
   /// In en, this message translates to:
-  /// **'TRAIN'**
+  /// **'TRAIN TICKET'**
   String get menu_trainTitle;
 
   /// No description provided for @menu_blogTitle.
@@ -1905,6 +1911,1098 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Example: Name on passport: William Smith Jr'**
   String get tip4Ex;
+
+  /// No description provided for @train_headerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for your trip'**
+  String get train_headerTitle;
+
+  /// No description provided for @train_form_label_departure.
+  ///
+  /// In en, this message translates to:
+  /// **'Departure from'**
+  String get train_form_label_departure;
+
+  /// No description provided for @train_form_label_arrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrive at'**
+  String get train_form_label_arrive;
+
+  /// No description provided for @train_form_departure_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Departure date'**
+  String get train_form_departure_date;
+
+  /// No description provided for @train_form_return_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrive date'**
+  String get train_form_return_date;
+
+  /// No description provided for @trip_information.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Information'**
+  String get trip_information;
+
+  /// No description provided for @itinerary.
+  ///
+  /// In en, this message translates to:
+  /// **'Itinerary'**
+  String get itinerary;
+
+  /// No description provided for @departure.
+  ///
+  /// In en, this message translates to:
+  /// **'DEPARTURE'**
+  String get departure;
+
+  /// No description provided for @return_trip.
+  ///
+  /// In en, this message translates to:
+  /// **'RETURN'**
+  String get return_trip;
+
+  /// No description provided for @to.
+  ///
+  /// In en, this message translates to:
+  /// **'to'**
+  String get to;
+
+  /// No description provided for @enter_passenger_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Passenger Information'**
+  String get enter_passenger_info;
+
+  /// No description provided for @personal_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Information'**
+  String get personal_info;
+
+  /// No description provided for @passenger_name_note.
+  ///
+  /// In en, this message translates to:
+  /// **'* Please ensure you enter the name as it appears on the passport. Maximum 32 characters.'**
+  String get passenger_name_note;
+
+  /// No description provided for @adult.
+  ///
+  /// In en, this message translates to:
+  /// **'Adult'**
+  String get adult;
+
+  /// No description provided for @child.
+  ///
+  /// In en, this message translates to:
+  /// **'Child'**
+  String get child;
+
+  /// No description provided for @infant.
+  ///
+  /// In en, this message translates to:
+  /// **'Infant'**
+  String get infant;
+
+  /// No description provided for @contact_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Information'**
+  String get contact_info;
+
+  /// No description provided for @contact_note.
+  ///
+  /// In en, this message translates to:
+  /// **'* Please provide contact details to receive itinerary notifications.'**
+  String get contact_note;
+
+  /// No description provided for @country_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Country Code'**
+  String get country_code;
+
+  /// No description provided for @phone_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phone_number;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @confirm_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm email'**
+  String get confirm_email;
+
+  /// No description provided for @special_request.
+  ///
+  /// In en, this message translates to:
+  /// **'Special Request'**
+  String get special_request;
+
+  /// No description provided for @request_content.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get request_content;
+
+  /// No description provided for @select_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Title'**
+  String get select_title;
+
+  /// No description provided for @mr.
+  ///
+  /// In en, this message translates to:
+  /// **'Mr.'**
+  String get mr;
+
+  /// No description provided for @mrs.
+  ///
+  /// In en, this message translates to:
+  /// **'Mrs.'**
+  String get mrs;
+
+  /// No description provided for @ms.
+  ///
+  /// In en, this message translates to:
+  /// **'Ms.'**
+  String get ms;
+
+  /// No description provided for @first_middle_name.
+  ///
+  /// In en, this message translates to:
+  /// **'First & Middle Name'**
+  String get first_middle_name;
+
+  /// No description provided for @last_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get last_name;
+
+  /// No description provided for @passport_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Passport Number'**
+  String get passport_number;
+
+  /// No description provided for @birthday.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get birthday;
+
+  /// No description provided for @continue_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continue_button;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get search;
+
+  /// No description provided for @select.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get select;
+
+  /// No description provided for @tip_enter_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name tips'**
+  String get tip_enter_name;
+
+  /// No description provided for @salutation.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get salutation;
+
+  /// No description provided for @select_salutation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select title'**
+  String get select_salutation;
+
+  /// No description provided for @last_name_passport.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name (as on passport)'**
+  String get last_name_passport;
+
+  /// No description provided for @first_middle_name_passport.
+  ///
+  /// In en, this message translates to:
+  /// **'First & Middle name (as on passport)'**
+  String get first_middle_name_passport;
+
+  /// No description provided for @example_last_name.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., NGUYEN'**
+  String get example_last_name;
+
+  /// No description provided for @example_first_middle_name.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., VAN AN'**
+  String get example_first_middle_name;
+
+  /// No description provided for @accompanying_adult.
+  ///
+  /// In en, this message translates to:
+  /// **'Accompanying adult'**
+  String get accompanying_adult;
+
+  /// No description provided for @select_accompanying_adult.
+  ///
+  /// In en, this message translates to:
+  /// **'Select accompanying adult'**
+  String get select_accompanying_adult;
+
+  /// No description provided for @frequent_flyer_card.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequent Flyer Card'**
+  String get frequent_flyer_card;
+
+  /// No description provided for @airline.
+  ///
+  /// In en, this message translates to:
+  /// **'Airline'**
+  String get airline;
+
+  /// No description provided for @select_airline.
+  ///
+  /// In en, this message translates to:
+  /// **'Select airline'**
+  String get select_airline;
+
+  /// No description provided for @card_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Card number'**
+  String get card_number;
+
+  /// No description provided for @enter_card_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter card number'**
+  String get enter_card_number;
+
+  /// No description provided for @titles.
+  ///
+  /// In en, this message translates to:
+  /// **'Mr,Mrs,Ms,Mr,Ms'**
+  String get titles;
+
+  /// No description provided for @airlines.
+  ///
+  /// In en, this message translates to:
+  /// **'Airlines'**
+  String get airlines;
+
+  /// No description provided for @stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops'**
+  String get stop;
+
+  /// No description provided for @departure_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Departure Time'**
+  String get departure_time;
+
+  /// No description provided for @direct_flight.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct'**
+  String get direct_flight;
+
+  /// No description provided for @one_stop.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Stop'**
+  String get one_stop;
+
+  /// No description provided for @two_stops.
+  ///
+  /// In en, this message translates to:
+  /// **'2 Stops'**
+  String get two_stops;
+
+  /// No description provided for @time_early.
+  ///
+  /// In en, this message translates to:
+  /// **'Early (0 AM - 5:59 AM)'**
+  String get time_early;
+
+  /// No description provided for @time_morning.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning (6 AM - 11:59 AM)'**
+  String get time_morning;
+
+  /// No description provided for @time_afternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Afternoon (12 PM - 5:59 PM)'**
+  String get time_afternoon;
+
+  /// No description provided for @time_evening.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening (6 PM - 11:59 PM)'**
+  String get time_evening;
+
+  /// No description provided for @no_flights_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No flights found'**
+  String get no_flights_found;
+
+  /// No description provided for @change_filter_instruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Please try changing your selection or filters.'**
+  String get change_filter_instruction;
+
+  /// No description provided for @noSeatClassAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No seat class available'**
+  String get noSeatClassAvailable;
+
+  /// No description provided for @understood.
+  ///
+  /// In en, this message translates to:
+  /// **'Understood'**
+  String get understood;
+
+  /// No description provided for @arrivalTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrival time'**
+  String get arrivalTime;
+
+  /// No description provided for @vip_seat_explanation_title.
+  ///
+  /// In en, this message translates to:
+  /// **'VIP Seat Class Explanation'**
+  String get vip_seat_explanation_title;
+
+  /// No description provided for @vip_seat_intro.
+  ///
+  /// In en, this message translates to:
+  /// **'VIP seat classes include: 2 Berth, King Size, and Queen Size. Below are the rules and conditions for each seat type:'**
+  String get vip_seat_intro;
+
+  /// No description provided for @vip_2_berth_title.
+  ///
+  /// In en, this message translates to:
+  /// **'VIP 2 Berth:'**
+  String get vip_2_berth_title;
+
+  /// No description provided for @vip_2_berth_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing is for the VIP 2 Berth cabin. Passengers will be charged for the full cabin even if traveling alone. This ensures the privacy and comfort of the cabin environment.'**
+  String get vip_2_berth_desc;
+
+  /// No description provided for @queen_size_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Queen Size:'**
+  String get queen_size_title;
+
+  /// No description provided for @queen_size_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Queen Size seats offer a balance of comfort and space. Similar to King Size, solo travelers will be charged full price for the entire cabin.'**
+  String get queen_size_desc;
+
+  /// No description provided for @king_size_title.
+  ///
+  /// In en, this message translates to:
+  /// **'King Size:'**
+  String get king_size_title;
+
+  /// No description provided for @king_size_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'King Size seats are designed for those desiring more space and comfort. If traveling alone, full fees for the King Size cabin apply, as cabins are sold as a whole.'**
+  String get king_size_desc;
+
+  /// No description provided for @note_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Note:'**
+  String get note_title;
+
+  /// No description provided for @note_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'When booking, please note that if traveling alone, you will still be charged full fees for the entire cabin in these seat classes. This applies regardless of whether you are a solo traveler or part of a group (1, 3, 5, or 7 passengers), as cabins are sold as a whole rather than by individual seats.'**
+  String get note_desc;
+
+  /// No description provided for @loading_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading data...'**
+  String get loading_data;
+
+  /// No description provided for @no_trains_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No suitable trains found'**
+  String get no_trains_found;
+
+  /// No description provided for @selected_trip_from_to.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected trip from {dep} to {dest}'**
+  String selected_trip_from_to(Object dep, Object dest);
+
+  /// No description provided for @select_trip_from.
+  ///
+  /// In en, this message translates to:
+  /// **'Select trip from {station}'**
+  String select_trip_from(Object station);
+
+  /// No description provided for @from_price.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get from_price;
+
+  /// No description provided for @one_way.
+  ///
+  /// In en, this message translates to:
+  /// **'One way'**
+  String get one_way;
+
+  /// No description provided for @view_details_short.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get view_details_short;
+
+  /// No description provided for @station_with_name.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} Station'**
+  String station_with_name(Object name);
+
+  /// No description provided for @device.
+  ///
+  /// In en, this message translates to:
+  /// **'Device:'**
+  String get device;
+
+  /// No description provided for @carrier.
+  ///
+  /// In en, this message translates to:
+  /// **'Carrier:'**
+  String get carrier;
+
+  /// No description provided for @distance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance:'**
+  String get distance;
+
+  /// No description provided for @duration_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration:'**
+  String get duration_label;
+
+  /// No description provided for @seat_class_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Seat Class'**
+  String get seat_class_default;
+
+  /// No description provided for @select_seat_class_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select seat class'**
+  String get select_seat_class_hint;
+
+  /// No description provided for @best_seller.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Seller'**
+  String get best_seller;
+
+  /// No description provided for @tour_activities.
+  ///
+  /// In en, this message translates to:
+  /// **'Tour & Activities'**
+  String get tour_activities;
+
+  /// No description provided for @best_hotel.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Hotel'**
+  String get best_hotel;
+
+  /// No description provided for @favorite_destinations.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite Destinations'**
+  String get favorite_destinations;
+
+  /// No description provided for @cheap_trips_offers.
+  ///
+  /// In en, this message translates to:
+  /// **'Special Trip Offers'**
+  String get cheap_trips_offers;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
+  /// No description provided for @passWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passWord;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPassword;
+
+  /// No description provided for @noAccountYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No account yet?'**
+  String get noAccountYet;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get createAccount;
+
+  /// No description provided for @yourAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account'**
+  String get yourAccount;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get fullName;
+
+  /// No description provided for @yourPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Your phone number'**
+  String get yourPhoneNumber;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPassword;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
+
+  /// No description provided for @fail.
+  ///
+  /// In en, this message translates to:
+  /// **'Fail'**
+  String get fail;
+
+  /// No description provided for @alreadyAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already account?'**
+  String get alreadyAccount;
+
+  /// No description provided for @agree.
+  ///
+  /// In en, this message translates to:
+  /// **'Agree'**
+  String get agree;
+
+  /// No description provided for @faq_q1.
+  ///
+  /// In en, this message translates to:
+  /// **'If the tour is canceled due to objective reasons (weather, natural disaster, national mourning, etc.), will I get a refund?'**
+  String get faq_q1;
+
+  /// No description provided for @faq_a1.
+  ///
+  /// In en, this message translates to:
+  /// **'In case of force majeure (natural disasters, epidemics, etc.), the company will provide a refund but may deduct expenses already paid to partners (hotels, airlines, etc.) that are non-refundable. Certain services depend on the specific refund/cancellation/change policies of the providers. If the cancellation is due to the company\'s fault, you will receive a 100% refund or be offered an alternative tour as requested.'**
+  String get faq_a1;
+
+  /// No description provided for @faq_q2.
+  ///
+  /// In en, this message translates to:
+  /// **'What are the available payment methods?'**
+  String get faq_q2;
+
+  /// No description provided for @faq_a2.
+  ///
+  /// In en, this message translates to:
+  /// **'Wondering Vietnam provides the following deposit/payment methods:<br><ul><li>Direct payment at the Wondering Vietnam Office</li><li>Online bank transfer (E-banking)</li></ul>'**
+  String get faq_a2;
+
+  /// No description provided for @faq_q3.
+  ///
+  /// In en, this message translates to:
+  /// **'Is my personal information kept private?'**
+  String get faq_q3;
+
+  /// No description provided for @faq_a3.
+  ///
+  /// In en, this message translates to:
+  /// **'Wondering Vietnam commits to not disclosing any of your information to third parties, except for necessary details provided to hotel partners for mandatory local residence registration as required by local authorities.'**
+  String get faq_a3;
+
+  /// No description provided for @faq_q4.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I make special requests regarding accommodation, meals, etc.?'**
+  String get faq_q4;
+
+  /// No description provided for @faq_a4.
+  ///
+  /// In en, this message translates to:
+  /// **'You can contact us directly or fill in the \'Other Requests\' section when booking your tour.'**
+  String get faq_a4;
+
+  /// No description provided for @faq_q5.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I request a VAT invoice?'**
+  String get faq_q5;
+
+  /// No description provided for @faq_a5.
+  ///
+  /// In en, this message translates to:
+  /// **'Wondering Vietnam will issue VAT invoices in accordance with the regulations of the Ministry of Finance.'**
+  String get faq_a5;
+
+  /// No description provided for @errorDepartureEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a departure point !!!'**
+  String get errorDepartureEmpty;
+
+  /// No description provided for @errorDestinationEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a destination !!!'**
+  String get errorDestinationEmpty;
+
+  /// No description provided for @errorSameLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Departure and destination cannot be the same !!!'**
+  String get errorSameLocation;
+
+  /// No description provided for @errorReturnDateEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a return date !!!'**
+  String get errorReturnDateEmpty;
+
+  /// No description provided for @errorReturnBeforeDeparture.
+  ///
+  /// In en, this message translates to:
+  /// **'Return date cannot be before departure date !!!'**
+  String get errorReturnBeforeDeparture;
+
+  /// No description provided for @errorSameDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Departure and return dates cannot be the same !!!'**
+  String get errorSameDate;
+
+  /// No description provided for @summary_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your booking'**
+  String get summary_title;
+
+  /// No description provided for @summary_booking_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Information'**
+  String get summary_booking_info;
+
+  /// No description provided for @summary_booking_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Code:'**
+  String get summary_booking_code;
+
+  /// No description provided for @summary_payment_deadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Deadline'**
+  String get summary_payment_deadline;
+
+  /// No description provided for @summary_deadline_note.
+  ///
+  /// In en, this message translates to:
+  /// **'(after this time, your booking\nwill be cancelled)'**
+  String get summary_deadline_note;
+
+  /// No description provided for @summary_general_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get summary_general_info;
+
+  /// No description provided for @summary_fullname.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get summary_fullname;
+
+  /// No description provided for @summary_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get summary_phone;
+
+  /// No description provided for @summary_booking_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Date'**
+  String get summary_booking_date;
+
+  /// No description provided for @summary_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get summary_email;
+
+  /// No description provided for @summary_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get summary_total;
+
+  /// No description provided for @summary_base_fare.
+  ///
+  /// In en, this message translates to:
+  /// **'Base Fare'**
+  String get summary_base_fare;
+
+  /// No description provided for @summary_tax_fee.
+  ///
+  /// In en, this message translates to:
+  /// **'Taxes & Fees'**
+  String get summary_tax_fee;
+
+  /// No description provided for @summary_bus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus'**
+  String get summary_bus;
+
+  /// No description provided for @summary_itinerary.
+  ///
+  /// In en, this message translates to:
+  /// **'Itinerary'**
+  String get summary_itinerary;
+
+  /// No description provided for @summary_itinerary_detail.
+  ///
+  /// In en, this message translates to:
+  /// **'Itinerary Details'**
+  String get summary_itinerary_detail;
+
+  /// No description provided for @summary_departure_label.
+  ///
+  /// In en, this message translates to:
+  /// **'DEPARTURE'**
+  String get summary_departure_label;
+
+  /// No description provided for @summary_return_label.
+  ///
+  /// In en, this message translates to:
+  /// **'RETURN'**
+  String get summary_return_label;
+
+  /// No description provided for @summary_passenger_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Passenger Information'**
+  String get summary_passenger_info;
+
+  /// No description provided for @summary_passenger_count.
+  ///
+  /// In en, this message translates to:
+  /// **'PASSENGER {index}'**
+  String summary_passenger_count(Object index);
+
+  /// No description provided for @summary_dob.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get summary_dob;
+
+  /// No description provided for @summary_passport.
+  ///
+  /// In en, this message translates to:
+  /// **'ID/Passport No.'**
+  String get summary_passport;
+
+  /// No description provided for @summary_nationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get summary_nationality;
+
+  /// No description provided for @summary_payment_method.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get summary_payment_method;
+
+  /// No description provided for @summary_card_method.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with Credit/Debit Card'**
+  String get summary_card_method;
+
+  /// No description provided for @summary_terms_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'I have read and agree to all '**
+  String get summary_terms_prefix;
+
+  /// No description provided for @summary_terms_link.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get summary_terms_link;
+
+  /// No description provided for @summary_terms_suffix.
+  ///
+  /// In en, this message translates to:
+  /// **' as regulated.'**
+  String get summary_terms_suffix;
+
+  /// No description provided for @summary_btn_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get summary_btn_continue;
+
+  /// No description provided for @summary_apple_pay.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Pay'**
+  String get summary_apple_pay;
+
+  /// No description provided for @flight_summary_booking_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Information'**
+  String get flight_summary_booking_info;
+
+  /// No description provided for @flight_summary_booking_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Code:'**
+  String get flight_summary_booking_code;
+
+  /// No description provided for @flight_summary_payment_deadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Deadline:'**
+  String get flight_summary_payment_deadline;
+
+  /// No description provided for @flight_summary_payment_note.
+  ///
+  /// In en, this message translates to:
+  /// **'(after this time, the booking will be cancelled)'**
+  String get flight_summary_payment_note;
+
+  /// No description provided for @flight_summary_customer_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get flight_summary_customer_info;
+
+  /// No description provided for @flight_summary_fullname.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name:'**
+  String get flight_summary_fullname;
+
+  /// No description provided for @flight_summary_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number:'**
+  String get flight_summary_phone;
+
+  /// No description provided for @flight_summary_booking_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Date:'**
+  String get flight_summary_booking_date;
+
+  /// No description provided for @flight_summary_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email:'**
+  String get flight_summary_email;
+
+  /// No description provided for @flight_summary_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Amount'**
+  String get flight_summary_total;
+
+  /// No description provided for @flight_summary_base_fare.
+  ///
+  /// In en, this message translates to:
+  /// **'Base Fare:'**
+  String get flight_summary_base_fare;
+
+  /// No description provided for @flight_summary_tax_charge.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax & Fees:'**
+  String get flight_summary_tax_charge;
+
+  /// No description provided for @flight_summary_service_fee.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Fee:'**
+  String get flight_summary_service_fee;
+
+  /// No description provided for @flight_summary_itinerary.
+  ///
+  /// In en, this message translates to:
+  /// **'Itinerary'**
+  String get flight_summary_itinerary;
+
+  /// No description provided for @flight_summary_itinerary_detail.
+  ///
+  /// In en, this message translates to:
+  /// **'Itinerary Details'**
+  String get flight_summary_itinerary_detail;
+
+  /// No description provided for @flight_summary_departure.
+  ///
+  /// In en, this message translates to:
+  /// **'DEPARTURE'**
+  String get flight_summary_departure;
+
+  /// No description provided for @flight_summary_return.
+  ///
+  /// In en, this message translates to:
+  /// **'RETURN'**
+  String get flight_summary_return;
+
+  /// No description provided for @flight_summary_passenger_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Passenger Details'**
+  String get flight_summary_passenger_info;
+
+  /// No description provided for @flight_summary_passenger_label.
+  ///
+  /// In en, this message translates to:
+  /// **'PASSENGER {index}'**
+  String flight_summary_passenger_label(int index);
+
+  /// No description provided for @flight_summary_birthday.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get flight_summary_birthday;
+
+  /// No description provided for @flight_summary_passport.
+  ///
+  /// In en, this message translates to:
+  /// **'ID/Passport No.'**
+  String get flight_summary_passport;
+
+  /// No description provided for @flight_summary_nationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get flight_summary_nationality;
+
+  /// No description provided for @flight_summary_payment_method.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get flight_summary_payment_method;
+
+  /// No description provided for @flight_summary_card_method.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit/Debit Card'**
+  String get flight_summary_card_method;
+
+  /// No description provided for @flight_summary_apple_pay.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Pay'**
+  String get flight_summary_apple_pay;
+
+  /// No description provided for @flight_summary_terms_agree.
+  ///
+  /// In en, this message translates to:
+  /// **'I have read and agree to the Terms of Service.'**
+  String get flight_summary_terms_agree;
+
+  /// No description provided for @flight_summary_pay_now.
+  ///
+  /// In en, this message translates to:
+  /// **'PAY NOW'**
+  String get flight_summary_pay_now;
 }
 
 class _AppLocalizationsDelegate

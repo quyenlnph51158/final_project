@@ -1,5 +1,4 @@
 import 'package:final_project/core/constants/image_link.dart';
-import 'package:final_project/core/design/tour/tour_shape.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../core/constants/colors.dart';
@@ -28,7 +27,7 @@ class HeaderBackground extends StatelessWidget{
             BlendMode.darken,
           ),
         ),
-        borderRadius: AppShape.backGroundHeader,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
       ),
     );
   }

@@ -2,10 +2,7 @@ import 'package:final_project/core/data/model/international_destination_model.da
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../../core/design/flight/flight_shape.dart';
-import '../../../../../core/design/flight/flight_size.dart';
-import '../../../../../core/design/flight/flight_style.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 
 class DestinationItem extends StatelessWidget {
   final InternationalDestinationModel destination;
@@ -20,14 +17,14 @@ class DestinationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(FlightLayoutSpacing.destinationPadding),
+      padding: EdgeInsets.all(context.rw(4.0)),
       // **Không sử dụng InkWell/GestureDetector**
       child: Container(
         width: itemWidth,
-        height: FlightSize.destinationCardHeight(context),
+        height: context.rh(200),
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          borderRadius: FlightShape.borderRadiusSmall(context),
+          borderRadius: BorderRadius.circular(context.sp(8)),
         ),
         child: Stack(
           fit: StackFit.expand,
@@ -63,23 +60,27 @@ class DestinationItem extends StatelessWidget {
 
             // 3. Tên điểm đến (Định vị ở dưới cùng)
             Positioned(
-              bottom: FlightLayoutSpacing.destinationContentOffset,
-              left: FlightLayoutSpacing.destinationContentOffset,
-              right: FlightLayoutSpacing.destinationContentOffset,
+              bottom: context.rh(10.0),
+              left: context.rh(10.0),
+              right: context.rh(10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     destination.name,
-                    style: FlightStyle.destinationTitle(context),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: context.sp(18),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Container(
                     margin: EdgeInsets.only(
-                      top: FlightLayoutSpacing.gapSmall(context) / 2,
+                      top: context.rw(8.0) / 2,
                     ),
-                    width: FlightSize.destinationIndicatorWidth,
-                    height: FlightSize.destinationIndicatorHeight,
+                    width: context.rw(50),
+                    height: context.rh(3),
                     color: Colors.white,
                   ),
                 ],

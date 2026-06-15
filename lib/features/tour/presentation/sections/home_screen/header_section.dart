@@ -1,6 +1,6 @@
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../../../../shared/header/custom_app_bar.dart';
 import '../../../../../../app/l10n/app_localizations.dart';
 
@@ -20,10 +20,19 @@ class HeaderSection extends StatelessWidget {
           children: [
             const CustomAppBar(),
             Padding(
-              padding: TourLayoutSpacing.paddingAppbarAndTitle(context),
+              padding: EdgeInsets.only(
+                left: context.padding,
+                top: context.rh(20),
+                right: context.padding,
+              ),
               child: Text(
                 '${l10n.header_titleLine1}\n${l10n.header_titleLine2}',
-                style: AppStyles.TravelingBookingHeaderTitle(context),
+                style: TextStyle(
+                  color: kHeaderTextColor,
+                  fontSize: context.sp(24),
+                  fontWeight: FontWeight.bold,
+                  height: 1.3,
+                ),
               ),
             ),
           ],

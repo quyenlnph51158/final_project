@@ -1,41 +1,85 @@
-import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
-import '../models/list_airport.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+import '../models/airport.dart';
+import '../models/response/airport_response.dart';
 
 class ListAirportService {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? '';
+  // 1. Singleton Pattern: Đảm bảo chỉ có 1 instance service và 1 instance Dio
+  static final ListAirportService _instance = ListAirportService._internal();
+  factory ListAirportService() => _instance;
 
-  Future<List<ListAirport>> fetchListAirport() async {
-    // ⭐ SỬA LỖI: Thay http.post bằng http.get
-    final response = await http.post(Uri.parse('$baseUrl/flight/list-airport'));
+  late final Dio _dio;
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+  // Biến static để đếm số lần gọi API thực tế
+  static int _apiCallCount = 0;
 
-      // ⭐ THAY ĐỔI QUAN TRỌNG TẠI ĐÂY ⭐
-      // 1. Truy cập vào key "data"
-      final Map<String, dynamic>? data = jsonResponse['data'] as Map<String, dynamic>?;
+  ListAirportService._internal() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: dotenv.env['BASE_URL'] ?? '',
+        connectTimeout: const Duration(seconds: 30),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
 
-      // 2. Truy cập vào key "listAirport" (Đây là một Map)
-      final Map<String, dynamic>? listAirportMap = data?['listAirport'] as Map<String, dynamic>?;
+    // 2. Thêm Log Interceptor để kiểm soát spam và debug dữ liệu
+    if (kDebugMode) {
+      _dio.interceptors.add(PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: false, // Để false vì danh sách sân bay rất dài, log sẽ bị rối
+        error: true,
+        compact: true,
+      ));
+    }
+  }
 
-      if (listAirportMap == null) {
-        return []; // Trả về list rỗng nếu không có dữ liệu
+  Future<List<Airport>> fetchListAirport(String token) async {
+    _apiCallCount++;
+    debugPrint('🌐 [AIRPORT API] Gọi lần thứ: $_apiCallCount');
+
+    try {
+      final response = await _dio.post(
+        '/flight/list-airport',
+        options: Options(
+          headers: {
+            'Access-Token': token,
+          },
+        ),
+      );
+
+      // Dio tự động kiểm tra statusCode 2xx, nếu ngoài khoảng đó sẽ ném DioException
+      if (response.data != null) {
+        final airportResponse = AirportResponse.fromJson(response.data);
+
+        if (airportResponse.status == 1 && airportResponse.data != null) {
+          return airportResponse.data!.listAirports;
+        }
       }
 
-      // 3. Lấy TẤT CẢ CÁC GIÁ TRỊ (values) từ Map (HAN, HPH, SGN...)
-      // và chuyển chúng thành List<Map<String, dynamic>>
-      final List<dynamic> listAirportJsonList = listAirportMap.values.toList();
+      return [];
+    } on DioException catch (e) {
+      // Xử lý lỗi tập trung
+      String errorMsg = _handleDioError(e);
+      debugPrint('❌ [AIRPORT API ERROR]: $errorMsg');
+      throw Exception(errorMsg);
+    } catch (e) {
+      debugPrint('❌ [AIRPORT LOGIC ERROR]: $e');
+      throw Exception('Lỗi xử lý dữ liệu sân bay');
+    }
+  }
 
-      // 4. Parse sang List<ListAirport>
-      return listAirportJsonList
-          .where((item) => item is Map<String, dynamic>)
-          .map((item) => ListAirport.fromJson(item))
-          .toList();
-    }
-    else {
-      throw Exception('Failed to load tours. Status code: ${response.statusCode}');
-    }
+  // Hàm helper phân loại lỗi để hiển thị lên UI
+  String _handleDioError(DioException e) {
+    if (e.type == DioExceptionType.connectionTimeout) return "Hết hạn kết nối mạng";
+    if (e.response?.statusCode == 401) return "Phiên đăng nhập hết hạn";
+    if (e.response?.statusCode == 500) return "Lỗi hệ thống máy chủ";
+    return "Không thể tải danh sách sân bay: ${e.message}";
   }
 }

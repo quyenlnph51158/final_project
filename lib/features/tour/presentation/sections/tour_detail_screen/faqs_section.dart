@@ -1,11 +1,9 @@
 import 'package:final_project/core/constants/app_icons.dart';
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/tour_shape.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import '../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/tour/tour_layout_spacing.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../../data/models/tour_detail_faqs.dart';
 
 class FaqSection extends StatefulWidget {
@@ -27,16 +25,19 @@ class _FaqSectionState extends State<FaqSection> {
     if (widget.faqs.isEmpty) return const SizedBox.shrink();
 
     return Padding(
-      padding: TourLayoutSpacing.paddingFaqSection(context),
+      padding: EdgeInsets.symmetric(horizontal: context.padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: TourLayoutSpacing.paddingFaqsTitleAndItem(context),
+            padding: EdgeInsets.only(bottom: context.rh(16)),
             child: Text(
-              key: widget.key,
               l10n.consultation_faqs,
-              style: AppStyles.faqTitle(context),
+              style: TextStyle(
+                fontSize: context.sp(24),
+                fontWeight: FontWeight.bold,
+                color: kTextColor,
+              ),
             ),
           ),
           // Danh sách các câu hỏi
@@ -55,7 +56,14 @@ class _FaqSectionState extends State<FaqSection> {
     final l10n = AppLocalizations.of(context)!;
 
     return Container(
-      decoration: AppShape.decorationFaqItem,
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: kBorderColor,
+            width: 1,
+          ),
+        ),
+      ),
       child: Column(
         children: [
           // Phần Header của FAQ (Câu hỏi)
@@ -67,17 +75,22 @@ class _FaqSectionState extends State<FaqSection> {
               });
             },
             child: Padding(
-              padding: TourLayoutSpacing.paddingFaqItem(context),
+              padding: EdgeInsets.symmetric(vertical: context.rh(16)),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Text(
                       faq.question ?? "",
-                      style: AppStyles.faqQuestion(context),
+                      style: TextStyle(
+                        fontSize: context.sp(16),
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF333333),
+                        height: 1.4,
+                      ),
                     ),
                   ),
-                  TourLayoutSpacing.iconAndValue,
+                  SizedBox(height: context.rw(8)),
                   // Icon xoay mượt mà giống NewsCard
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,
@@ -98,7 +111,7 @@ class _FaqSectionState extends State<FaqSection> {
                 alignment: Alignment.centerLeft,
                 child: HtmlWidget(
                   faq.answer ?? l10n.faqs_answerLoading,
-                  textStyle: AppStyles.faqAnswer(context),
+                  textStyle: TextStyle(fontSize: context.sp(15), color: Colors.grey[600], height: 1.5),
                 ),
               ),
             ),

@@ -1,8 +1,8 @@
 import 'package:final_project/app/l10n/app_localizations.dart';
+import 'package:final_project/features/account/data/service/token_service.dart';
 import 'package:final_project/features/policy/data/service/policy_service.dart';
 import 'package:final_project/features/policy/presentation/state/policy_state.dart';
 import 'package:flutter/cupertino.dart';
-
 import '../../data/models/policy_infomation.dart';
 
 class PolicyController extends ChangeNotifier {
@@ -27,8 +27,9 @@ class PolicyController extends ChangeNotifier {
     ));
 
     try {
+      final token = await TokenService.getToken();
       final Policy policyData =
-      await _policyService.fetchPolicy(postId: postId);
+      await _policyService.fetchPolicy(postId: postId, token: token!);
 
       _updateState(_state.copyWith(
         policy: policyData,

@@ -1,10 +1,9 @@
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/shared/header/custom_app_bar.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 
-import '../../../../../core/design/shared/app_style.dart';
-import '../../../../../core/design/tour/tour_styles.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 
 class BookingHeader extends StatelessWidget {
   const BookingHeader({super.key});
@@ -24,11 +23,19 @@ class BookingHeader extends StatelessWidget {
               children: [
                 const CustomAppBar(),
                 Padding(
-                  padding: TourLayoutSpacing.titleHeader(context),
+                  padding: EdgeInsets.only(
+                    left: context.padding, // rw(12) hoặc rw(16) chuẩn app
+                    top: context.rh(20),
+                    right: context.padding,
+                  ),
                   child: Text(
                     '${l10n.header_titleLine1} \n'
                         '${l10n.header_titleLine2}',
-                    style: SharedAppStyle.titleHeader(context)
+                    style: TextStyle(
+                        color: kHeaderTextColor,
+                        fontSize: context.sp(24),
+                        fontWeight: FontWeight.bold,
+                        height: 1.3)
                   ),
                 ),
               ],

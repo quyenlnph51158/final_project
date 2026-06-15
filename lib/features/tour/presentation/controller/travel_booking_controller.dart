@@ -1,14 +1,14 @@
+import 'dart:ui';
 import 'package:final_project/core/data/model/home_tour_model.dart';
+import 'package:final_project/features/account/data/service/token_service.dart';
 import 'package:final_project/features/tour/presentation/screens/tour_screen.dart';
 import 'package:final_project/features/tour/presentation/state/booking_form_state.dart';
+import 'package:final_project/features/tour/presentation/state/booking_ui_state.dart';
 import 'package:flutter/material.dart';
 import '../../../../app/l10n/app_localizations.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/navigation/navigation_service.dart';
 import '../../../../core/utils/format_date.dart';
-import '../../../flight/data/models/list_airport.dart';
-import '../../../flight/data/service/listairport_service.dart';
-import '../../data/models/location_item.dart';
 import '../../data/models/tour_category.dart';
 import '../../data/models/tour_destination.dart';
 import '../../data/models/tour_item.dart';
@@ -21,15 +21,16 @@ import '../state/travel_booking_state.dart';
 import '../state/travel_filter_state.dart';
 
 class TravelBookingController extends ChangeNotifier {
-
   // =========================================================
   // 1. STATE MANAGEMENT
   // =========================================================
 
   /// State chính của toàn bộ màn hình Travel Booking
   TravelBookingState _state = TravelBookingState.initial();
-  TravelBookingState get state => _state;
 
+  TravelBookingState get state => _state;
+  // --- FLAGS BẢO VỆ (QUAN TRỌNG) ---
+  bool _isFetching = false;
   /// Hàm nội bộ dùng để update state và notify UI
   void _updateState(TravelBookingState newState) {
     _state = newState;
@@ -39,8 +40,7 @@ class TravelBookingController extends ChangeNotifier {
   // =========================================================
   // 2. SERVICES (CALL API / DATA)
   // =========================================================
-
-  final ListAirportService _airportService = ListAirportService();
+  final Locale locale = PlatformDispatcher.instance.locale;
   final TourService _tourService = TourService();
   final CategoryService _categoryService = CategoryService();
   final ApiService _apiService = ApiService();
@@ -59,23 +59,23 @@ class TravelBookingController extends ChangeNotifier {
   // =========================================================
   // 4. INIT DATA
   // =========================================================
-
   /// Hàm khởi tạo dữ liệu ban đầu cho màn hình
   /// - Load airport
   /// - Load category
   /// - Load destination
   /// - Load tour trang đầu
   Future<void> initData(
-      String defaultDeparture,
-      String defaultDestination) async {
-
+    String defaultDeparture,
+    String defaultDestination,
+  ) async {
     if (state.ui.isInitialized) return;
 
+    _isFetching = true;
     departureController.text = defaultDeparture;
 
     _updateState(
       state.copyWith(
-        ui: state.ui.copyWith(isLoading: true),
+        ui: state.ui.copyWith(isLoading: true, errorMessage: null),
         form: state.form.copyWith(
           departure: defaultDeparture,
           destination: defaultDestination,
@@ -84,72 +84,69 @@ class TravelBookingController extends ChangeNotifier {
     );
 
     try {
+      final token = await TokenService.getToken();
       final results = await Future.wait([
-        _airportService.fetchListAirport(),
-        _categoryService.fetchTourCategories(),
-        _apiService.fetchTourDestinations(),
+        _categoryService.fetchTourCategories(locale, token ?? ''),
+        _apiService.fetchTourDestinations(locale, token ?? ''),
       ]);
-
+      final categories = List<TourCategory>.from(results[0] as List);
+      final destinations = List<TourDestination>.from(results[1] as List);
       final tourData = await _tourService.fetchTours(
         page: 1,
         sortBy: "priceSmallest",
+        locale: locale,
+        token: token,
       );
-
       final rawTours = tourData['tours'] as List<TourItem>;
       final pagination = tourData['pagination'];
 
       _updateState(
         state.copyWith(
-          ui: state.ui.copyWith(
-            isLoading: false,
-            isInitialized: true,
-          ),
-          filter: state.filter.copyWith(
-            sortBy: SortOption.highestRating,
-          ),
+          ui: state.ui.copyWith(isLoading: false, isInitialized: true),
+          filter: state.filter.copyWith(sortBy: SortOption.highestRating),
           tour: state.tour.copyWith(
             tourList: rawTours,
             initialList: rawTours,
             totalPages: pagination['last_page'] ?? 1,
             currentPage: 1,
-            categories: results[1] as List<TourCategory>,
-            destinations: results[2] as List<TourDestination>,
+            categories: categories,
+            destinations: destinations,
           ),
         ),
       );
     } catch (e) {
-      _updateState(
-        state.copyWith(
-          ui: state.ui.copyWith(isLoading: false),
-        ),
-      );
+      _updateState(state.copyWith(
+        ui: state.ui.copyWith(isLoading: false, errorMessage: e.toString()),
+      ));
+    } finally {
+      _isFetching = false;
     }
   }
+
   // =========================================================
-// TOUR DETAIL
-// =========================================================
+  // TOUR DETAIL
+  // =========================================================
 
   /// Load chi tiết tour theo tên
   Future<void> fetchTourDetail(String name, String errorText) async {
     _updateState(
       _state.copyWith(
-        ui: _state.ui.copyWith(
-          isLoading: true,
-          errorMessage: null,
-        ),
+        ui: _state.ui.copyWith(isLoading: true, errorMessage: null),
       ),
     );
 
     try {
-      final detail =
-      await _tourDetailService.fetchTourDetail(q: name);
+      final token = await TokenService.getToken();
+      final detail = await _tourDetailService.fetchTourDetail(
+        q: name,
+        locale: locale,
+        token: token,
+      );
 
       _updateState(
         _state.copyWith(
           ui: _state.ui.copyWith(isLoading: false),
-          tour: _state.tour.copyWith(
-            tourDetail: detail,
-          ),
+          tour: _state.tour.copyWith(tourDetail: detail),
         ),
       );
     } catch (e) {
@@ -190,20 +187,16 @@ class TravelBookingController extends ChangeNotifier {
 
     _updateState(
       _state.copyWith(
-        ui: _state.ui.copyWith(
-          selectedTab: tab,
-          isSearching: false,
-        ),
+        ui: _state.ui.copyWith(selectedTab: tab, isSearching: false),
         form: _state.form.copyWith(
           departure: '',
           destination: '',
           tempDestination: '',
-          selectedDate:
-          FormatDate.formatDateDDMMYYYY(DateTime.now()).toString(),
+          selectedDate: FormatDate.formatDateDDMMYYYY(
+            DateTime.now(),
+          ).toString(),
         ),
-        tour: _state.tour.copyWith(
-          tourList: state.tour.initialList,
-        ),
+        tour: _state.tour.copyWith(tourList: state.tour.initialList),
       ),
     );
   }
@@ -212,10 +205,7 @@ class TravelBookingController extends ChangeNotifier {
   void updateTab(TravelTab tab) {
     _updateState(
       _state.copyWith(
-        ui: _state.ui.copyWith(
-          selectedTab: tab,
-          isSearching: false,
-        ),
+        ui: _state.ui.copyWith(selectedTab: tab, isSearching: false),
       ),
     );
   }
@@ -244,58 +234,51 @@ class TravelBookingController extends ChangeNotifier {
     // 4. Cập nhật State
     // Vì selectedDate trong form là String, ta dùng lại biến 'picked' ban đầu
     _updateState(
-      state.copyWith(
-        form: state.form.copyWith(selectedDate: picked),
-      ),
+      state.copyWith(form: state.form.copyWith(selectedDate: picked)),
     );
   }
 
   /// Chọn destination từ modal
   void selectDestinationFromModal(String label) {
     _updateState(
-      state.copyWith(
-        form: state.form.copyWith(tempDestination: label),
-      ),
+      state.copyWith(form: state.form.copyWith(tempDestination: label)),
     );
   }
 
   ///Nhập điểm khởi hành
-  void updateDeparture(String dep){
-    _updateState(
-      _state.copyWith(
-        form: _state.form.copyWith(
-          departure: dep,
-        )
-      )
-    );
+  void updateDeparture(String dep) {
+    _updateState(_state.copyWith(form: _state.form.copyWith(departure: dep)));
   }
+
   // =========================================================
   // 7. PAGINATION (TOUR)
   // =========================================================
 
   /// Load tour theo trang (server-side pagination)
   Future<void> loadTourPage(int page) async {
-    _updateState(state.copyWith(
-      tour: state.tour.copyWith(isLoading: true),
-    ));
+    if (_isFetching) return;
+    _isFetching = true;
+
+    _updateState(state.copyWith(tour: state.tour.copyWith(isLoading: true)));
 
     try {
+      final token = await TokenService.getToken();
       final filters = state.filter;
 
       String sortParam = "ratingHighToLow";
       if (filters.sortBy == SortOption.priceHighToLow) {
         sortParam = "priceBiggest";
       }
-      if(filters.sortBy == SortOption.priceLowToHigh){
+      if (filters.sortBy == SortOption.priceLowToHigh) {
         sortParam = "priceSmallest";
       }
-      if(filters.sortBy == SortOption.durationLongToShort){
+      if (filters.sortBy == SortOption.durationLongToShort) {
         sortParam = "startTimeDesc";
       }
-      if(filters.sortBy == SortOption.durationShortToLong){
+      if (filters.sortBy == SortOption.durationShortToLong) {
         sortParam = "startTimeAsc";
       }
-      if(filters.sortBy == SortOption.highestRating){
+      if (filters.sortBy == SortOption.highestRating) {
         sortParam = "ratingHighToLow";
       }
 
@@ -305,6 +288,8 @@ class TravelBookingController extends ChangeNotifier {
         typeTours: filters.selectedTourTypes,
         propertyRatings: filters.selectedRatings,
         sortBy: sortParam,
+        locale: locale,
+        token: token,
       );
 
       final List<TourItem> tours = result['tours'];
@@ -314,8 +299,7 @@ class TravelBookingController extends ChangeNotifier {
         state.copyWith(
           tour: state.tour.copyWith(
             tourList: tours,
-            initialList:
-            page == 1 ? tours : state.tour.initialList,
+            initialList: page == 1 ? tours : state.tour.initialList,
             currentPage: page,
             totalPages: pagination['last_page'] ?? 1,
             isLoading: false,
@@ -323,9 +307,9 @@ class TravelBookingController extends ChangeNotifier {
         ),
       );
     } catch (e) {
-      _updateState(state.copyWith(
-        tour: state.tour.copyWith(isLoading: false),
-      ));
+      _updateState(state.copyWith(tour: state.tour.copyWith(isLoading: false)));
+    } finally {
+      _isFetching = false;
     }
   }
 
@@ -338,19 +322,14 @@ class TravelBookingController extends ChangeNotifier {
 
   /// Cập nhật sort option và reload page 1
   void updateSortOption(SortOption option) {
-    _updateState(
-      state.copyWith(
-        filter: state.filter.copyWith(sortBy: option),
-      ),
-    );
+    _updateState(state.copyWith(filter: state.filter.copyWith(sortBy: option)));
 
     loadTourPage(1);
   }
 
   /// Toggle filter theo rating
   void toggleRatingFilter(int star) {
-    final currentFilters =
-    List<int>.from(state.filter.selectedRatings);
+    final currentFilters = List<int>.from(state.filter.selectedRatings);
 
     if (currentFilters.contains(star)) {
       currentFilters.remove(star);
@@ -360,17 +339,14 @@ class TravelBookingController extends ChangeNotifier {
 
     _updateState(
       state.copyWith(
-        filter: state.filter.copyWith(
-          selectedRatings: currentFilters,
-        ),
+        filter: state.filter.copyWith(selectedRatings: currentFilters),
       ),
     );
   }
 
   /// Toggle filter theo loại tour
   void toggleTourTypeFilter(int typeId) {
-    final currentTypes =
-    List<int>.from(state.filter.selectedTourTypes);
+    final currentTypes = List<int>.from(state.filter.selectedTourTypes);
 
     if (currentTypes.contains(typeId)) {
       currentTypes.remove(typeId);
@@ -380,21 +356,16 @@ class TravelBookingController extends ChangeNotifier {
 
     _updateState(
       state.copyWith(
-        filter: state.filter.copyWith(
-          selectedTourTypes: currentTypes,
-        ),
+        filter: state.filter.copyWith(selectedTourTypes: currentTypes),
       ),
     );
   }
 
   /// Nhấn nút Apply Filter
   void applyFilters() {
-    _updateState(
-      state.copyWith(
-        ui: state.ui.copyWith(isSearching: true),
-      ),
-    );
+    _updateState(state.copyWith(ui: state.ui.copyWith(isSearching: true)));
     loadTourPage(1);
+    scrollToTop();
   }
 
   // =========================================================
@@ -405,14 +376,8 @@ class TravelBookingController extends ChangeNotifier {
   void performTourSearch(String defaultDestination) {
     final raw = state.form.tempDestination.trim();
 
-    if (raw.isEmpty ||
-        raw.toLowerCase() ==
-            defaultDestination.toLowerCase()) {
-      _updateState(
-        state.copyWith(
-          form: state.form.copyWith(destination: ''),
-        ),
-      );
+    if (raw.isEmpty || raw.toLowerCase() == defaultDestination.toLowerCase()) {
+      _updateState(state.copyWith(form: state.form.copyWith(destination: '')));
       loadTourPage(1);
       return;
     }
@@ -432,14 +397,10 @@ class TravelBookingController extends ChangeNotifier {
   // =========================================================
 
   /// Điều hướng sang màn hình chi tiết tour
-  void goToTourDetail(
-      TourItem tourItem,
-      AppLocalizations l10n) {
-    print('Ngày khởi hành' + state.form.departure);
-    final location =
-    state.ui.selectedTab != TravelTab.tour
+  void goToTourDetail(TourItem tourItem, AppLocalizations l10n) {
+    final location = state.form.departure.isEmpty
         ? l10n.form_defaultDeparture
-        : departureController.text.trim();
+        : state.form.departure;
 
     NavigationService.push(
       MaterialPageRoute(
@@ -462,10 +423,7 @@ class TravelBookingController extends ChangeNotifier {
 
     NavigationService.pop();
     NavigationService.push(
-      MaterialPageRoute(
-        builder: (_) =>
-            TourScreen(homeData: homeTourData),
-      ),
+      MaterialPageRoute(builder: (_) => TourScreen(homeData: homeTourData)),
     );
   }
 
@@ -475,18 +433,20 @@ class TravelBookingController extends ChangeNotifier {
 
   /// Thoát chế độ search
   void resetSearch() {
-    _updateState(
-      state.copyWith(
-        ui: state.ui.copyWith(isSearching: false),
-      ),
-    );
+    _updateState(state.copyWith(ui: state.ui.copyWith(isSearching: false)));
   }
 
   /// Reset toàn bộ về trạng thái ban đầu
-  void resetToHome() {
-    _state = TravelBookingState.initial();
-    departureController.clear();
-    notifyListeners();
+  void resetToHome(String defaultDeparture) {
+    _updateState(
+      _state.copyWith(
+        ui: BookingUIState.initial().copyWith(isInitialized: true),
+        filter: TravelFilterState.initial(),
+        form: BookingFormState.initial().copyWith(departure: defaultDeparture),
+        tour: _state.tour.copyWith(tourList: state.tour.initialList),
+      ),
+    );
+    departureController.text = defaultDeparture;
   }
 
   /// Reset form nhưng giữ lại danh sách tour ban đầu
@@ -494,10 +454,7 @@ class TravelBookingController extends ChangeNotifier {
     _updateState(
       state.copyWith(
         form: BookingFormState.initial(),
-        tour: state.tour.copyWith(
-          tourList:
-          List.from(state.tour.initialList),
-        ),
+        tour: state.tour.copyWith(tourList: List.from(state.tour.initialList)),
       ),
     );
   }

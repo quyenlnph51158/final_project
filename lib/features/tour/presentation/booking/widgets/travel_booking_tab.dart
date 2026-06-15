@@ -1,11 +1,9 @@
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_sizes.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
 import '../../../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../controller/travel_booking_controller.dart';
 
 class TravelBookingTab extends StatelessWidget {
@@ -34,12 +32,12 @@ class TravelBookingTab extends StatelessWidget {
               context.read<TravelBookingController>().changeTab(tab, l10n);
             },
             child: Container(
-              padding: TourLayoutSpacing.paddingtabform(context),
+              padding: EdgeInsets.symmetric(vertical: context.rh(10)),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
                     color: isSelected ? kPrimaryColor : Colors.transparent,
-                    width: AppSizes.wTabBorder,
+                    width: context.rw(3.0),
                   ),
                 ),
               ),
@@ -50,7 +48,7 @@ class TravelBookingTab extends StatelessWidget {
                   Text(
                     text,
                     style: TextStyle(
-                      fontSize: AppStyles.textTab,
+                      fontSize: 12.0,
                       fontWeight: isSelected
                           ? FontWeight.bold
                           : FontWeight.normal,

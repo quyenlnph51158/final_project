@@ -1,14 +1,55 @@
-import 'dart:convert';
-import 'package:final_project/features/flight/data/models/response/flight_search_response.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
-import '../models/flight_info.dart';
-import '../models/international_flight_pair.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+import '../models/flight_item.dart';
+import '../models/response/flight_list_response.dart';
 
 class FlightService {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? '';
+  // 1. Singleton pattern: Đảm bảo chỉ có 1 instance duy nhất
+  static final FlightService _instance = FlightService._internal();
+  factory FlightService() => _instance;
 
-  Future<FlightSearchResponse> fetchFlightInfo({
+  static int _totalRequestCount = 0; // Đếm tổng request từ khi mở app
+  static int _searchSessionCount = 0; // Đếm số lần người dùng nhấn nút "Tìm kiếm"
+
+  late final Dio _dio;
+
+  FlightService._internal() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: dotenv.env['BASE_URL'] ?? '',
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+
+    if (kDebugMode) {
+      _dio.interceptors.add(PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: false,
+        error: true,
+        compact: true,
+      ));
+    }
+
+    _dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        _totalRequestCount++;
+        // Log này giúp soi ID của từng request
+        debugPrint('🌐 [API REQ #$_totalRequestCount] [${options.data['airline']}]');
+        return handler.next(options);
+      },
+    ));
+  }
+
+  Future<FlightData> fetchFlightInfo({
     required String startAirport,
     required String endAirport,
     required String startDate,
@@ -18,48 +59,50 @@ class FlightService {
     required int children,
     required int infant,
     String provider = 'VNA',
+    required String token,
   }) async {
+    _searchSessionCount++;
+    final currentSession = _searchSessionCount;
+
+    debugPrint('🚀 === BẮT ĐẦU SEARCH SESSION #$currentSession ===');
+
     final List<String> airlines = ['VIETJET', 'VNA', 'BAMBOO'];
 
-    // Cập nhật: Gọi API song song với timeout riêng cho từng hãng
-    final results = await Future.wait(airlines.map((airline) => _searchByAirline(
-      airline: airline,
-      startAirport: startAirport,
-      endAirport: endAirport,
-      startDate: startDate,
-      returnDate: returnDate,
-      typeAirport: typeAirport,
-      adults: adults,
-      children: children,
-      infant: infant,
-      provider: provider,
-    ).timeout(
-      const Duration(seconds: 45), // Tăng lên 45s cho các chặng quốc tế phức tạp
-      onTimeout: () {
-        print("⚠️ Timeout hãng $airline - Bỏ qua kết quả hãng này");
-        return FlightSearchResponse(); // Trả về object rỗng nếu quá thời gian
-      },
-    )));
+    final List<FlightData?> results = await Future.wait(
+      airlines.map(
+            (airline) => _searchByAirline(
+          airline: airline,
+          startAirport: startAirport,
+          endAirport: endAirport,
+          startDate: startDate,
+          returnDate: returnDate,
+          typeAirport: typeAirport,
+          adults: adults,
+          children: children,
+          infant: infant,
+          provider: provider,
+          token: token,
+          sessionId: currentSession, // Truyền ID phiên vào để track
+        ),
+      ),
+    );
 
-    List<FlightInfo> allOutbound = [];
-    List<FlightInfo> allReturn = [];
-    List<InternationalFlightPair> allInternationalPair = [];
+    debugPrint('🏁 === KẾT THÚC SEARCH SESSION #$currentSession ===');
 
-    // Gộp kết quả an toàn
-    for (var res in results) {
-      allOutbound.addAll(res.outboundFlights);
-      allReturn.addAll(res.returnFlights);
-      allInternationalPair.addAll(res.internationalPairs);
+    List<FlightItem> combinedGo = [];
+    List<FlightItem> combinedReturn = [];
+
+    for (var flightData in results) {
+      if (flightData != null) {
+        if (flightData.lsFlightGo != null) combinedGo.addAll(flightData.lsFlightGo!);
+        if (flightData.lsFlightReturn != null) combinedReturn.addAll(flightData.lsFlightReturn!);
+      }
     }
 
-    return FlightSearchResponse(
-        outboundFlights: allOutbound,
-        returnFlights: allReturn,
-        internationalPairs: allInternationalPair
-    );
+    return FlightData.manual(lsFlightGo: combinedGo, lsFlightReturn: combinedReturn);
   }
 
-  Future<FlightSearchResponse> _searchByAirline({
+  Future<FlightData?> _searchByAirline({
     required String airline,
     required String startAirport,
     required String endAirport,
@@ -70,12 +113,13 @@ class FlightService {
     required int children,
     required int infant,
     required String provider,
+    required String token,
+    required int sessionId, // Nhận ID phiên
   }) async {
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/flight/search'),
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        body: jsonEncode({
+      final response = await _dio.post(
+        '/flight/search',
+        data: {
           "start_airport": startAirport,
           "end_airport": endAirport,
           "start_date": startDate,
@@ -86,59 +130,21 @@ class FlightService {
           "infant": infant,
           "airline": airline,
           "provider": provider,
-        }),
+        },
+        options: Options(headers: {'Access-Token': token}),
       );
 
-      if (response.statusCode != 200) {
-        return FlightSearchResponse();
+      final flightResponse = FlightListResponse.fromJson(response.data);
+
+      if (flightResponse.status == 1 && flightResponse.data != null) {
+        return flightResponse.data;
       }
-
-      final decoded = json.decode(response.body);
-      final data = decoded['data'];
-
-      // Kiểm tra dữ liệu thô: Nếu data là mảng rỗng [] (như Vietjet hay trả về khi lỗi) thì bỏ qua
-      if (data == null || data is List || data['listAirport'] == null) {
-        return FlightSearchResponse();
-      }
-
-      final Map<String, dynamic> listAirport = data['listAirport'];
-      List<FlightInfo> outboundList = [];
-      List<FlightInfo> returnList = [];
-      List<InternationalFlightPair> internationalPairs = [];
-
-      // XỬ LÝ MẢNG 'GO'
-      if (listAirport['go'] is List) {
-        for (var item in listAirport['go']) {
-          if (item is! Map<String, dynamic>) continue;
-
-          // KIỂM TRA VÉ CẶP QUỐC TẾ
-          if (item.containsKey('go') && item.containsKey('return')) {
-            internationalPairs.add(InternationalFlightPair.fromJson(item));
-          }
-          // VÉ ĐƠN NỘI ĐỊA
-          else {
-            outboundList.add(FlightInfo.fromJson(item));
-          }
-        }
-      }
-
-      // XỬ LÝ MẢNG 'RETURN' (Chiều về nội địa)
-      if (listAirport['return'] is List) {
-        for (var item in listAirport['return']) {
-          if (item is Map<String, dynamic>) {
-            returnList.add(FlightInfo.fromJson(item));
-          }
-        }
-      }
-
-      return FlightSearchResponse(
-        outboundFlights: outboundList,
-        returnFlights: returnList,
-        internationalPairs: internationalPairs,
-      );
+      return null;
+    } on DioException catch (e) {
+      debugPrint("❌ Session #$sessionId - Lỗi hãng $airline: ${e.message}");
+      return null;
     } catch (e) {
-      print("❌ Lỗi parse dữ liệu hãng $airline: $e");
-      return FlightSearchResponse();
+      return null;
     }
   }
 }

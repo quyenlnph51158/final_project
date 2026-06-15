@@ -1,7 +1,4 @@
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:final_project/core/design/shared/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_sizes.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
+import 'package:final_project/core/data/constants/faqs_tour_detail_data.dart';
 import 'package:final_project/features/tour/presentation/booking/forms/consultation_form_screen.dart';
 import 'package:final_project/features/tour/presentation/sections/tour_detail_screen/faqs_section.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +52,7 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
   ];
 
   int _currentTab = 0;
+  bool _isAutoScrolling = false;
 
   @override
   void initState() {
@@ -62,9 +60,10 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
     _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final l10n = AppLocalizations.of(context)!;
-      final controller = context.read<TravelBookingController>();
-      controller.fetchTourDetail(widget.name, l10n.error_dataLoadingFailed);
-      controller.initData(l10n.form_defaultDeparture, l10n.form_defaultDestination);
+      context.read<TravelBookingController>().fetchTourDetail(
+        widget.name,
+        l10n.error_dataLoadingFailed,
+      );
     });
   }
 
@@ -77,211 +76,228 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.read<TravelBookingController>();
+    // Lấy state từ controller
+    final tourState = context.watch<TravelBookingController>().state;
+    final tourDetail = tourState.tour.tourDetail;
+    final isLoading = tourState.ui.isLoading;
 
-    // Performance Optimization: Only rebuild when the tour data changes, not every scroll.
-    final tourDetail = context.select((TravelBookingController c) => c.state.tour.tourDetail);
+    final double topPadding = MediaQuery.of(context).padding.top;
+    final double tabHeight = context.rh(50);
 
-    // Responsive Logic
-    final bool isDesktop = context.isDesktop;
-    final double horizontalPadding = isDesktop ? context.wp(10) : 0.0;
-    final double maxContentWidth = 1200.0;
+    // --- SỬA LỖI: Kiểm tra nếu đang tải hoặc dữ liệu chưa có ---
+    if (isLoading || tourDetail == null) {
+      return Scaffold(
+        backgroundColor: kBackgroundColor,
+        appBar: AppBar(
+          title: Text(widget.name, style: TextStyle(fontSize: context.sp(16))),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 0,
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(color: kPrimaryColor),
+        ),
+      );
+    }
 
-    return PopScope(
-        canPop: true,
-        onPopInvokedWithResult: (didPop, result){
-          if(didPop) return;
-        },
-        child:Scaffold(
-          backgroundColor: kBackgroundColor,
-          endDrawer: AppDrawer(
-            onTabSelected: controller.updateTab,
-            onHomeSelected: controller.resetSearch,
-            onTabFlightSelected: (_) => controller.updateTab(TravelTab.flight),
-          ),
-          body: Center( // Centers the content on Wide Screens (Desktop)
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: isDesktop ? maxContentWidth : double.infinity),
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  // 1. Header Section
-                  SliverToBoxAdapter(
+    // Nếu đã có dữ liệu, mới render CustomScrollView
+    return Scaffold(
+      backgroundColor: kBackgroundColor,
+      endDrawer: const AppDrawer(),
+      body: CustomScrollView(
+        controller: _scrollController,
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          // 1. HEADER & IMAGE CAROUSEL
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  color: Colors.white,
+                  child: SafeArea(
+                    bottom: false,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: double.infinity,
-                          color: Colors.white,
-                          child: SafeArea(
-                            bottom: false,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomAppBar(
-                                    image: ImageLink.logoAppHeaderBackgroundWhite,
-                                    backgroundColor: kPrimaryColor
-                                ),
-                                TourLayoutSpacing.customAppBarAndTourName,
-                                Padding(
-                                  padding: TourLayoutSpacing.paddingTourDetailName(context),
-                                  child: Text(
-                                      widget.name,
-                                      style: AppStyles.tourNameInTourDetail(context)
-                                  ),
-                                ),
-                                TourLayoutSpacing.headerNamePosition,
-                              ],
+                        const CustomAppBar(
+                          image: ImageLink.logoAppHeaderBackgroundWhite,
+                          backgroundColor: kPrimaryColor,
+                        ),
+                        SizedBox(height: context.rh(12)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: context.padding,
+                          ),
+                          child: Text(
+                            widget.name,
+                            style: TextStyle(
+                              fontSize: context.sp(22),
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF1D2939),
                             ),
                           ),
                         ),
-                        ImageCarousel(
-                          images: tourDetail.images,
-                          height: AppSizes.imageDescription(context),
-                        ),
+                        SizedBox(height: context.rh(12)),
                       ],
                     ),
                   ),
-
-                  // 2. Sticky Tab Bar (Floating)
-                  SliverPersistentHeader(
-                    pinned: false,
-                    floating: true,
-                    delegate: _StickyTabBarDelegate(
-                      tabHeight: AppSizes.tabSection(context),
-                      child: _buildTabs(),
-                    ),
-                  ),
-
-                  // 3. Main Content Sections
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                    sliver: SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          // Intro Section
-                          Padding(
-                            key: _introKey,
-                            padding: TourLayoutSpacing.paddingBriefTourDetail(context),
-                            child: HtmlWidget(
-                                tourDetail.brief.toString(),
-                                textStyle: AppStyles.briefTourDetail(context)
-                            ),
-                          ),
-                          SharedAppLayoutSpacing.section,
-
-                          HighlightSection(detail: tourDetail),
-                          SharedAppLayoutSpacing.section,
-
-                          ScheduleSection(key: _scheduleKey, detail: tourDetail),
-                          SharedAppLayoutSpacing.section,
-
-                          // Consultation Form
-                          Padding(
-                            padding: TourLayoutSpacing.paddingConsultationSection(context),
-                            child: ConsultationFormScreen(),
-                          ),
-                          SharedAppLayoutSpacing.section,
-
-                          ReviewSection(key: _reviewKey, detail: tourDetail),
-                          SharedAppLayoutSpacing.section,
-
-                          FaqSection(key: _faqKey, faqs: tourDetail.faqs),
-                          SharedAppLayoutSpacing.section,
-
-                          RelatedTourSection(tourDetail: tourDetail),
-                          SharedAppLayoutSpacing.footer,
-
-                          const AppFooter(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                ImageCarousel(
+                  images: tourDetail.images ?? [], // Dùng ?? [] cho an toàn
+                  height: context.rh(250).clamp(200.0, 350.0),
+                ),
+              ],
             ),
           ),
-        )
+
+          // 2. STICKY TAB BAR
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _StickyTabBarDelegate(
+              tabHeight: tabHeight,
+              topPadding: topPadding,
+              child: _buildTabs(tabHeight),
+            ),
+          ),
+
+          // 3. CONTENT SECTIONS
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                // Giới thiệu
+                Padding(
+                  key: _introKey,
+                  padding: EdgeInsets.all(context.padding),
+                  child: HtmlWidget(
+                    tourDetail.brief ?? "",
+                    textStyle: TextStyle(
+                      fontSize: context.sp(14),
+                      color: kTextColor,
+                      height: 1.6,
+                    ),
+                  ),
+                ),
+                _buildDivider(context),
+                HighlightSection(detail: tourDetail),
+                _buildDivider(context),
+                ScheduleSection(key: _scheduleKey, detail: tourDetail),
+                _buildDivider(context),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: ConsultationFormScreen(),
+                ),
+                _buildDivider(context),
+                ReviewSection(key: _reviewKey, detail: tourDetail),
+                _buildDivider(context),
+                FaqSection(
+                  key: _faqKey,
+                  faqs: FaqsTourDetailData.faqs(context),
+                ),
+                _buildDivider(context),
+                RelatedTourSection(tourDetail: tourDetail),
+                const AppFooter(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildTabs() {
+  Widget _buildDivider(BuildContext context) =>
+      SizedBox(height: context.rh(32));
+
+  Widget _buildTabs(double height) {
     final l10n = AppLocalizations.of(context)!;
     final tabs = [
       l10n.tour_detail_tab_intro,
       l10n.tour_detail_tab_schedule,
       l10n.tour_detail_tab_review,
-      l10n.tour_detail_tab_question
+      l10n.tour_detail_tab_question,
     ];
 
     return Container(
-      height: AppSizes.tabSection(context),
-      decoration: const BoxDecoration(
+      height: height,
+      width: double.infinity,
+      decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: kBorderColor, width: 0.5)),
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
       ),
-      child: RawScrollbar(
+      child: SingleChildScrollView(
         controller: _tabScrollController,
-        thumbVisibility: true,
-        trackVisibility: false,
-        thickness: 3,
-        radius: const Radius.circular(8),
-        thumbColor: kPrimaryColor.withOpacity(0.5),
-        padding: const EdgeInsets.only(bottom: 2),
-        child: SingleChildScrollView(
-          controller: _tabScrollController,
-          scrollDirection: Axis.horizontal,
-          padding: TourLayoutSpacing.paddingTabSection(context).copyWith(bottom: 10),
-          child: Row(
-            children: List.generate(tabs.length, (index) {
-              final isActive = _currentTab == index;
-              return GestureDetector(
-                onTap: () => _scrollToSection(index),
-                child: Padding(
-                  key: _tabKeys[index],
-                  padding: TourLayoutSpacing.paddingTabItem(context),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        tabs[index],
-                        style: TextStyle(
-                          fontSize: context.sp(16),
-                          fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
-                          color: isActive ? kPrimaryColor : kTextColor,
-                        ),
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: context.rw(8)),
+        child: Row(
+          children: List.generate(tabs.length, (index) {
+            final isActive = _currentTab == index;
+            return InkWell(
+              onTap: () => _scrollToSection(index),
+              child: Container(
+                key: _tabKeys[index],
+                padding: EdgeInsets.symmetric(horizontal: context.rw(12)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      tabs[index],
+                      style: TextStyle(
+                        fontSize: context.sp(14),
+                        fontWeight: isActive
+                            ? FontWeight.bold
+                            : FontWeight.w500,
+                        color: isActive ? kPrimaryColor : kTextColor,
                       ),
-                      const SizedBox(height: 4),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 250),
-                        height: AppSizes.heightUnderline,
-                        width: isActive ? 40 : 0,
+                    ),
+                    const SizedBox(height: 4),
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      height: 3,
+                      width: isActive ? context.rw(40) : 0,
+                      decoration: BoxDecoration(
                         color: kPrimaryColor,
+                        borderRadius: BorderRadius.circular(context.radius),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              );
-            }),
-          ),
+              ),
+            );
+          }),
         ),
       ),
     );
   }
 
+  // Logic Scroll mượt mà hơn cho máy thật
   void _scrollToSection(int index) {
     final sectionContext = _sectionKeys[index].currentContext;
     if (sectionContext == null) return;
 
+    setState(() {
+      _isAutoScrolling = true;
+      _currentTab = index;
+    });
+
     final box = sectionContext.findRenderObject() as RenderBox;
     final position = box.localToGlobal(Offset.zero, ancestor: context.findRenderObject());
 
-    _scrollController.animateTo(
-      _scrollController.offset + position.dy - AppSizes.tabSection(context),
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeInOut,
-    );
+    final topPadding = MediaQuery.of(context).padding.top;
+    final tabHeight = context.rh(50);
 
-    setState(() => _currentTab = index);
+    // Tính toán vị trí cần cuộn đến: Vị trí hiện tại + khoảng cách đến đích - (chiều cao Header + Padding)
+    double targetOffset = _scrollController.offset + position.dy - (tabHeight + topPadding);
+
+    // Đảm bảo không cuộn quá giới hạn của danh sách
+    targetOffset = targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent);
+
+    _scrollController.animateTo(
+      targetOffset,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    ).then((_) => _isAutoScrolling = false);
+
     _scrollTabToCenter(index);
   }
 
@@ -293,9 +309,12 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
     final box = keyContext.findRenderObject() as RenderBox;
     final position = box.localToGlobal(Offset.zero);
     final size = box.size;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = context.screenWidth;
 
-    final offset = _tabScrollController.offset + position.dx - (screenWidth / 2 - size.width / 2);
+    final offset =
+        _tabScrollController.offset +
+        position.dx -
+        (screenWidth / 2 - size.width / 2);
 
     _tabScrollController.animateTo(
       offset.clamp(0.0, _tabScrollController.position.maxScrollExtent),
@@ -305,28 +324,26 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
   }
 
   void _onScroll() {
-    if (!_scrollController.hasClients) return;
+    if (_isAutoScrolling || !_scrollController.hasClients) return;
 
-    final scrollOffset = _scrollController.offset;
-    int newIndex = _currentTab;
+    final topPadding = MediaQuery.of(context).padding.top;
+    final tabHeight = context.rh(50);
+    final threshold = tabHeight + topPadding + 10; // Ngưỡng nhận diện section
 
-    for (int i = 0; i < _sectionKeys.length; i++) {
+    for (int i = _sectionKeys.length - 1; i >= 0; i--) {
       final ctx = _sectionKeys[i].currentContext;
       if (ctx == null) continue;
 
       final box = ctx.findRenderObject() as RenderBox;
       final position = box.localToGlobal(Offset.zero, ancestor: context.findRenderObject());
 
-      final sectionTop = scrollOffset + position.dy - AppSizes.tabSection(context) - 50;
-
-      if (scrollOffset >= sectionTop) {
-        newIndex = i;
+      if (position.dy <= threshold) {
+        if (_currentTab != i) {
+          setState(() => _currentTab = i);
+          _scrollTabToCenter(i);
+        }
+        break; // Dừng lại ở section cao nhất đang chạm đỉnh
       }
-    }
-
-    if (newIndex != _currentTab) {
-      setState(() => _currentTab = newIndex);
-      _scrollTabToCenter(newIndex);
     }
   }
 }
@@ -334,25 +351,29 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
 class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
   final double tabHeight;
+  final double topPadding;
 
-  _StickyTabBarDelegate({required this.child, required this.tabHeight});
-
-  @override
-  double get minExtent => tabHeight + 40; // Dynamic height based on AppSizes
+  _StickyTabBarDelegate({required this.child, required this.tabHeight, required this.topPadding,});
 
   @override
-  double get maxExtent => tabHeight + 40;
+  double get minExtent => tabHeight + topPadding;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    final statusBarHeight = MediaQuery.of(context).padding.top;
+  double get maxExtent => tabHeight + topPadding;
 
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Material(
       color: Colors.white,
-      elevation: overlapsContent ? 4 : 0,
+      elevation: overlapsContent ? 2 : 0,
       child: Column(
         children: [
-          SizedBox(height: statusBarHeight),
+          Container(height: topPadding, color: Colors.white),
           Expanded(child: child),
         ],
       ),
@@ -361,6 +382,8 @@ class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(_StickyTabBarDelegate oldDelegate) {
-    return oldDelegate.tabHeight != tabHeight || oldDelegate.child != child;
+    return oldDelegate.tabHeight != tabHeight ||
+        oldDelegate.topPadding != topPadding ||
+        oldDelegate.child != child;
   }
 }

@@ -1,6 +1,4 @@
 import 'package:final_project/core/data/model/home_tour_model.dart';
-import 'package:final_project/core/design/shared/app_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_shape.dart';
 import 'package:final_project/features/tour/presentation/sections/tour_screen/list_tour_section.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/core/constants/colors.dart';
@@ -16,124 +14,143 @@ import '../widgets/header/header_back_ground.dart';
 
 class TourScreen extends StatefulWidget {
   final HomeTourData? homeData;
-  const TourScreen({
-    super.key,
-    this.homeData
-  });
+
+  const TourScreen({super.key, this.homeData});
+
   @override
   State<TourScreen> createState() => _TourScreen();
 }
+
 class _TourScreen extends State<TourScreen> {
   final GlobalKey _resultKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context);
       final controller = context.read<TravelBookingController>();
       controller.resetToInitial();
-
-      // 1. Khởi tạo data cơ bản
-
-      controller.initData(l10n!.form_defaultDeparture, l10n.form_defaultDestination);
-
-      // 2. QUAN TRỌNG: Đảm bảo initialList đã được load từ Server/Local
-      // Nếu controller chưa load list, hãy gọi hàm fetch list ở đây và await nó
-      // await controller.fetchTours();
+      controller.initData(
+        l10n!.form_defaultDeparture,
+        l10n.form_defaultDestination,
+      );
 
       if (widget.homeData != null) {
         controller.updateTourForm(widget.homeData);
-
-        // Đợi một nhịp để State ổn định
         await Future.delayed(const Duration(milliseconds: 300));
-
-        // Thực hiện search
         controller.performTourSearch(l10n.form_defaultDestination);
-
-        // Cuộn tới kết quả
         _scrollToResults();
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<TravelBookingController>();
     final l10n = AppLocalizations.of(context)!;
 
-    // --- TÍNH TOÁN THÔNG SỐ THẬT QUA EXTENSION ---
-    // Chiều cao header linh hoạt: Máy nhỏ 200, Máy thường 25% height, Tablet tối đa 300
-    final double headerHeight = context.hp(35);
+    // --- TÍNH TOÁN THEO PIXEL THIẾT KẾ (Base 812x375) ---
+    // Chiều cao nền ảnh (Thiết kế khoảng 280px)
+    final double headerBgHeight = context.rh(280).clamp(240.0, 320.0);
 
-    // Padding ngang cho Form: Tablet thì rộng hơn cho thoáng
-    final double horizontalPadding = context.isTablet ? context.width * 0.1 : 16.0;
+    // Khoảng cách Form "ăn gian" đè lên nền (Thiết kế khoảng 40px)
+    final double overlapOffset = context.rh(40);
+
+    // Chiều cao thực tế của Form (TourForm thường cao khoảng 350-400px)
+    final double formHeight = context.rh(380);
+
+    // Tổng chiều cao khu vực Header để đẩy nội dung bên dưới xuống đúng chỗ
+    final double totalHeaderAreaHeight =
+        (headerBgHeight - overlapOffset) + formHeight;
 
     return PopScope(
       canPop: true,
-      onPopInvokedWithResult: (didPop, result){
-          if(didPop) return;
-      },
-      child:Scaffold(
+      child: Scaffold(
         backgroundColor: kBackgroundColor,
-        endDrawer: AppDrawer(
-          onTabSelected: controller.updateTab,
-          onHomeSelected: controller.resetSearch,
-          onTabFlightSelected: (_) => controller.updateTab(TravelTab.flight),
-        ),
-        body: SingleChildScrollView(
+        endDrawer: const AppDrawer(),
+        body: CustomScrollView(
+          // Sử dụng CustomScrollView thay vì SingleChild để mượt hơn trên máy thật
           controller: controller.scrollController,
-          child: Column(
-            children: [
-              // ================= HEADER & FORM (TỰ CO GIÃN) =================
-              IntrinsicHeight( // Tự động nở chiều cao theo nội dung con
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // 1. PHẦN HEADER & FORM TÌM KIẾM
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: totalHeaderAreaHeight,
                 child: Stack(
+                  clipBehavior: Clip.none,
                   children: [
-                    HeaderBackground(height: headerHeight),
+                    // Lớp nền xanh
+                    HeaderBackground(height: headerBgHeight),
+
+                    // Logo & AppBar
                     const BookingHeader(),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: headerHeight - 20, // Đè nhẹ lên header
-                        left: horizontalPadding,
-                        right: horizontalPadding,
-                        bottom: 20, // Tạo khoảng cách cho phần dưới
-                      ),
-                      child: Container(
-                        padding: SharedAppLayoutSpacing.paddingForm,
-                        decoration: AppShape.boxForm,
-                        child: TourSearchForm(
-                          onSearch: () {
-                            controller.performTourSearch(l10n.form_defaultDestination);
-                            _scrollToResults();
-                          },
+
+                    // Form tìm kiếm
+                    Positioned(
+                      top: headerBgHeight - overlapOffset,
+                      left: 0,
+                      right: 0,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.padding,
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.all(context.rw(16)),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(context.radius),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 15,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: TourSearchForm(
+                            onSearch: () {
+                              if (controller.state.ui.errorMessage != '') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      controller.state.ui.errorMessage!,
+                                    ),
+                                    backgroundColor: Colors.redAccent,
+                                    behavior: SnackBarBehavior.floating,
+                                    margin: EdgeInsets.all(context.padding),
+                                  ),
+                                );
+                              } else {
+                                controller.performTourSearch(
+                                  l10n.form_defaultDestination,
+                                );
+                                _scrollToResults();
+                              }
+                            },
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
+            ),
 
-              // ================= DANH SÁCH TOUR (GRID TỰ ĐỘNG) =================
-              // Giới hạn độ rộng tối đa trên Tablet để không bị tràn lan
-              Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: context.isTablet ? 1100 : double.infinity,
-                  ),
-                  child: Column(
-                    children: [
-                      SharedAppLayoutSpacing.section,
-                      ListTourSection(key: _resultKey),
-                      SharedAppLayoutSpacing.footer,
-                      const AppFooter(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            // 2. KHOẢNG CÁCH GIỮA FORM VÀ DANH SÁCH
+            SliverToBoxAdapter(child: SizedBox(height: context.rh(24))),
+
+            // 3. DANH SÁCH TOUR
+            SliverToBoxAdapter(child: ListTourSection(key: _resultKey)),
+
+            // 4. KHOẢNG ĐỆM CUỐI VÀ FOOTER
+            SliverToBoxAdapter(child: SizedBox(height: context.rh(40))),
+            const SliverToBoxAdapter(child: AppFooter()),
+          ],
         ),
-      )
+      ),
     );
   }
 

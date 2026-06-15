@@ -306,6 +306,11 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String no_review(Object selectedRating) {
+    return 'Không có đánh giá $selectedRating sao nào';
+  }
+
+  @override
   String get tour_detail_tab_intro => 'Giới thiệu';
 
   @override
@@ -327,10 +332,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get menu_tourTitle => 'TOUR';
 
   @override
-  String get menu_flightTitle => 'MÁY BAY';
+  String get menu_flightTitle => 'VÉ MÁY BAY';
 
   @override
-  String get menu_trainTitle => 'TÀU HỎA';
+  String get menu_trainTitle => 'VÉ TÀU HỎA';
 
   @override
   String get menu_blogTitle => 'BLOG';
@@ -986,4 +991,581 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get tip4Ex => 'Ví dụ: Tên trong hộ chiếu: William Smith Jr';
+
+  @override
+  String get train_headerTitle => 'Tìm kiếm chuyến đi của bạn';
+
+  @override
+  String get train_form_label_departure => 'Khởi hành từ';
+
+  @override
+  String get train_form_label_arrive => 'Đến tại';
+
+  @override
+  String get train_form_departure_date => 'Ngày khởi hành';
+
+  @override
+  String get train_form_return_date => 'Ngày trở lại';
+
+  @override
+  String get trip_information => 'Thông tin chuyến đi';
+
+  @override
+  String get itinerary => 'Hành trình';
+
+  @override
+  String get departure => 'KHỞI HÀNH';
+
+  @override
+  String get return_trip => 'TRỞ VỀ';
+
+  @override
+  String get to => 'đến';
+
+  @override
+  String get enter_passenger_info => 'Nhập thông tin khách hàng';
+
+  @override
+  String get personal_info => 'Thông tin cá nhân';
+
+  @override
+  String get passenger_name_note =>
+      '* Vui lòng đảm bảo rằng bạn nhập tên như trên hộ chiếu. Số ký tự tối đa là 32.';
+
+  @override
+  String get adult => 'Người lớn';
+
+  @override
+  String get child => 'Trẻ em';
+
+  @override
+  String get infant => 'Em bé';
+
+  @override
+  String get contact_info => 'Thông tin liên hệ';
+
+  @override
+  String get contact_note =>
+      '* Vui lòng điền thông tin để nhận thông báo hành trình.';
+
+  @override
+  String get country_code => 'Mã quốc gia';
+
+  @override
+  String get phone_number => 'Số điện thoại';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get confirm_email => 'Xác nhận email';
+
+  @override
+  String get special_request => 'Yêu cầu đặc biệt';
+
+  @override
+  String get request_content => 'Nội dung';
+
+  @override
+  String get select_title => 'Select Title';
+
+  @override
+  String get mr => 'Mr.';
+
+  @override
+  String get mrs => 'Mrs.';
+
+  @override
+  String get ms => 'Ms.';
+
+  @override
+  String get first_middle_name => 'Tên đệm và Tên';
+
+  @override
+  String get last_name => 'Họ';
+
+  @override
+  String get passport_number => 'Số hộ chiếu';
+
+  @override
+  String get birthday => 'Ngày sinh';
+
+  @override
+  String get continue_button => 'Tiếp tục';
+
+  @override
+  String get search => 'Tìm...';
+
+  @override
+  String get select => 'Chọn';
+
+  @override
+  String get tip_enter_name => 'Mẹo nhập tên';
+
+  @override
+  String get salutation => 'Danh xưng';
+
+  @override
+  String get select_salutation => 'Chọn danh xưng';
+
+  @override
+  String get last_name_passport => 'Họ (như trên hộ chiếu)';
+
+  @override
+  String get first_middle_name_passport => 'Tên đệm & Tên (như trên hộ chiếu)';
+
+  @override
+  String get example_last_name => 'VD: NGUYEN';
+
+  @override
+  String get example_first_middle_name => 'VD: VAN AN';
+
+  @override
+  String get accompanying_adult => 'Đi cùng người lớn';
+
+  @override
+  String get select_accompanying_adult => 'Chọn người lớn đi cùng';
+
+  @override
+  String get frequent_flyer_card => 'Thẻ bay thường xuyên';
+
+  @override
+  String get airline => 'Hãng bay';
+
+  @override
+  String get select_airline => 'Chọn hãng bay';
+
+  @override
+  String get card_number => 'Số thẻ';
+
+  @override
+  String get enter_card_number => 'Nhập số thẻ';
+
+  @override
+  String get titles => 'Ông,Bà,Cô,Anh,Chị';
+
+  @override
+  String get airlines => 'Hãng hàng không';
+
+  @override
+  String get stop => 'Chặng dừng';
+
+  @override
+  String get departure_time => 'Giờ khởi hành';
+
+  @override
+  String get direct_flight => 'Bay thẳng';
+
+  @override
+  String get one_stop => '1 Chặng dừng';
+
+  @override
+  String get two_stops => '2 Chặng dừng';
+
+  @override
+  String get time_early => 'Sớm (0 AM - 5:59 AM)';
+
+  @override
+  String get time_morning => 'Sáng (6 AM - 11:59 AM)';
+
+  @override
+  String get time_afternoon => 'Trưa (12 PM - 5:59 PM)';
+
+  @override
+  String get time_evening => 'Tối (6 PM - 11:59 PM)';
+
+  @override
+  String get no_flights_found => 'Không tìm thấy chuyến bay';
+
+  @override
+  String get change_filter_instruction =>
+      'Vui lòng thay đổi lựa chọn hoặc bộ lọc.';
+
+  @override
+  String get noSeatClassAvailable => 'Không có hạng vé khả dụng';
+
+  @override
+  String get understood => 'Đã hiểu';
+
+  @override
+  String get arrivalTime => 'Giờ đến';
+
+  @override
+  String get vip_seat_explanation_title => 'Giải thích Lớp Ghế VIP';
+
+  @override
+  String get vip_seat_intro =>
+      'Các lớp ghế VIP bao gồm: 2 Giường (Berth), Kích thước Vua (King Size), và Kích thước Nữ hoàng (Queen Size). Dưới đây là các quy tắc và điều kiện cho từng loại ghế:';
+
+  @override
+  String get vip_2_berth_title => 'VIP 2 Berth:';
+
+  @override
+  String get vip_2_berth_desc =>
+      'Giá được dành cho cabin VIP 2 Berth. Hành khách sẽ bị tính trọn phí cho cả cabin kể cả khi bạn đi một mình. Điều này đảm bảo sự riêng tư và thoải mái của môi trường cabin.';
+
+  @override
+  String get queen_size_title => 'Queen Size:';
+
+  @override
+  String get queen_size_desc =>
+      'Ghế Queen Size cung cấp sự cân bằng giữa sự thoải mái và không gian. Tương tự như King Size, hành khách đi một mình sẽ bị tính giá đầy đủ cho toàn bộ cabin.';
+
+  @override
+  String get king_size_title => 'King Size:';
+
+  @override
+  String get king_size_desc =>
+      'Ghế King Size được thiết kế cho những ai mong muốn nhiều không gian và sự thoải mái. Nếu bạn đi một mình, phí đầy đủ cho cabin King Size sẽ áp dụng, vì cabin được bán như một toàn thể.';
+
+  @override
+  String get note_title => 'Lưu ý:';
+
+  @override
+  String get note_desc =>
+      'Khi đặt chỗ, xin lưu ý rằng nếu bạn đi một mình, bạn vẫn sẽ phải trả phí đầy đủ cho toàn bộ cabin ở các hạng ghế này. Điều này áp dụng bất kể bạn là du khách đơn lẻ hay thuộc một nhóm (1, 3, 5, hoặc 7 hành khách), vì các cabin được bán như một toàn thể chứ không phải theo từng ghế riêng lẻ.';
+
+  @override
+  String get loading_data => 'Đang tải dữ liệu...';
+
+  @override
+  String get no_trains_found => 'Không có chuyến tàu phù hợp';
+
+  @override
+  String selected_trip_from_to(Object dep, Object dest) {
+    return 'Chuyến đi đã chọn từ $dep đến $dest';
+  }
+
+  @override
+  String select_trip_from(Object station) {
+    return 'Chọn chuyến đi từ $station';
+  }
+
+  @override
+  String get from_price => 'Chỉ từ';
+
+  @override
+  String get one_way => 'Một chiều';
+
+  @override
+  String get view_details_short => 'Chi tiết';
+
+  @override
+  String station_with_name(Object name) {
+    return 'Ga $name';
+  }
+
+  @override
+  String get device => 'Thiết bị:';
+
+  @override
+  String get carrier => 'Vận chuyển:';
+
+  @override
+  String get distance => 'Khoảng cách:';
+
+  @override
+  String get duration_label => 'Trường độ:';
+
+  @override
+  String get seat_class_default => 'Hạng ghế';
+
+  @override
+  String get select_seat_class_hint => 'Chọn hạng ghế';
+
+  @override
+  String get best_seller => 'Bán chạy nhất';
+
+  @override
+  String get tour_activities => 'Tour & Hoạt động';
+
+  @override
+  String get best_hotel => 'Khách sạn tốt nhất';
+
+  @override
+  String get favorite_destinations => 'Điểm đến yêu thích';
+
+  @override
+  String get cheap_trips_offers => 'Chuyến đi giá ưu đãi';
+
+  @override
+  String get login => 'Đăng nhập';
+
+  @override
+  String get logout => 'Đăng xuất';
+
+  @override
+  String get passWord => 'Mật khẩu';
+
+  @override
+  String get forgotPassword => 'Quên mật khẩu?';
+
+  @override
+  String get noAccountYet => 'No account yet?';
+
+  @override
+  String get createAccount => 'Tạo tài khoản';
+
+  @override
+  String get yourAccount => 'Tài khoản của bạn';
+
+  @override
+  String get register => 'Đăng ký';
+
+  @override
+  String get fullName => 'Họ và tên';
+
+  @override
+  String get yourPhoneNumber => 'Số điện thoại của bạn';
+
+  @override
+  String get confirmPassword => 'Nhập lại mật khẩu';
+
+  @override
+  String get success => 'Thành công';
+
+  @override
+  String get fail => 'Thất bại';
+
+  @override
+  String get alreadyAccount => 'Đã có tài khoản?';
+
+  @override
+  String get agree => 'Đồng ý';
+
+  @override
+  String get faq_q1 =>
+      'Nếu tour bị hủy do khách quan (thời tiết, thiên tai, quốc tang,…) thì có được hoàn tiền không?';
+
+  @override
+  String get faq_a1 =>
+      'Nếu do bất khả kháng (thiên tai, dịch bệnh,...), công ty sẽ hoàn lại tiền nhưng có thể trừ các chi phí đã thanh toán cho đối tác...';
+
+  @override
+  String get faq_q2 => 'Các phương thức thanh toán khả dụng?';
+
+  @override
+  String get faq_a2 =>
+      'Wondering Vietnam cung cấp các phương thức đặt cọc/thanh toán tour như sau:...';
+
+  @override
+  String get faq_q3 => 'Thông tin cá nhân có được bảo mật không?';
+
+  @override
+  String get faq_a3 =>
+      'Wondering Vietnam cam kết không tiết lộ bất kỳ thông tin của Quý khách cho bên thứ 3 nào...';
+
+  @override
+  String get faq_q4 =>
+      'Có thể đưa ra các yêu cầu đặc biệt về phòng lưu trú, ăn uống,… không?';
+
+  @override
+  String get faq_a4 =>
+      'Quý khách có thể liên hệ trực tiếp hoặc điền thông tin vào phần “Yêu cầu khác” khi đặt tour.';
+
+  @override
+  String get faq_q5 => 'Có thể xuất hóa đơn VAT không?';
+
+  @override
+  String get faq_a5 =>
+      'Wondering Vietnam sẽ xuất hóa đơn VAT theo đúng quy định của Bộ Tài chính.';
+
+  @override
+  String get errorDepartureEmpty => 'Vui lòng chọn điểm khởi hành !!!';
+
+  @override
+  String get errorDestinationEmpty => 'Vui lòng chọn điểm đến !!!';
+
+  @override
+  String get errorSameLocation =>
+      'Điểm khởi hành và điểm đến không được trùng nhau !!!';
+
+  @override
+  String get errorReturnDateEmpty => 'Vui lòng chọn ngày trở về !!!';
+
+  @override
+  String get errorReturnBeforeDeparture =>
+      'Ngày về không được trước ngày đi !!!';
+
+  @override
+  String get errorSameDate => 'Ngày đi và ngày về không được trùng nhau !!!';
+
+  @override
+  String get summary_title => 'Xem lại đặt chỗ của bạn';
+
+  @override
+  String get summary_booking_info => 'Thông tin đặt vé';
+
+  @override
+  String get summary_booking_code => 'Mã đặt chỗ:';
+
+  @override
+  String get summary_payment_deadline => 'Hạn thanh toán';
+
+  @override
+  String get summary_deadline_note =>
+      '(sau thời gian này, mã\nđặt chỗ sẽ bị hủy)';
+
+  @override
+  String get summary_general_info => 'Thông tin';
+
+  @override
+  String get summary_fullname => 'Họ tên';
+
+  @override
+  String get summary_phone => 'Số điện thoại';
+
+  @override
+  String get summary_booking_date => 'Ngày đặt';
+
+  @override
+  String get summary_email => 'Email';
+
+  @override
+  String get summary_total => 'Tổng';
+
+  @override
+  String get summary_base_fare => 'Giá cơ bản';
+
+  @override
+  String get summary_tax_fee => 'Thuế & Phí';
+
+  @override
+  String get summary_bus => 'Xe buýt';
+
+  @override
+  String get summary_itinerary => 'Hành trình';
+
+  @override
+  String get summary_itinerary_detail => 'Chi tiết hành trình';
+
+  @override
+  String get summary_departure_label => 'KHỞI HÀNH';
+
+  @override
+  String get summary_return_label => 'TRỞ VỀ';
+
+  @override
+  String get summary_passenger_info => 'Thông tin hành khách';
+
+  @override
+  String summary_passenger_count(Object index) {
+    return 'KHÁCH HÀNG $index';
+  }
+
+  @override
+  String get summary_dob => 'Ngày sinh';
+
+  @override
+  String get summary_passport => 'Số CCCD/ Passport';
+
+  @override
+  String get summary_nationality => 'Quốc tịch';
+
+  @override
+  String get summary_payment_method => 'Phương thức thanh toán';
+
+  @override
+  String get summary_card_method => 'Thanh toán bằng thẻ Tín dụng/Ghi nợ';
+
+  @override
+  String get summary_terms_prefix => 'Tôi đã đọc và đồng ý với tất cả ';
+
+  @override
+  String get summary_terms_link => 'Điều khoản sử dụng';
+
+  @override
+  String get summary_terms_suffix => ' được quy định.';
+
+  @override
+  String get summary_btn_continue => 'Tiếp tục';
+
+  @override
+  String get summary_apple_pay => 'Thanh toán bằng Apple Pay';
+
+  @override
+  String get flight_summary_booking_info => 'Thông tin đặt vé';
+
+  @override
+  String get flight_summary_booking_code => 'Mã đặt chỗ:';
+
+  @override
+  String get flight_summary_payment_deadline => 'Hạn thanh toán:';
+
+  @override
+  String get flight_summary_payment_note =>
+      '(sau thời gian này, mã đặt chỗ sẽ bị hủy)';
+
+  @override
+  String get flight_summary_customer_info => 'Thông tin';
+
+  @override
+  String get flight_summary_fullname => 'Họ tên:';
+
+  @override
+  String get flight_summary_phone => 'Số điện thoại:';
+
+  @override
+  String get flight_summary_booking_date => 'Ngày đặt:';
+
+  @override
+  String get flight_summary_email => 'Email:';
+
+  @override
+  String get flight_summary_total => 'Tổng cộng';
+
+  @override
+  String get flight_summary_base_fare => 'Giá cơ bản:';
+
+  @override
+  String get flight_summary_tax_charge => 'Thuế & Phí:';
+
+  @override
+  String get flight_summary_service_fee => 'Phí dịch vụ:';
+
+  @override
+  String get flight_summary_itinerary => 'Hành trình';
+
+  @override
+  String get flight_summary_itinerary_detail => 'Chi tiết hành trình';
+
+  @override
+  String get flight_summary_departure => 'KHỞI HÀNH';
+
+  @override
+  String get flight_summary_return => 'TRỞ VỀ';
+
+  @override
+  String get flight_summary_passenger_info => 'Thông tin hành khách';
+
+  @override
+  String flight_summary_passenger_label(int index) {
+    return 'HÀNH KHÁCH $index';
+  }
+
+  @override
+  String get flight_summary_birthday => 'Ngày sinh';
+
+  @override
+  String get flight_summary_passport => 'Số CCCD/Passport';
+
+  @override
+  String get flight_summary_nationality => 'Quốc tịch';
+
+  @override
+  String get flight_summary_payment_method => 'Phương thức thanh toán';
+
+  @override
+  String get flight_summary_card_method =>
+      'Thanh toán bằng thẻ Tín dụng/Ghi nợ';
+
+  @override
+  String get flight_summary_apple_pay => 'Thanh toán bằng Apple Pay';
+
+  @override
+  String get flight_summary_terms_agree =>
+      'Tôi đã đọc và đồng ý với các Điều khoản sử dụng được quy định.';
+
+  @override
+  String get flight_summary_pay_now => 'THANH TOÁN NGAY';
 }

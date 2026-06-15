@@ -1,42 +1,112 @@
-import 'dart:convert';
+import 'dart:ui';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../models/tour_category.dart';
-import 'package:final_project/features/tour/data/models/response/api_category_response.dart';
 
 class CategoryService {
-  // Thay thế bằng URL API thực tế của bạn
-  final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
+  // 1. Singleton Pattern: Đảm bảo duy nhất 1 instance Dio và Interceptor toàn app
+  static final CategoryService _instance = CategoryService._internal();
+  factory CategoryService() => _instance;
 
-  // Hàm lấy danh sách danh mục tour
-  Future<List<TourCategory>> fetchTourCategories() async {
-    final url = Uri.parse('$_baseUrl/tour/category'); // Thay đổi endpoint
+  late final Dio _dio;
+
+  // Biến static để theo dõi số lần gọi API (Giúp phát hiện Spam)
+  static int _apiCallCount = 0;
+
+  CategoryService._internal() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: dotenv.env['BASE_URL'] ?? '',
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+
+    // 2. Thêm Logger để kiểm soát dữ liệu và phát hiện gọi trùng (chỉ chạy ở Debug)
+    if (kDebugMode) {
+      _dio.interceptors.add(
+        PrettyDioLogger(
+          requestHeader: true,
+          requestBody: true,
+          responseBody: false, // Để false vì danh mục có thể chứa list dài
+          error: true,
+          compact: true,
+        ),
+      );
+    }
+  }
+
+  /// Hàm lấy danh sách danh mục tour
+  Future<List<TourCategory>> fetchTourCategories(
+      Locale locale,
+      String token,
+      ) async {
+    _apiCallCount++;
+    debugPrint('📂 [CATEGORY API] Gọi lần thứ: $_apiCallCount');
 
     try {
-      final response = await http.get(url);
+      final response = await _dio.get(
+        '/tour/category',
+        queryParameters: {
+          'locale': locale.languageCode, // 'vi' hoặc 'en'
+        },
+        options: Options(
+          headers: {
+            'Access-Token': token,
+          },
+        ),
+      );
 
-      if (response.statusCode == 200) {
-        // Giải mã body phản hồi từ JSON string sang Map
-        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      // Dio mặc định ném lỗi nếu statusCode không phải 2xx
+      if (response.data != null) {
+        // Kiểm tra cấu trúc phân cấp: data -> data
+        final dynamic rawData = response.data['data'];
 
-        // Tạo đối tượng ApiResponse từ json
-        final apiResponse = ApiResponse.fromJson(jsonResponse);
+        // Tùy thuộc vào Backend trả về nested data như thế nào
+        // Ở đây xử lý theo code cũ của bạn là data['data']['data']
+        final List<dynamic>? listData = (rawData is Map) ? rawData['data'] : null;
 
-        // Kiểm tra status nếu cần
-        if (apiResponse.status == 1) {
-          return apiResponse.data;
-        } else {
-          // Xử lý lỗi từ API (ví dụ: status != 1)
-          throw Exception('Lỗi từ API: ${apiResponse.message}');
+        if (listData != null) {
+          final List<TourCategory> result = listData
+              .map((item) => TourCategory.fromJson(Map<String, dynamic>.from(item)))
+              .toList();
+
+          debugPrint('✅ Tải thành công ${result.length} danh mục tour.');
+          return result;
         }
-      } else {
-        // Xử lý lỗi HTTP status code
-        throw Exception('Không thể tải danh mục tour. Status code: ${response.statusCode}');
       }
+
+      return [];
+
+    } on DioException catch (e) {
+      // 3. Xử lý lỗi Dio tập trung
+      String errorMsg = _handleDioError(e);
+      debugPrint('❌ [CATEGORY API ERROR]: $errorMsg');
+      throw Exception(errorMsg);
     } catch (e) {
-      // Xử lý lỗi kết nối, giải mã JSON, v.v.
-      print('Lỗi khi fetch tour categories: $e');
-      rethrow; // Ném lại lỗi để UI có thể xử lý
+      debugPrint('❌ [CATEGORY LOGIC ERROR]: $e');
+      throw Exception('Lỗi xử lý dữ liệu danh mục');
+    }
+  }
+
+  // Helper phân loại lỗi để hiển thị lên UI
+  String _handleDioError(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+        return "Kết nối máy chủ quá hạn (30s)";
+      case DioExceptionType.badResponse:
+        final code = e.response?.statusCode;
+        if (code == 401) return "Phiên đăng nhập hết hạn";
+        if (code == 500) return "Lỗi hệ thống máy chủ (500)";
+        return "Lỗi máy chủ: $code";
+      default:
+        return "Lỗi kết nối mạng: ${e.message}";
     }
   }
 }

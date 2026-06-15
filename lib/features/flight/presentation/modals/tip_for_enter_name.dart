@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/constants/colors.dart';
-import '../../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../../core/design/flight/flight_shape.dart';
-import '../../../../../core/design/flight/flight_size.dart';
-import '../../../../../core/design/flight/flight_style.dart';
 import '../../../../../core/utils/responsive_layout.dart';
 import '../../../../app/l10n/app_localizations.dart';
 import '../../data/models/name_tip_model.dart';
@@ -66,15 +62,17 @@ class TipForEnterName extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: FlightShape.borderRadiusBottomSheet,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(24.0),
+        ),
       ),
-      height: FlightSize.bottomSheetHeight(context),
+      height: context.rh(730),
       child: Column(
         children: [
           _buildDragHandle(context),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: FlightLayoutSpacing.bottomSheetPadding),
+              padding: EdgeInsets.symmetric(horizontal: context.rw(20.0)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -115,8 +113,8 @@ class TipForEnterName extends StatelessWidget {
       child: Center(
         child: Container(
           margin: const EdgeInsets.only(top: 12, bottom: 20),
-          height: FlightSize.dragHandleHeight,
-          width: FlightSize.dragHandleWidth,
+          height: context.rh(5),
+          width: context.rw(45),
           decoration: BoxDecoration(
             color: Colors.grey[300],
             borderRadius: BorderRadius.circular(10),
@@ -131,14 +129,18 @@ class TipForEnterName extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFFF2F4F7),
-        borderRadius: FlightShape.borderRadiusLarge(context),
+        borderRadius: BorderRadius.circular(context.sp(16)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: FlightStyle.sectionTitleBold(context).copyWith(fontSize: context.sp(18))),
+          Text(title, style: TextStyle(
+            fontSize: context.sp(16),
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ).copyWith(fontSize: context.sp(18))),
           const SizedBox(height: 16),
-          Text(desc, style: FlightStyle.labelGrey(context).copyWith(height: 1.5, color: const Color(0xFF555555))),
+          Text(desc, style: TextStyle(color: Colors.grey, fontSize: context.sp(13)).copyWith(height: 1.5, color: const Color(0xFF555555))),
         ],
       ),
     );
@@ -149,12 +151,16 @@ class TipForEnterName extends StatelessWidget {
       children: [
         Text(
           l10n.tipEnterNameTitle,
-          style: FlightStyle.sectionTitleBold(context).copyWith(fontSize: context.sp(20)),
+          style: TextStyle(
+            fontSize: context.sp(16),
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ).copyWith(fontSize: context.sp(20)),
         ),
         const SizedBox(height: 12),
         Text(
           l10n.tipEnterNameDesc,
-          style: FlightStyle.labelGrey(context).copyWith(color: Colors.black54),
+          style: TextStyle(color: Colors.grey, fontSize: context.sp(13)).copyWith(color: Colors.black54),
         ),
       ],
     );
@@ -164,14 +170,18 @@ class TipForEnterName extends StatelessWidget {
   Widget _buildUnderstandButton(BuildContext context, String text) {
     return SizedBox(
       width: double.infinity,
-      height: FlightSize.btnUnderstandHeight,
+      height: context.rh(48),
       child: ElevatedButton(
         onPressed: () => Navigator.pop(context),
         style: ElevatedButton.styleFrom(
           backgroundColor: kPrimaryColor,
-          shape: RoundedRectangleBorder(borderRadius: FlightShape.borderRadiusSmall(context)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.sp(8))),
         ),
-        child: Text(text, style: FlightStyle.buttonLarge(context).copyWith(fontSize: context.sp(16))),
+        child: Text(text, style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: context.sp(20), // Áp dụng responsive cho font size
+        ).copyWith(fontSize: context.sp(16))),
       ),
     );
   }
@@ -185,19 +195,27 @@ class _InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Container(
-      padding: const EdgeInsets.all(FlightLayoutSpacing.cardPaddingInner),
+      padding: EdgeInsets.all(context.rw(16.0)),
       decoration: BoxDecoration(
         color: const Color(0xFFF2F4F7),
-        borderRadius: FlightShape.borderRadiusLarge(context),
+        borderRadius: BorderRadius.circular(context.sp(16)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(data.title, style: FlightStyle.sectionTitleBold(context).copyWith(fontSize: context.sp(15))),
+          Text(data.title, style: TextStyle(
+            fontSize: context.sp(16),
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ).copyWith(fontSize: context.sp(15))),
           const SizedBox(height: 8),
-          Text(data.description, style: FlightStyle.labelGrey(context).copyWith(color: Colors.black87)),
+          Text(data.description, style: TextStyle(color: Colors.grey, fontSize: context.sp(13)).copyWith(color: Colors.black87)),
           const SizedBox(height: 8),
-          Text(data.example, style: FlightStyle.sectionTitleBold(context).copyWith(fontSize: context.sp(13))),
+          Text(data.example, style: TextStyle(
+            fontSize: context.sp(16),
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ).copyWith(fontSize: context.sp(13))),
           const SizedBox(height: 16),
           _RowInputExample(firstName: data.firstName, lastName: data.lastName),
         ],
@@ -245,12 +263,12 @@ class _FakeInput extends StatelessWidget {
         Text(label, style: TextStyle(fontSize: context.sp(11), color: Colors.black54)),
         const SizedBox(height: 4),
         Container(
-          height: FlightSize.inputHeight,
+          height: context.rh(44),
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: Colors.grey.shade300),
-            borderRadius: FlightShape.borderRadiusSmall(context),
+            borderRadius: BorderRadius.circular(context.sp(8)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

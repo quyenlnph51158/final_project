@@ -2,8 +2,6 @@ import 'package:final_project/features/tour/data/models/reviews_tourdetail.dart'
 import 'package:final_project/features/tour/data/models/schedules_tourdetail.dart';
 import 'package:final_project/features/tour/data/models/tour_detail_faqs.dart';
 
-import '../../../../core/data/constants/faqs_tour_detail_data.dart';
-
 class TourDetail {
   final int id;
   final String sid;
@@ -44,7 +42,8 @@ class TourDetail {
     // 3. Logic kiểm tra dữ liệu rỗng
     if (faqJson == null || faqJson.isEmpty || _isAllFieldsNull(faqJson)) {
       // Nếu API không trả về hoặc trả về mảng rỗng -> Lấy dữ liệu tĩnh
-      faqsResult = FaqsTourDetailData.faqs;
+      faqsResult = [];
+          // FaqsTourDetailData.faqs;
     } else {
       // Nếu có dữ liệu từ API -> Map sang Model
       faqsResult = faqJson

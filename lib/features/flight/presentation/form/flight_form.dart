@@ -1,6 +1,5 @@
 import 'package:final_project/core/constants/colors.dart';
 import 'package:final_project/features/flight/presentation/controller/flight_controller.dart';
-import 'package:final_project/features/flight/presentation/modals/passenger_selection%20_flightScreen_modal.dart';
 import 'package:final_project/features/flight/presentation/modals/show_airport_list.dart';
 import 'package:final_project/features/flight/presentation/section/flight_screen/flight_date_picker_section.dart';
 import 'package:final_project/features/flight/presentation/widgets/flight_screen/search_flight_button.dart';
@@ -8,11 +7,11 @@ import 'package:final_project/shared/widgets/form_field_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
-import '../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../core/design/flight/flight_shape.dart';
+import '../../../../core/utils/responsive_layout.dart';
 import '../../../tour/presentation/booking/input/flight_train_location_input.dart';
 import '../../../tour/presentation/booking/widgets/trip_type_button.dart';
 import '../inputs/passenger_input_field.dart';
+import '../modals/passenger_selection_flightScreen_modal.dart';
 
 class FlightForm extends StatelessWidget {
   const FlightForm({super.key});
@@ -31,31 +30,33 @@ class FlightForm extends StatelessWidget {
             TripTypeButton(
               text: l10n.form_tripRoundTrip,
               isSelected: state.criteria.roundTrip==true,
-              onPressed: () => controller.updateTripType(true,l10n),
+              onPressed: () => controller.updateTripType(true),
             ),
-            const SizedBox(width: FlightLayoutSpacing.gapTripType),
+            SizedBox(width: context.rw(10.0)),
             TripTypeButton(
               text: l10n.form_tripOneWay,
               isSelected: state.criteria.roundTrip==false,
-              onPressed: () => controller.updateTripType(false,l10n),
+              onPressed: () => controller.updateTripType(false),
             ),
           ],
         ),
-        const SizedBox(height: FlightLayoutSpacing.gapFormField),
+        SizedBox(height: context.rh(16.0)),
         // 3. Điểm khởi hành
         FormFieldWrapper(
           child: FlightTrainLocationInput(
             label: l10n.form_labelFlightDeparture,
             // Hiển thị tên sân bay đã chọn hoặc gợi ý "Đi đâu?"
             hint: l10n.form_labelFlightWhereGo,
-            value: (state.criteria.departure + " (${state.criteria.departureCode})"),
+            value: "${state.criteria.departureAirport.desc ?? ""} (${state.criteria.departureCode})",
             icon: Icons.airplanemode_on_outlined,
             onTap: () {
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: kBackgroundColor,
-                shape: FlightShape.bottomSheetShape,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                ),
                 builder: (context) => ShowAirportList(
                   isDeparture: true, // true cho điểm đi, false cho điểm đến
                   icon: Icons.airplanemode_on_outlined,
@@ -71,14 +72,16 @@ class FlightForm extends StatelessWidget {
           child: FlightTrainLocationInput(
             label: l10n.form_labelFlightArrival,
             hint: l10n.form_labelFlightWhereArrive,
-            value: state.criteria.destination + " (${state.criteria.destinationCode})",
+            value: "${state.criteria.destinationAirport.desc ?? ""} (${state.criteria.destinationCode})",
             icon: Icons.airplanemode_off_outlined,
             onTap: () {
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.white,
-                shape: FlightShape.bottomSheetShape,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                ),
                 builder: (context) => ShowAirportList(
                   isDeparture: false, // true cho điểm đi, false cho điểm đến
                   icon: Icons.airplanemode_off_outlined,
@@ -104,7 +107,7 @@ class FlightForm extends StatelessWidget {
           ),
         ),
 
-        SizedBox(height: FlightLayoutSpacing.gapSearchButton(context)),
+        SizedBox(height: context.rh(20.0)),
 
         // 7. Nút tìm kiếm
         SearchFlightButton(text: l10n.form_searchFlightButton),
@@ -116,7 +119,9 @@ class FlightForm extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: FlightShape.bottomSheetShape,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
       builder: (context) => PassengerSelectionFlightscreenModal(controller: controller),
     );
   }
