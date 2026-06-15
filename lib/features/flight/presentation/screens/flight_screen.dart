@@ -21,7 +21,6 @@ class FlightScreen extends StatefulWidget {
 }
 
 class _FlightScreenState extends State<FlightScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -39,44 +38,31 @@ class _FlightScreenState extends State<FlightScreen> {
 
     return PopScope(
       canPop: true,
-      onPopInvokedWithResult: (didPop, result){
-        if(didPop) return;
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
       },
       child: Scaffold(
         backgroundColor: kBackgroundColor,
-        endDrawer: AppDrawer(
-          onTabSelected: (_) =>
-              controller.updateTab(FlightTab.flight),
-          onHomeSelected: controller.resetSearch,
-          onTabFlightSelected: controller.updateTab,
-        ),
+        endDrawer: AppDrawer(),
         body: CustomScrollView(
           controller: scrollController,
           slivers: [
             /// HEADER
-            SliverToBoxAdapter(
-              child: FlightHeaderSection(),
-            ),
-                /// FEATURE
-            SliverToBoxAdapter(
-                  child: FlightFeatureSection(),
-                ),
-                const FlightDestinationTitleSection(),
-                FlightDestinationGridSection(),
-                const FeaturedListCheapFlightTitleSection(),
-                SliverToBoxAdapter(
-                  child: FeaturedListCheapFlightSection(),
-                ),
-                SliverToBoxAdapter(
-                  child: ExtraSection(ExtraService: ExtraServiceData.extraServices,),
-                ),
-                SliverToBoxAdapter(
-                  child: AppFooter(),
-                )
-              ]
-          ),
+            SliverToBoxAdapter(child: FlightHeaderSection()),
 
-      )
+            /// FEATURE
+            SliverToBoxAdapter(child: FlightFeatureSection()),
+            const FlightDestinationTitleSection(),
+            FlightDestinationGridSection(),
+            const FeaturedListCheapFlightTitleSection(),
+            SliverToBoxAdapter(child: FeaturedListCheapFlightSection()),
+            SliverToBoxAdapter(
+              child: ExtraSection(ExtraService: ExtraServiceData.extraServices),
+            ),
+            SliverToBoxAdapter(child: AppFooter()),
+          ],
+        ),
+      ),
     );
   }
 }

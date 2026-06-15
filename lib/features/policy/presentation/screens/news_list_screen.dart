@@ -30,11 +30,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
-      endDrawer: AppDrawer(
-        onTabSelected: (_) {},
-        onHomeSelected: () {},
-        onTabFlightSelected: (_) {},
-      ),
+      endDrawer: AppDrawer(),
       body: SafeArea(
         child: Consumer<NewsController>(
           builder: (context, controller, _) {

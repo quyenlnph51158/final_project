@@ -1,4 +1,3 @@
-import 'package:final_project/core/design/tour/tour_shape.dart';
 import 'package:final_project/core/utils/responsive_layout.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +29,10 @@ class FlightTrainLocationInput extends StatelessWidget {
           labelText: label,
           filled: true,
           fillColor: kFormFieldBackground,
-          border: AppShape.selectionField,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: kFormBackgroundColor),
+          ),
           labelStyle: TextStyle(fontSize: context.sp(16)),
         ),
         child: Text(

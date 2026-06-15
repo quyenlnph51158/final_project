@@ -26,10 +26,10 @@ class ShowCityList extends StatelessWidget {
         : l10n.form_modalSelectAirportArrival;
 
     final TextEditingController searchController = TextEditingController();
-
+    String currentLocale = Localizations.localeOf(context).languageCode;
     return StatefulBuilder(
       builder: (context, modalSetState) {
-        final filteredList = controller.FilteredCities(searchController.text);
+        final filteredList = controller.filteredCities(searchController.text, currentLocale);
 
         return Container(
           // Sử dụng rh để chiều cao ổn định theo tỷ lệ pixel chuẩn
@@ -144,7 +144,7 @@ class ShowCityList extends StatelessWidget {
                               size: context.icon(22),
                             ),
                             title: Text(
-                              "${item.label} (${item.value})",
+                              "${item.label}",
                               style: TextStyle(
                                 fontSize: context.sp(15),
                                 fontWeight: isSelected

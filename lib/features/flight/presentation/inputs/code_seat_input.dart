@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:final_project/core/constants/colors.dart';
 
-import '../../../../core/design/flight/flight_shape.dart';
-import '../../../../core/design/flight/flight_style.dart';
+import '../../../../core/utils/responsive_layout.dart';
 
 class CodeSeatInput extends StatelessWidget {
   final String label;
@@ -31,9 +30,18 @@ class CodeSeatInput extends StatelessWidget {
         ),
         filled: true,
         fillColor: kFormFieldBackground,
-        border: FlightShape.inputOutlineBorder(context),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: const BorderSide(
+            color: Color(0xFFE4E7E9),
+          ), // kBorderColor
+        ),
       ),
-      style: FlightStyle.inputFieldText(context),
+      style: TextStyle(
+        fontSize: context.sp(16),
+        color: Colors.black87,
+        fontWeight: FontWeight.w500,
+      ),
     );
   }
 }

@@ -1,10 +1,7 @@
 import 'package:final_project/core/constants/app_icons.dart';
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/tour_elevation.dart';
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/utils/responsive_layout.dart';
 import '../../data/models/reviews_tourdetail.dart';
 
 class ReviewItem extends StatelessWidget{
@@ -19,10 +16,13 @@ class ReviewItem extends StatelessWidget{
 
     return Card(
       color: kBackgroundColor,
-      margin: TourLayoutSpacing.marginCardItem(context),
-      elevation: TourElevation.reviewItemElevation,
+      margin: EdgeInsets.symmetric(
+        horizontal: context.padding,
+        vertical: context.rh(8),
+      ),
+      elevation: context.rw(1.0),
       child: Padding(
-        padding: TourLayoutSpacing.paddingCardItem(context),
+        padding: EdgeInsets.all(context.rw(16)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -30,23 +30,23 @@ class ReviewItem extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  review.name ?? 'Khách hàng ẩn danh',
-                  style: AppStyles.customerNameReview(context),
+                  review.name,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: context.sp(16)),
                 ),
               ],
             ),
-            SizedBox(height: TourLayoutSpacing.customerNameAndStarIcon(context)),
+            SizedBox(height: context.rh(4)),
             _buildStarRating(reviewRating),
-            SizedBox(height: TourLayoutSpacing.starIconAndComment(context)),
-            if (review.comment != null && review.comment!.isNotEmpty)
+            SizedBox(height: context.rh(8)),
+            if ( review.comment.isNotEmpty)
               Text(
-                review.comment!,
-                style: AppStyles.commentReviewItem,
+                review.comment,
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-            if (review.positive != null && review.positive!.isNotEmpty)
+            if (review.positive.isNotEmpty)
               Text(
-                review.positive!,
-                style: AppStyles.positiveReviewItem(context),
+                review.positive,
+                style: TextStyle(fontSize: context.sp(14), color: Colors.black87),
               ),
           ],
         ),

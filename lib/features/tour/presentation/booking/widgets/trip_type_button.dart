@@ -1,4 +1,3 @@
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
 import 'package:final_project/core/utils/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../core/constants/colors.dart';
@@ -32,7 +31,7 @@ class TripTypeButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(context.radius),
           ),
           // Sử dụng padding đã định nghĩa theo sp()
-          padding: TourLayoutSpacing.paddingTripTypeButton(context),
+          padding: EdgeInsets.symmetric(vertical: context.rh(12)),
           elevation: 0,
         ),
         child: Text(

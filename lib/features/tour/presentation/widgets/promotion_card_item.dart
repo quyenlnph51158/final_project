@@ -1,9 +1,7 @@
 import 'package:final_project/core/data/model/promotion_model.dart';
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_sizes.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/app/l10n/app_localizations.dart';
+
+import '../../../../core/utils/responsive_layout.dart';
 
 
 class PromotionCardItem extends StatelessWidget{
@@ -26,7 +24,7 @@ class PromotionCardItem extends StatelessWidget{
           // );
         },
         child: Container(
-          height: AppSizes.promotionItem(context),
+          height: context.rh(240),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: NetworkImage(promotionData.imageUrl),
@@ -38,7 +36,7 @@ class PromotionCardItem extends StatelessWidget{
             ),
           ),
           child: Padding(
-            padding: TourLayoutSpacing.paddingPromotionCardItem(context),
+            padding: EdgeInsets.all(context.rw(16)),
             child: Stack(
               children: [
                 Column(
@@ -47,15 +45,23 @@ class PromotionCardItem extends StatelessWidget{
                   children: [
                     Text(
                       promotionData.title,
-                      style: AppStyles.promotionTitle(context),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: context.sp(20),
+                        fontWeight: FontWeight.bold,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     if (promotionData.discount != null) ...[
-                      SizedBox(height: TourLayoutSpacing.titleAndDiscountValue(context)),
+                      SizedBox(height: context.rh(8)),
                       Text(
                         promotionData.discount,
-                        style: AppStyles.promotionDiscountValue(context),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: context.sp(32),
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                     ],
                   ],

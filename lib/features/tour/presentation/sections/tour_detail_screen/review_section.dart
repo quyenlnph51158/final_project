@@ -1,5 +1,4 @@
 import 'package:final_project/core/constants/colors.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import 'package:final_project/core/utils/calculate_average_star.dart';
 import 'package:final_project/features/tour/presentation/screens/review_screen.dart';
 import 'package:flutter/material.dart';

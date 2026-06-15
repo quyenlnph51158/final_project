@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:final_project/app/controller/payment_controller.dart';
-import 'package:final_project/features/auth/presentation/controller/auth_controller.dart';
-import 'package:final_project/features/auth/presentation/screen/login_screen.dart';
+import 'package:final_project/features/account/presentation/controller/auth_controller.dart';
+import 'package:final_project/features/account/presentation/screen/login_screen.dart';
 import 'package:final_project/features/train/presentation/controller/train_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

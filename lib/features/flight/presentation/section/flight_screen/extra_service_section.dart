@@ -1,11 +1,9 @@
 import 'package:final_project/core/data/model/extra_service_model.dart';
-import 'package:final_project/core/design/shared/app_layout_spacing.dart';
-import 'package:final_project/core/design/shared/app_style.dart';
 import 'package:final_project/features/flight/presentation/widgets/flight_screen/service_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/flight/flight_layout_spacing.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 
 class ExtraSection extends StatelessWidget {
   final List<ExtraServiceModel> ExtraService;
@@ -17,28 +15,31 @@ class ExtraSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: FlightLayoutSpacing.screenHorizontalPadding(context),
+        horizontal: context.padding,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SharedAppLayoutSpacing.section,
+          SizedBox(height: context.rh(32)),
           Center(
             child: Text(
               l10n.flight_extraServices,
-              style: SharedAppStyle.titleSection(context),
+              style: TextStyle(
+                fontSize: context.sp(20),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          SharedAppLayoutSpacing.labelandCard,
+          SizedBox(height: context.rh(16)),
           ...ExtraService.map((service) {
             return Padding(
               padding: EdgeInsets.only(
-                bottom: FlightLayoutSpacing.gapBetweenCards(context),
+                bottom: context.rh(16.0),
               ),
               child: ServiceCard(service: service),
             );
           }).toList(),
-          SharedAppLayoutSpacing.footer,
+          SizedBox(height: context.rh(48)),
         ],
       ),
     );

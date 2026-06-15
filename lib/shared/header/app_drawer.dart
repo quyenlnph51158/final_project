@@ -1,31 +1,30 @@
 import 'dart:async';
-import 'package:final_project/features/auth/presentation/controller/auth_controller.dart';
-import 'package:final_project/features/train/presentation/screens/train_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+// Import các màn hình
+import 'package:final_project/features/account/presentation/screen/profile_screen.dart';
+import 'package:final_project/features/train/presentation/screens/train_screen.dart';
 import 'package:final_project/features/tour/presentation/screens/travel_booking_screen.dart';
 import 'package:final_project/features/tour/presentation/screens/tour_screen.dart';
 import 'package:final_project/features/flight/presentation/screens/flight_screen.dart';
+import 'package:final_project/features/account/presentation/screen/login_screen.dart';
+
+// Import controllers và core
+import 'package:final_project/features/account/presentation/controller/auth_controller.dart';
+import 'package:final_project/features/train/presentation/controller/train_controller.dart';
 import 'package:final_project/core/constants/colors.dart';
 import 'package:final_project/app/l10n/app_localizations.dart';
 import '../../../../core/utils/responsive_layout.dart';
-import '../../features/auth/presentation/screen/login_screen.dart';
-import '../../features/train/presentation/controller/train_controller.dart';
 
-typedef TabSelectedCallback = void Function(TravelTab tab);
-typedef TabSelectedFlightCallback = void Function(FlightTab tab);
+typedef TabSelectedCallback = void Function(dynamic tab); // Sửa TravelTab/FlightTab thành dynamic nếu cần dùng chung
 typedef ControllerCallback = FutureOr<void> Function();
 
 class AppDrawer extends StatelessWidget {
-  final TabSelectedCallback? onTabSelected;
-  final VoidCallback? onHomeSelected;
-  final TabSelectedFlightCallback? onTabFlightSelected;
+
 
   const AppDrawer({
     super.key,
-    this.onTabSelected,
-    this.onHomeSelected,
-    this.onTabFlightSelected,
   });
 
   Widget _buildDrawerItem({
@@ -33,13 +32,12 @@ class AppDrawer extends StatelessWidget {
     required String title,
     required IconData icon,
     required VoidCallback action,
-    required ControllerCallback controller,
+    ControllerCallback? controller, // Chuyển sang optional
     bool isBold = false,
   }) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(
         horizontal: context.padding,
-        // Dùng rh(4) thay vì h(0.2) để cố định khoảng cách theo tỷ lệ pixel chuẩn
         vertical: context.rh(4),
       ),
       leading: Icon(icon, color: kSidebarTextColor, size: context.icon(22)),
@@ -57,7 +55,15 @@ class AppDrawer extends StatelessWidget {
         color: kSidebarTextColor.withOpacity(0.3),
       ),
       onTap: () async {
-        await controller();
+        // 1. Đóng drawer ngay lập tức để tạo phản hồi nhanh
+        Navigator.pop(context);
+
+        // 2. Chạy logic controller (nếu có)
+        if (controller != null) {
+          await controller();
+        }
+
+        // 3. Thực hiện hành động chuyển màn hình
         action();
       },
     );
@@ -70,7 +76,6 @@ class AppDrawer extends StatelessWidget {
     final isLoggedIn = authController.state.ui.isLoggedIn;
 
     return Drawer(
-      // Dùng rw(280) để cố định chiều rộng drawer theo tỷ lệ thiết kế 375px
       width: context.rw(280).clamp(250.0, 320.0),
       backgroundColor: kSidebarBackgroundColor,
       child: Column(
@@ -78,16 +83,15 @@ class AppDrawer extends StatelessWidget {
           // 1. HEADER: Nút đóng Drawer
           Container(
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            // rh(100) giúp header có chiều cao ổn định khoảng 100px trên máy chuẩn
             height: context.rh(100).clamp(80.0, 120.0),
             width: double.infinity,
             color: kPrimaryColor,
             alignment: Alignment.center,
             child: IconButton(
               icon: Icon(
-                Icons.keyboard_arrow_right_sharp,
+                Icons.close, // Thay đổi sang icon đóng để trực quan hơn
                 color: kHeaderTextColor,
-                size: context.icon(35),
+                size: context.icon(30),
               ),
               onPressed: () => Navigator.pop(context),
             ),
@@ -96,7 +100,6 @@ class AppDrawer extends StatelessWidget {
           // 2. LIST MENU ITEMS
           Expanded(
             child: ListView(
-              // Padding dọc đồng bộ theo tỷ lệ pixel
               padding: EdgeInsets.symmetric(vertical: context.rh(10)),
               physics: const BouncingScrollPhysics(),
               children: <Widget>[
@@ -104,17 +107,13 @@ class AppDrawer extends StatelessWidget {
                   context: context,
                   title: l10n.menu_homeTitle,
                   icon: Icons.home_outlined,
+                  isBold: true,
                   action: () {
-                    Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const TravelBookingScreen(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const TravelBookingScreen()),
                     );
                   },
-                  controller: () {},
-                  isBold: true,
                 ),
                 _buildDivider(context),
 
@@ -123,15 +122,11 @@ class AppDrawer extends StatelessWidget {
                   title: l10n.menu_tourTitle,
                   icon: Icons.luggage_outlined,
                   action: () {
-                    Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const TourScreen(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const TourScreen()),
                     );
                   },
-                  controller: () {},
                 ),
                 _buildDivider(context),
 
@@ -140,15 +135,11 @@ class AppDrawer extends StatelessWidget {
                   title: l10n.menu_flightTitle,
                   icon: Icons.flight_outlined,
                   action: () {
-                    Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const FlightScreen(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const FlightScreen()),
                     );
                   },
-                  controller: () {},
                 ),
                 _buildDivider(context),
 
@@ -156,42 +147,49 @@ class AppDrawer extends StatelessWidget {
                   context: context,
                   title: l10n.menu_trainTitle,
                   icon: Icons.train_outlined,
-                  action: () {
-                    Navigator.pop(context);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TrainScreen(),
-                      ),
-                    );
-                  },
                   controller: () {
                     context.read<TrainController>().resetToInitial();
+                  },
+                  action: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => const TrainScreen()),
+                    );
                   },
                 ),
                 _buildDivider(context),
 
-                _buildDrawerItem(
-                  context: context,
-                  title: isLoggedIn ? "Đăng xuất" : l10n.login,
-                  icon: isLoggedIn ? Icons.logout : Icons.login,
-                  action: () {
-                    Navigator.pop(context);
-                    if (!isLoggedIn) {
+                // Hiển thị Profile nếu đã đăng nhập
+                if (isLoggedIn) ...[
+                  _buildDrawerItem(
+                    context: context,
+                    title: "Thông tin tài khoản",
+                    icon: Icons.person_outline,
+                    action: () {
+                      // Dùng push để có thể nhấn Back quay lại trang trước
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
+                        MaterialPageRoute(builder: (_) => const ProfileScreen()),
                       );
-                    }
-                  },
-                  controller: () async {
-                    if (isLoggedIn) {
-                      await authController.logOut();
-                    }
-                  },
-                ),
+                    },
+                  ),
+                  _buildDivider(context),
+                ],
+
+                // Hiển thị Login nếu chưa đăng nhập
+                if (!isLoggedIn) ...[
+                  _buildDrawerItem(
+                    context: context,
+                    title: l10n.login,
+                    icon: Icons.login,
+                    action: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      );
+                    },
+                  ),
+                ],
               ],
             ),
           ),

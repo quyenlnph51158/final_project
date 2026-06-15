@@ -1,5 +1,7 @@
+import 'package:final_project/features/tour/presentation/screens/travel_booking_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/utils/responsive_layout.dart';
 import '../screen/payment_webview_screen.dart';
 import '../service/payment_service.dart';
 
@@ -15,7 +17,8 @@ class PaymentController extends ChangeNotifier {
       // BƯỚC 1: Gọi API lấy link
       if (bookingId.isNotEmpty) {
         final res = await _service.makePayment(bookingId);
-
+        print('PAYMENT URL = ${res.data?.paymentUrl}');
+        print('TXN = ${res.data?.transactionId}');
         if (res.status == 1 && res.data != null) {
           // BƯỚC 2: Mở WebView và đợi nó đóng
           print( 'this is transactionId ${res.data?.transactionId}');
@@ -53,18 +56,20 @@ class PaymentController extends ChangeNotifier {
     );
 
     try {
-      // 2. Chờ 2 giây để Backend xử lý IPN từ OnePay
-      await Future.delayed(const Duration(seconds: 2));
+      bool isSuccess = false;
+      // Thử kiểm tra 3 lần, mỗi lần cách nhau 3 giây
+      for (int i = 0; i < 3; i++) {
+        await Future.delayed(const Duration(seconds: 3));
+        isSuccess = await _service.checkPaymentStatus(transactionId);
+        if (isSuccess) break;
+      }
 
-      // 3. Check status
-      final isSuccess = await _service.checkPaymentStatus(transactionId);
-
-      if (context.mounted) Navigator.pop(context); // Đóng loading
+      if (context.mounted) Navigator.pop(context); // Đóng Loading
 
       if (isSuccess) {
-        _showSuccess(context); // Hiện màn hình thành công
+        _showSuccess(context);
       } else {
-        _showError(context, "Thanh toán thất bại.");
+        _showError(context, "Hệ thống đang xử lý giao dịch. Vui lòng kiểm tra lịch sử đặt chỗ sau vài phút.");
       }
     } catch (e) {
       if (context.mounted) Navigator.pop(context); // Đóng loading
@@ -75,13 +80,43 @@ class PaymentController extends ChangeNotifier {
   void _showSuccess(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(title: const Text("Thông báo"), content: Text("Thanh toán thành công")),
+      barrierDismissible: false, // Bắt buộc người dùng phải nhấn OK
+      builder: (ctx) => AlertDialog(
+        title: Text("Thông báo", style: TextStyle(fontSize: context.sp(18), fontWeight: FontWeight.bold)),
+        content: Text("Thanh toán thành công!", style: TextStyle(fontSize: context.sp(14))),
+        actions: [
+          TextButton(
+            onPressed: () {
+              // 1. Đóng Dialog
+              Navigator.pop(ctx);
+
+              // 2. Chuyển hướng về trang chủ và xóa sạch stack (không cho quay lại màn thanh toán)
+              // Giả sử route trang chủ của bạn là '/' hoặc '/home'
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => TravelBookingScreen()), (route) => false);
+            },
+            child: Text("OK", style: TextStyle(color: const Color(0xFF006D7C), fontWeight: FontWeight.bold, fontSize: context.sp(14))),
+          ),
+        ],
+      ),
     );
   }
+
   void _showError(BuildContext context, String msg) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(title: const Text("Thông báo"), content: Text(msg)),
+      builder: (ctx) => AlertDialog(
+        title: Text("Thông báo", style: TextStyle(fontSize: context.sp(18), fontWeight: FontWeight.bold)),
+        content: Text(msg, style: TextStyle(fontSize: context.sp(14))),
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Chỉ đóng thông báo để người dùng kiểm tra lại thông tin hoặc thử lại
+              Navigator.pop(ctx);
+            },
+            child: Text("Đóng", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: context.sp(14))),
+          ),
+        ],
+      ),
     );
   }
 }

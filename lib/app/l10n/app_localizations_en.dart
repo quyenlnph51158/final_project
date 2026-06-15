@@ -1056,6 +1056,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get email => 'Email';
 
   @override
+  String get confirm_email => 'Confirm email';
+
+  @override
   String get special_request => 'Special Request';
 
   @override
@@ -1288,6 +1291,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get login => 'Login';
 
   @override
+  String get logout => 'Logout';
+
+  @override
   String get passWord => 'Password';
 
   @override
@@ -1383,4 +1389,182 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorSameDate =>
       'Departure and return dates cannot be the same !!!';
+
+  @override
+  String get summary_title => 'Review your booking';
+
+  @override
+  String get summary_booking_info => 'Booking Information';
+
+  @override
+  String get summary_booking_code => 'Booking Code:';
+
+  @override
+  String get summary_payment_deadline => 'Payment Deadline';
+
+  @override
+  String get summary_deadline_note =>
+      '(after this time, your booking\nwill be cancelled)';
+
+  @override
+  String get summary_general_info => 'Information';
+
+  @override
+  String get summary_fullname => 'Full Name';
+
+  @override
+  String get summary_phone => 'Phone Number';
+
+  @override
+  String get summary_booking_date => 'Booking Date';
+
+  @override
+  String get summary_email => 'Email';
+
+  @override
+  String get summary_total => 'Total';
+
+  @override
+  String get summary_base_fare => 'Base Fare';
+
+  @override
+  String get summary_tax_fee => 'Taxes & Fees';
+
+  @override
+  String get summary_bus => 'Bus';
+
+  @override
+  String get summary_itinerary => 'Itinerary';
+
+  @override
+  String get summary_itinerary_detail => 'Itinerary Details';
+
+  @override
+  String get summary_departure_label => 'DEPARTURE';
+
+  @override
+  String get summary_return_label => 'RETURN';
+
+  @override
+  String get summary_passenger_info => 'Passenger Information';
+
+  @override
+  String summary_passenger_count(Object index) {
+    return 'PASSENGER $index';
+  }
+
+  @override
+  String get summary_dob => 'Date of Birth';
+
+  @override
+  String get summary_passport => 'ID/Passport No.';
+
+  @override
+  String get summary_nationality => 'Nationality';
+
+  @override
+  String get summary_payment_method => 'Payment Method';
+
+  @override
+  String get summary_card_method => 'Pay with Credit/Debit Card';
+
+  @override
+  String get summary_terms_prefix => 'I have read and agree to all ';
+
+  @override
+  String get summary_terms_link => 'Terms of Use';
+
+  @override
+  String get summary_terms_suffix => ' as regulated.';
+
+  @override
+  String get summary_btn_continue => 'Continue';
+
+  @override
+  String get summary_apple_pay => 'Apple Pay';
+
+  @override
+  String get flight_summary_booking_info => 'Booking Information';
+
+  @override
+  String get flight_summary_booking_code => 'Booking Code:';
+
+  @override
+  String get flight_summary_payment_deadline => 'Payment Deadline:';
+
+  @override
+  String get flight_summary_payment_note =>
+      '(after this time, the booking will be cancelled)';
+
+  @override
+  String get flight_summary_customer_info => 'Information';
+
+  @override
+  String get flight_summary_fullname => 'Full Name:';
+
+  @override
+  String get flight_summary_phone => 'Phone Number:';
+
+  @override
+  String get flight_summary_booking_date => 'Booking Date:';
+
+  @override
+  String get flight_summary_email => 'Email:';
+
+  @override
+  String get flight_summary_total => 'Total Amount';
+
+  @override
+  String get flight_summary_base_fare => 'Base Fare:';
+
+  @override
+  String get flight_summary_tax_charge => 'Tax & Fees:';
+
+  @override
+  String get flight_summary_service_fee => 'Service Fee:';
+
+  @override
+  String get flight_summary_itinerary => 'Itinerary';
+
+  @override
+  String get flight_summary_itinerary_detail => 'Itinerary Details';
+
+  @override
+  String get flight_summary_departure => 'DEPARTURE';
+
+  @override
+  String get flight_summary_return => 'RETURN';
+
+  @override
+  String get flight_summary_passenger_info => 'Passenger Details';
+
+  @override
+  String flight_summary_passenger_label(int index) {
+    return 'PASSENGER $index';
+  }
+
+  @override
+  String get flight_summary_birthday => 'Date of Birth';
+
+  @override
+  String get flight_summary_passport => 'ID/Passport No.';
+
+  @override
+  String get flight_summary_nationality => 'Nationality';
+
+  @override
+  String get flight_summary_payment_method => 'Payment Method';
+
+  @override
+  String get flight_summary_card_method => 'Credit/Debit Card';
+
+  @override
+  String get flight_summary_apple_pay => 'Apple Pay';
+
+  @override
+  String get flight_summary_terms_agree =>
+      'I have read and agree to the Terms of Service.';
+
+  @override
+  String get flight_summary_pay_now => 'PAY NOW';
 }

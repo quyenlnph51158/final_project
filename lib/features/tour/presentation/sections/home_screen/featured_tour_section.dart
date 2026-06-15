@@ -1,9 +1,9 @@
-import 'package:final_project/core/design/tour/tour_styles.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/shared/app_layout_spacing.dart';
-import '../../../../../core/design/tour/tour_layout_spacing.dart';
+import '../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../controller/travel_booking_controller.dart';
 import '../../widgets/tour_card_item.dart';
 
@@ -14,14 +14,17 @@ class FeaturedTourSection extends StatelessWidget{
     final controller=context.watch<TravelBookingController>();
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: TourLayoutSpacing.paddingFeaturedTourSection(context),
+      padding: EdgeInsets.symmetric(horizontal: context.padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
             child: Text(
               l10n.home_tourSectionTitleVibes,
-              style: AppStyles.tourSectionVibe(context),
+              style: GoogleFonts.bonheurRoyale(
+                fontSize: context.sp(40),
+                color: const Color(0xFF00796B),
+              ),
             ),
           ),
           Center(
@@ -29,22 +32,26 @@ class FeaturedTourSection extends StatelessWidget{
               controller.state.ui.isSearching
                   ? '${l10n.home_tourSectionTitleSearch} ${controller.state.form.destination}'
                   : l10n.home_tourSectionTitleFeatured,
-              style: AppStyles.tourSectionTitle(context),
+              style: TextStyle(
+                fontSize: context.sp(28),
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
           ),
-          SharedAppLayoutSpacing.labelandCard,
+          SizedBox(height: context.rh(16)),
           if (controller.state.tour.initialList.isEmpty)
             Center(
               child: Padding(
-                padding: TourLayoutSpacing.paddingTourCardError(context),
+                padding: EdgeInsets.all(context.rw(24)),
                 child: Text(l10n.error_tourNotFound,
-                    style: AppStyles.errorNotFound(context)),
+                    style: TextStyle(fontSize: context.sp(16), color: kError),
               ),
-            )
+            ))
           else
             ...controller.state.tour.initialList.where((x)=> x.avarageRating == 5).take(3).map((tour) {
               return Padding(
-                padding: TourLayoutSpacing.paddingTourCard(context),
+                padding: EdgeInsets.only(bottom: context.rh(16)),
                 child: TourCardItem(tour: tour,),
               );
             }).toList(),

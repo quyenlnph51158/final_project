@@ -322,6 +322,7 @@
   "country_code": "Country Code",
   "phone_number": "Phone Number",
   "email": "Email",
+  "confirm_email": "Confirm email",
   "special_request": "Special Request",
   "request_content": "Content",
   "select_title": "Select Title",
@@ -395,6 +396,7 @@
   "favorite_destinations": "Favorite Destinations",
   "cheap_trips_offers": "Special Trip Offers",
   "login": "Login",
+  "logout": "Logout",
   "passWord": "Password",
   "forgotPassword": "Forgot password?",
   "noAccountYet": "No account yet?",
@@ -424,6 +426,75 @@
   "errorSameLocation": "Departure and destination cannot be the same !!!",
   "errorReturnDateEmpty": "Please select a return date !!!",
   "errorReturnBeforeDeparture": "Return date cannot be before departure date !!!",
-  "errorSameDate": "Departure and return dates cannot be the same !!!"
+  "errorSameDate": "Departure and return dates cannot be the same !!!",
+
+
+  "summary_title": "Review your booking",
+  "summary_booking_info": "Booking Information",
+  "summary_booking_code": "Booking Code:",
+  "summary_payment_deadline": "Payment Deadline",
+  "summary_deadline_note": "(after this time, your booking\nwill be cancelled)",
+  "summary_general_info": "Information",
+  "summary_fullname": "Full Name",
+  "summary_phone": "Phone Number",
+  "summary_booking_date": "Booking Date",
+  "summary_email": "Email",
+  "summary_total": "Total",
+  "summary_base_fare": "Base Fare",
+  "summary_tax_fee": "Taxes & Fees",
+  "summary_bus": "Bus",
+  "summary_itinerary": "Itinerary",
+  "summary_itinerary_detail": "Itinerary Details",
+  "summary_departure_label": "DEPARTURE",
+  "summary_return_label": "RETURN",
+  "summary_passenger_info": "Passenger Information",
+  "summary_passenger_count": "PASSENGER {index}",
+  "summary_dob": "Date of Birth",
+  "summary_passport": "ID/Passport No.",
+  "summary_nationality": "Nationality",
+  "summary_payment_method": "Payment Method",
+  "summary_card_method": "Pay with Credit/Debit Card",
+  "summary_terms_prefix": "I have read and agree to all ",
+  "summary_terms_link": "Terms of Use",
+  "summary_terms_suffix": " as regulated.",
+  "summary_btn_continue": "Continue",
+  "summary_apple_pay": "Apple Pay",
+
+
+  "flight_summary_booking_info": "Booking Information",
+  "flight_summary_booking_code": "Booking Code:",
+  "flight_summary_payment_deadline": "Payment Deadline:",
+  "flight_summary_payment_note": "(after this time, the booking will be cancelled)",
+  "flight_summary_customer_info": "Information",
+  "flight_summary_fullname": "Full Name:",
+  "flight_summary_phone": "Phone Number:",
+  "flight_summary_booking_date": "Booking Date:",
+  "flight_summary_email": "Email:",
+  "flight_summary_total": "Total Amount",
+  "flight_summary_base_fare": "Base Fare:",
+  "flight_summary_tax_charge": "Tax & Fees:",
+  "flight_summary_service_fee": "Service Fee:",
+  "flight_summary_itinerary": "Itinerary",
+  "flight_summary_itinerary_detail": "Itinerary Details",
+  "flight_summary_departure": "DEPARTURE",
+  "flight_summary_return": "RETURN",
+  "flight_summary_passenger_info": "Passenger Details",
+  "flight_summary_passenger_label": "PASSENGER {index}",
+  "@flight_summary_passenger_label": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "flight_summary_birthday": "Date of Birth",
+  "flight_summary_passport": "ID/Passport No.",
+  "flight_summary_nationality": "Nationality",
+  "flight_summary_payment_method": "Payment Method",
+  "flight_summary_card_method": "Credit/Debit Card",
+  "flight_summary_apple_pay": "Apple Pay",
+  "flight_summary_terms_agree": "I have read and agree to the Terms of Service.",
+  "flight_summary_pay_now": "PAY NOW"
+
 
 }

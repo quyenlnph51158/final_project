@@ -1,9 +1,8 @@
 import 'package:final_project/app/l10n/app_localizations.dart';
-import 'package:final_project/features/auth/data/service/token_service.dart';
+import 'package:final_project/features/account/data/service/token_service.dart';
 import 'package:final_project/features/policy/data/service/policy_service.dart';
 import 'package:final_project/features/policy/presentation/state/policy_state.dart';
 import 'package:flutter/cupertino.dart';
-
 import '../../data/models/policy_infomation.dart';
 
 class PolicyController extends ChangeNotifier {

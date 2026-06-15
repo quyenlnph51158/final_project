@@ -1,11 +1,8 @@
 import 'package:final_project/features/flight/presentation/form/seat_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import '../../../../app/l10n/app_localizations.dart';
 import '../../../../core/constants/colors.dart';
-import '../../../../core/design/flight/flight_elevation.dart';
-import '../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../core/design/flight/flight_shape.dart';
+import '../../../../core/utils/responsive_layout.dart';
 import '../controller/flight_controller.dart';
 import '../widgets/flight_screen/flight_tabs_widget.dart';
 import 'flight_form.dart';
@@ -17,9 +14,7 @@ class SearchForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget currentForm;
-    final l10n = AppLocalizations.of(context)!;
     // Lắng nghe sự thay đổi từ controller
-    final controller = context.read<FlightController>();
     final state = context.watch<FlightController>().state;
     if (state.ui.selectedFlightTab == FlightTab.flight) {
       currentForm = FlightForm();
@@ -28,18 +23,25 @@ class SearchForm extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.all(FlightLayoutSpacing.formInnerPadding(context)),
+      padding: EdgeInsets.all(context.padding),
       decoration: BoxDecoration(
         color: kFormBackgroundColor,
-        borderRadius: FlightShape.borderRadiusLarge(context),
+        borderRadius: BorderRadius.circular(context.sp(16)),
         // Đồng bộ bo góc 12.0
-        boxShadow: FlightElevation.formShadow,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 10,
+            offset: const Offset(0, 5), // Đổ bóng xuống dưới
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           FlightTabsWidget(),
-          SizedBox(height: FlightLayoutSpacing.gapTabToForm(context)),
+          SizedBox(height: context.rh(16.0)),
           currentForm,
         ],
       ),

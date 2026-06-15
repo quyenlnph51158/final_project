@@ -2038,6 +2038,12 @@ abstract class AppLocalizations {
   /// **'Email'**
   String get email;
 
+  /// No description provided for @confirm_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm email'**
+  String get confirm_email;
+
   /// No description provided for @special_request.
   ///
   /// In en, this message translates to:
@@ -2476,6 +2482,12 @@ abstract class AppLocalizations {
   /// **'Login'**
   String get login;
 
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
   /// No description provided for @passWord.
   ///
   /// In en, this message translates to:
@@ -2649,6 +2661,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Departure and return dates cannot be the same !!!'**
   String get errorSameDate;
+
+  /// No description provided for @summary_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your booking'**
+  String get summary_title;
+
+  /// No description provided for @summary_booking_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Information'**
+  String get summary_booking_info;
+
+  /// No description provided for @summary_booking_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Code:'**
+  String get summary_booking_code;
+
+  /// No description provided for @summary_payment_deadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Deadline'**
+  String get summary_payment_deadline;
+
+  /// No description provided for @summary_deadline_note.
+  ///
+  /// In en, this message translates to:
+  /// **'(after this time, your booking\nwill be cancelled)'**
+  String get summary_deadline_note;
+
+  /// No description provided for @summary_general_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get summary_general_info;
+
+  /// No description provided for @summary_fullname.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get summary_fullname;
+
+  /// No description provided for @summary_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get summary_phone;
+
+  /// No description provided for @summary_booking_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Date'**
+  String get summary_booking_date;
+
+  /// No description provided for @summary_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get summary_email;
+
+  /// No description provided for @summary_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get summary_total;
+
+  /// No description provided for @summary_base_fare.
+  ///
+  /// In en, this message translates to:
+  /// **'Base Fare'**
+  String get summary_base_fare;
+
+  /// No description provided for @summary_tax_fee.
+  ///
+  /// In en, this message translates to:
+  /// **'Taxes & Fees'**
+  String get summary_tax_fee;
+
+  /// No description provided for @summary_bus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus'**
+  String get summary_bus;
+
+  /// No description provided for @summary_itinerary.
+  ///
+  /// In en, this message translates to:
+  /// **'Itinerary'**
+  String get summary_itinerary;
+
+  /// No description provided for @summary_itinerary_detail.
+  ///
+  /// In en, this message translates to:
+  /// **'Itinerary Details'**
+  String get summary_itinerary_detail;
+
+  /// No description provided for @summary_departure_label.
+  ///
+  /// In en, this message translates to:
+  /// **'DEPARTURE'**
+  String get summary_departure_label;
+
+  /// No description provided for @summary_return_label.
+  ///
+  /// In en, this message translates to:
+  /// **'RETURN'**
+  String get summary_return_label;
+
+  /// No description provided for @summary_passenger_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Passenger Information'**
+  String get summary_passenger_info;
+
+  /// No description provided for @summary_passenger_count.
+  ///
+  /// In en, this message translates to:
+  /// **'PASSENGER {index}'**
+  String summary_passenger_count(Object index);
+
+  /// No description provided for @summary_dob.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get summary_dob;
+
+  /// No description provided for @summary_passport.
+  ///
+  /// In en, this message translates to:
+  /// **'ID/Passport No.'**
+  String get summary_passport;
+
+  /// No description provided for @summary_nationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get summary_nationality;
+
+  /// No description provided for @summary_payment_method.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get summary_payment_method;
+
+  /// No description provided for @summary_card_method.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with Credit/Debit Card'**
+  String get summary_card_method;
+
+  /// No description provided for @summary_terms_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'I have read and agree to all '**
+  String get summary_terms_prefix;
+
+  /// No description provided for @summary_terms_link.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get summary_terms_link;
+
+  /// No description provided for @summary_terms_suffix.
+  ///
+  /// In en, this message translates to:
+  /// **' as regulated.'**
+  String get summary_terms_suffix;
+
+  /// No description provided for @summary_btn_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get summary_btn_continue;
+
+  /// No description provided for @summary_apple_pay.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Pay'**
+  String get summary_apple_pay;
+
+  /// No description provided for @flight_summary_booking_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Information'**
+  String get flight_summary_booking_info;
+
+  /// No description provided for @flight_summary_booking_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Code:'**
+  String get flight_summary_booking_code;
+
+  /// No description provided for @flight_summary_payment_deadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Deadline:'**
+  String get flight_summary_payment_deadline;
+
+  /// No description provided for @flight_summary_payment_note.
+  ///
+  /// In en, this message translates to:
+  /// **'(after this time, the booking will be cancelled)'**
+  String get flight_summary_payment_note;
+
+  /// No description provided for @flight_summary_customer_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get flight_summary_customer_info;
+
+  /// No description provided for @flight_summary_fullname.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name:'**
+  String get flight_summary_fullname;
+
+  /// No description provided for @flight_summary_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number:'**
+  String get flight_summary_phone;
+
+  /// No description provided for @flight_summary_booking_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Date:'**
+  String get flight_summary_booking_date;
+
+  /// No description provided for @flight_summary_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email:'**
+  String get flight_summary_email;
+
+  /// No description provided for @flight_summary_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Amount'**
+  String get flight_summary_total;
+
+  /// No description provided for @flight_summary_base_fare.
+  ///
+  /// In en, this message translates to:
+  /// **'Base Fare:'**
+  String get flight_summary_base_fare;
+
+  /// No description provided for @flight_summary_tax_charge.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax & Fees:'**
+  String get flight_summary_tax_charge;
+
+  /// No description provided for @flight_summary_service_fee.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Fee:'**
+  String get flight_summary_service_fee;
+
+  /// No description provided for @flight_summary_itinerary.
+  ///
+  /// In en, this message translates to:
+  /// **'Itinerary'**
+  String get flight_summary_itinerary;
+
+  /// No description provided for @flight_summary_itinerary_detail.
+  ///
+  /// In en, this message translates to:
+  /// **'Itinerary Details'**
+  String get flight_summary_itinerary_detail;
+
+  /// No description provided for @flight_summary_departure.
+  ///
+  /// In en, this message translates to:
+  /// **'DEPARTURE'**
+  String get flight_summary_departure;
+
+  /// No description provided for @flight_summary_return.
+  ///
+  /// In en, this message translates to:
+  /// **'RETURN'**
+  String get flight_summary_return;
+
+  /// No description provided for @flight_summary_passenger_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Passenger Details'**
+  String get flight_summary_passenger_info;
+
+  /// No description provided for @flight_summary_passenger_label.
+  ///
+  /// In en, this message translates to:
+  /// **'PASSENGER {index}'**
+  String flight_summary_passenger_label(int index);
+
+  /// No description provided for @flight_summary_birthday.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of Birth'**
+  String get flight_summary_birthday;
+
+  /// No description provided for @flight_summary_passport.
+  ///
+  /// In en, this message translates to:
+  /// **'ID/Passport No.'**
+  String get flight_summary_passport;
+
+  /// No description provided for @flight_summary_nationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get flight_summary_nationality;
+
+  /// No description provided for @flight_summary_payment_method.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get flight_summary_payment_method;
+
+  /// No description provided for @flight_summary_card_method.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit/Debit Card'**
+  String get flight_summary_card_method;
+
+  /// No description provided for @flight_summary_apple_pay.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple Pay'**
+  String get flight_summary_apple_pay;
+
+  /// No description provided for @flight_summary_terms_agree.
+  ///
+  /// In en, this message translates to:
+  /// **'I have read and agree to the Terms of Service.'**
+  String get flight_summary_terms_agree;
+
+  /// No description provided for @flight_summary_pay_now.
+  ///
+  /// In en, this message translates to:
+  /// **'PAY NOW'**
+  String get flight_summary_pay_now;
 }
 
 class _AppLocalizationsDelegate

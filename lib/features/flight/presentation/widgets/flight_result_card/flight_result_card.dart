@@ -1,9 +1,9 @@
 import 'package:dotted_line/dotted_line.dart';
-import 'package:final_project/core/utils/format_date.dart';
 import 'package:final_project/core/utils/format_duration.dart';
 import 'package:final_project/core/utils/format_price.dart';
-import 'package:final_project/features/flight/data/models/fare_detail.dart';
-import 'package:final_project/features/flight/data/models/flight_info.dart';
+import 'package:final_project/features/flight/data/models/flight_detail.dart';
+import 'package:final_project/features/flight/data/models/flight_inventory.dart';
+import 'package:final_project/features/flight/data/models/stop_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../app/l10n/app_localizations.dart';
@@ -12,21 +12,21 @@ import '../../../../../core/data/constants/flight_policy_translate.dart';
 import '../../../../../core/data/constants/flight_policy_data.dart';
 import '../../../../../core/utils/responsive_layout.dart';
 import '../../../../policy/presentation/screens/policy_screen.dart';
-import '../../../data/models/inventory.dart';
+import '../../../data/models/flight_item.dart';
 import '../../controller/flight_controller.dart';
 
 class FlightResultCard extends StatefulWidget {
-  final FlightInfo flight;
+  final FlightItem flight; // Đổi từ FlightDetail sang FlightItem
   final bool isExpanded;
   final VoidCallback onTap;
-  final Inventory? SelectedInventory;
+  final FlightInventory? selectedInventory;
 
   const FlightResultCard({
     super.key,
     required this.flight,
     required this.isExpanded,
     required this.onTap,
-    this.SelectedInventory,
+    this.selectedInventory,
   });
 
   @override
@@ -34,7 +34,7 @@ class FlightResultCard extends StatefulWidget {
 }
 
 class _FlightResultCardState extends State<FlightResultCard> {
-  late Inventory _selectedInventory;
+  late FlightInventory _selectedInventory;
   int _activeTabIndex = 0;
 
   @override
@@ -43,21 +43,37 @@ class _FlightResultCardState extends State<FlightResultCard> {
     _initializeSelectedInventory();
   }
 
+  @override
+  void didUpdateWidget(FlightResultCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Khi ID chuyến bay thay đổi hoặc dữ liệu từ bên ngoài thay đổi, cần khởi tạo lại
+    if (oldWidget.flight.uniqueId != widget.flight.uniqueId ||
+        oldWidget.selectedInventory != widget.selectedInventory) {
+      _initializeSelectedInventory();
+    }
+  }
+
   void _initializeSelectedInventory() {
-    if (widget.SelectedInventory != null) {
-      _selectedInventory = widget.SelectedInventory!;
-    } else if (widget.flight.inventories.isNotEmpty) {
-      _selectedInventory = widget.flight.inventories.first;
+    final state = context.read<FlightController>().state;
+    final inventories = widget.flight.go?.inventories ?? [];
+
+    // --- SO SÁNH THEO ĐỐI TƯỢNG DETAIL ---
+    FlightInventory? savedInven;
+    // Kiểm tra chặng đi
+    if (state.data.selectedOutboundFlight == widget.flight.go) {
+      savedInven = state.data.selectedOutboundInventory;
+    }
+    // Kiểm tra chặng về
+    else if (state.data.selectedReturnFlight == widget.flight.go) {
+      savedInven = state.data.selectedReturnInventory;
+    }
+
+    if (savedInven != null) {
+      _selectedInventory = savedInven;
+    } else if (inventories.isNotEmpty) {
+      _selectedInventory = inventories.first;
     } else {
-      _selectedInventory = Inventory(
-        features: [],
-        seatClass: '',
-        fareType: '',
-        available: 0,
-        adultFare: FareDetail(fare: 0, charge: 0, price: 0),
-        totalPrice: 0,
-        currency: '',
-      );
+      _selectedInventory = FlightInventory.fromJson({});
     }
   }
 
@@ -65,24 +81,24 @@ class _FlightResultCardState extends State<FlightResultCard> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final state = context.watch<FlightController>().state;
+    final flightDetail = widget.flight.go;
 
-    Inventory? globalSelectedInventory;
-    if (state.data.selectedOutboundFlight?.flightCode ==
-        widget.flight.flightCode) {
-      globalSelectedInventory = state.data.selectedOutboundInventory;
-    } else if (state.data.selectedReturnFlight?.flightCode ==
-        widget.flight.flightCode) {
-      globalSelectedInventory = state.data.selectedReturnInventory;
-    }
+    if (flightDetail == null) return const SizedBox.shrink();
 
-    final bool isSummaryMode = globalSelectedInventory != null;
-    final currentDisplayInventory =
-        globalSelectedInventory ?? _selectedInventory;
+    // Xác định inventory đang được chọn thực tế (ưu tiên state toàn cục)
+    final FlightInventory? globalSelectedInventory =
+    (state.data.selectedOutboundFlight == flightDetail)
+        ? state.data.selectedOutboundInventory
+        : (state.data.selectedReturnFlight == flightDetail)
+        ? state.data.selectedReturnInventory
+        : null;
 
-    final String depTime = widget.flight.timeStart;
-    final String arrTime = widget.flight.timeEnd;
+    final currentDisplayInventory = globalSelectedInventory ?? _selectedInventory;
+
+    final String depTime = flightDetail.timeStart ?? "--:--";
+    final String arrTime = flightDetail.timeEnd ?? "--:--";
     final String duration = FormatDuration.formatDuration(
-      widget.flight.totalDuration,
+      flightDetail.totalDuration ?? 0,
       l10n,
     );
 
@@ -118,7 +134,7 @@ class _FlightResultCardState extends State<FlightResultCard> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(4),
                         child: Image.network(
-                          widget.flight.logo,
+                          flightDetail.airlineObject?.logo ?? '',
                           width: context.icon(35),
                           height: context.icon(35),
                           fit: BoxFit.contain,
@@ -135,8 +151,8 @@ class _FlightResultCardState extends State<FlightResultCard> {
                           context,
                           depTime,
                           arrTime,
-                          widget.flight.departureCode,
-                          widget.flight.arrivalCode,
+                          flightDetail.departureCode ?? "",
+                          flightDetail.arrivalCode ?? "",
                           duration,
                         ),
                       ),
@@ -150,7 +166,7 @@ class _FlightResultCardState extends State<FlightResultCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${widget.flight.airlineSystemText} | ${widget.flight.flightCode}',
+                        '${flightDetail.airlineSystemText} | ${flightDetail.flightCode}',
                         style: TextStyle(
                           color: Colors.grey.shade700,
                           fontSize: context.sp(12),
@@ -159,7 +175,7 @@ class _FlightResultCardState extends State<FlightResultCard> {
                       ),
                       _buildPriceBrief(
                         context,
-                        currentDisplayInventory.totalPrice,
+                        currentDisplayInventory.totalPrice ?? 0,
                       ),
                     ],
                   ),
@@ -167,8 +183,6 @@ class _FlightResultCardState extends State<FlightResultCard> {
               ),
             ),
           ),
-
-          // Phần nội dung mở rộng (Tab Class & Timeline)
           AnimatedCrossFade(
             duration: const Duration(milliseconds: 300),
             firstChild: const SizedBox(width: double.infinity),
@@ -177,8 +191,11 @@ class _FlightResultCardState extends State<FlightResultCard> {
                 const Divider(height: 1),
                 _buildTabHeader(context, l10n),
                 _activeTabIndex == 0
-                    ? _buildTicketClassSelector(context, state)
-                    : _buildFlightDetailTimeline(context),
+                    ? _buildTicketClassSelector(
+                        context,
+                        globalSelectedInventory,
+                      )
+                    : _buildFlightDetailTimeline(context, flightDetail),
                 SizedBox(height: context.rh(16)),
               ],
             ),
@@ -324,14 +341,18 @@ class _FlightResultCardState extends State<FlightResultCard> {
     );
   }
 
-  Widget _buildTicketClassSelector(BuildContext context, dynamic state) {
+  Widget _buildTicketClassSelector(
+    BuildContext context,
+    FlightInventory? currentSelected,
+  ) {
+    final inventories = widget.flight.go?.inventories ?? [];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
       padding: EdgeInsets.symmetric(horizontal: context.rw(8)),
       child: Row(
-        children: widget.flight.inventories.map((inventory) {
-          bool isSelected = _selectedInventory == inventory;
+        children: inventories.map((inventory) {
+          bool isSelected = currentSelected?.fareType == inventory.fareType;
           return _buildTicketCard(context, isSelected, inventory);
         }).toList(),
       ),
@@ -341,7 +362,7 @@ class _FlightResultCardState extends State<FlightResultCard> {
   Widget _buildTicketCard(
     BuildContext context,
     bool isSelected,
-    Inventory inventory,
+    FlightInventory inventory,
   ) {
     final l10n = AppLocalizations.of(context)!;
     return Container(
@@ -359,7 +380,7 @@ class _FlightResultCardState extends State<FlightResultCard> {
       child: Column(
         children: [
           Text(
-            FormatPrice.formatPrice(inventory.totalPrice),
+            FormatPrice.formatPrice(inventory.totalPrice ?? 0),
             style: TextStyle(
               fontSize: context.sp(20),
               fontWeight: FontWeight.bold,
@@ -367,7 +388,7 @@ class _FlightResultCardState extends State<FlightResultCard> {
             ),
           ),
           Text(
-            inventory.fareType,
+            inventory.fareType ?? "",
             style: TextStyle(
               fontSize: context.sp(13),
               color: kPrimaryColor,
@@ -382,10 +403,7 @@ class _FlightResultCardState extends State<FlightResultCard> {
           ElevatedButton(
             onPressed: () {
               setState(() => _selectedInventory = inventory);
-              if (widget.SelectedInventory == null)
-                _selectFlight(context, widget.flight, inventory);
-              else
-                _updateClassSelector(context, widget.flight, inventory);
+              _selectFlight(context, widget.flight, inventory);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: kPrimaryColor,
@@ -397,8 +415,7 @@ class _FlightResultCardState extends State<FlightResultCard> {
             ),
             child: Text(
               isSelected ? l10n.currentlySelected : l10n.selectThisJourney,
-              style: TextStyle(
-                fontSize: context.sp(14),
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -451,20 +468,29 @@ class _FlightResultCardState extends State<FlightResultCard> {
     );
   }
 
-  Widget _buildFlightDetailTimeline(BuildContext context) {
+  Widget _buildFlightDetailTimeline(BuildContext context, FlightDetail detail) {
+    final stopInfos = detail.stopInfos ?? [];
     return Padding(
-      padding: EdgeInsets.all(context.padding),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.rw(16),
+        vertical: context.rh(10),
+      ),
       child: Column(
-        children: List.generate(widget.flight.stopInfos.length, (index) {
-          final segment = widget.flight.stopInfos[index];
+        children: List.generate(stopInfos.length, (index) {
+          final segment = stopInfos[index];
           return Column(
             children: [
-              _buildFlightSegment(context, segment),
-              if (index < widget.flight.stopInfos.length - 1)
+              _buildFlightSegment(
+                context,
+                segment,
+                detail.airlineSystemText ?? "",
+                detail.airlineObject?.logo ?? '',
+              ),
+              if (index < stopInfos.length - 1)
                 _buildStopPoint(
                   context,
-                  segment.layoverDuration,
-                  segment.destinationAirportObject.desc,
+                  segment.layoverDuration ?? 0,
+                  segment.destinationAirport?.desc ?? "",
                 ),
             ],
           );
@@ -473,171 +499,188 @@ class _FlightResultCardState extends State<FlightResultCard> {
     );
   }
 
-  Widget _buildFlightSegment(BuildContext context, dynamic segment) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          children: [
-            _timeText(
-              context,
-              segment.timeStart,
-              FormatDate.formatDateDDMMYYYY(
-                DateTime.parse(segment.dateTimeStart),
-              ),
-            ),
-            Container(
-              width: 1,
-              height: context.rh(60),
-              color: kPrimaryColor.withOpacity(0.3),
-            ),
-            _timeText(
-              context,
-              segment.timeEnd,
-              FormatDate.formatDateDDMMYYYY(
-                DateTime.parse(segment.dateTimeEnd),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(width: context.rw(12)),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _airportTitle(
-                context,
-                segment.departureCode,
-                segment.originAirportObject.airline,
-              ),
-              SizedBox(height: context.rh(15)),
-              Row(
-                children: [
-                  Image.network(
-                    widget.flight.logo,
-                    width: context.icon(24),
-                    height: context.icon(24),
-                  ),
-                  SizedBox(width: context.rw(8)),
-                  Text(
-                    "${widget.flight.airlineSystemText} • ${segment.flightCode}",
-                    style: TextStyle(
-                      fontSize: context.sp(13),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: context.rh(15)),
-              _airportTitle(
-                context,
-                segment.arrivalCode,
-                segment.destinationAirportObject.airline,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _timeText(BuildContext context, String time, String date) {
-    return Column(
-      children: [
-        Text(
-          time,
-          style: TextStyle(
-            fontSize: context.sp(14),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          date,
-          style: TextStyle(fontSize: context.sp(10), color: Colors.grey),
-        ),
-      ],
-    );
-  }
-
-  Widget _airportTitle(BuildContext context, String code, String name) {
-    return RichText(
-      text: TextSpan(
-        style: TextStyle(fontSize: context.sp(14), color: kTextColor),
+  Widget _buildFlightSegment(
+    BuildContext context,
+    StopInfo segment,
+    String airlineName,
+    String urlImage,
+  ) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextSpan(
-            text: code,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+          SizedBox(
+            width: context.rw(55),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _timeTextSmall(context, segment.timeStart ?? ""),
+                _timeTextSmall(context, segment.timeEnd ?? ""),
+              ],
+            ),
           ),
-          TextSpan(
-            text: " • $name",
-            style: TextStyle(color: Colors.grey.shade700),
+          SizedBox(
+            width: context.rw(30),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.radio_button_checked,
+                  size: context.icon(16),
+                  color: kPrimaryColor,
+                ),
+                Expanded(
+                  child: Container(
+                    width: 1.5,
+                    color: kPrimaryColor.withOpacity(0.3),
+                  ),
+                ),
+                Icon(
+                  Icons.location_on,
+                  size: context.icon(16),
+                  color: Colors.grey,
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _airportInfo(
+                  context,
+                  segment.originAirport?.airline ?? "",
+                  segment.originAirport?.desc ?? "",
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: context.rh(12)),
+                  child: Row(
+                    children: [
+                      if (urlImage.isNotEmpty)
+                        Image.network(
+                          urlImage,
+                          height: context.icon(20),
+                          width: context.icon(20),
+                        )
+                      else
+                        Icon(
+                          Icons.flight,
+                          size: context.icon(18),
+                          color: kPrimaryColor,
+                        ),
+                      SizedBox(width: context.rw(8)),
+                      Expanded(
+                        child: Text(
+                          "$airlineName • ${segment.flightCode}",
+                          style: TextStyle(
+                            fontSize: context.sp(12),
+                            color: Colors.grey.shade800,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                _airportInfo(
+                  context,
+                  segment.destinationAirport?.airline ?? "",
+                  segment.destinationAirport?.desc ?? "",
+                ),
+                SizedBox(height: context.rh(10)),
+              ],
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _timeTextSmall(BuildContext context, String time) => Text(
+    time,
+    style: TextStyle(
+      fontSize: context.sp(15),
+      fontWeight: FontWeight.bold,
+      color: kTextColor,
+    ),
+  );
+
+  Widget _airportInfo(BuildContext context, String code, String cityName) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          code,
+          style: TextStyle(
+            fontSize: context.sp(14),
+            fontWeight: FontWeight.bold,
+            color: kTextColor,
+          ),
+        ),
+        Text(
+          cityName,
+          style: TextStyle(
+            fontSize: context.sp(12),
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildStopPoint(BuildContext context, int duration, String city) {
     final h = duration ~/ 60;
     final m = duration % 60;
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: context.rh(12)),
-      padding: EdgeInsets.symmetric(
-        vertical: context.rh(6),
-        horizontal: context.rw(12),
-      ),
-      decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(context.radius / 2),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.timer_outlined,
-            color: Colors.orange,
-            size: context.icon(16),
-          ),
-          SizedBox(width: context.rw(8)),
-          Text(
-            "Dừng tại $city trong ${h}h ${m}m",
-            style: TextStyle(
-              fontSize: context.sp(12),
-              color: Colors.orange.shade900,
-              fontWeight: FontWeight.bold,
+    return Row(
+      children: [
+        SizedBox(width: context.rw(55)),
+        SizedBox(
+          width: context.rw(30),
+          child: Center(
+            child: Container(
+              width: 1.5,
+              height: context.rh(40),
+              color: kPrimaryColor.withOpacity(0.3),
             ),
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: context.rh(8)),
+            padding: EdgeInsets.symmetric(
+              vertical: context.rh(6),
+              horizontal: context.rw(12),
+            ),
+            decoration: BoxDecoration(
+              color: Colors.orange.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.orange.withOpacity(0.2)),
+            ),
+            child: Text(
+              "Dừng tại $city: ${h}h ${m}m",
+              style: TextStyle(
+                fontSize: context.sp(11),
+                color: Colors.orange.shade900,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
-  }
-
-  // --- Logic Điều hướng giữ nguyên ---
-  void _updateClassSelector(
-    BuildContext context,
-    FlightInfo flight,
-    Inventory inven,
-  ) {
-    final controller = context.read<FlightController>();
-    if (controller.state.data.selectedOutboundFlight?.flightCode ==
-        flight.flightCode)
-      controller.updateOutboundFlightClassSelector(inven);
-    else
-      controller.updateReturnFlightClassSelector(inven);
   }
 
   void _selectFlight(
     BuildContext context,
-    FlightInfo flight,
-    Inventory selectedInventory,
+    FlightItem flight,
+    FlightInventory selectedInventory,
   ) {
     final controller = context.read<FlightController>();
-    if (controller.state.criteria.roundTrip == false ||
-        (controller.state.criteria.roundTrip == true &&
-            controller.state.ui.isViewingReturnFlights == false)) {
-      controller.selectOutboundFlight(flight, selectedInventory);
-    } else {
-      controller.selectReturnFlight(flight, selectedInventory);
-      controller.scrollToTop();
-    }
+    final isViewingReturn = controller.state.ui.isViewingReturnFlights;
+    // Đồng bộ: Nếu là FlightResultCard nội địa, ta gọi selectFlight (đã gộp Outbound/Return dựa trên flag)
+    controller.selectFlight(
+      flight,
+      selectedInventory,
+      isOutbound: !isViewingReturn,
+    );
   }
 }

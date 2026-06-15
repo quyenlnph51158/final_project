@@ -84,7 +84,6 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
         if (didPop) return;
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text("Thanh toán an toàn")),
         body: Stack(
           children: [
             WebViewWidget(controller: _controller),

@@ -8,7 +8,7 @@ class SeatClass {
   factory SeatClass.fromJson(Map<String, dynamic> json) {
     return SeatClass(
       tax: json['tax'],
-      price: json['price']?.toDouble(),
+      price: json['price'],
       title: json['title'],
     );
   }

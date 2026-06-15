@@ -1,11 +1,14 @@
 import 'package:final_project/app/l10n/app_localizations.dart';
 import 'package:final_project/core/utils/format_date.dart';
 import 'package:final_project/core/utils/format_duration.dart';
+import 'package:final_project/core/utils/format_price.dart';
 import 'package:final_project/core/utils/remove_diacritics_formatter.dart';
 import 'package:final_project/features/train/data/models/seat_class.dart';
+import 'package:final_project/features/train/data/models/station_object.dart';
 import 'package:final_project/features/train/data/models/train_booking_request/create_booking_request.dart';
 import 'package:final_project/features/train/data/models/train_model.dart';
 import 'package:final_project/features/train/presentation/screens/train_booking_summary_screen.dart';
+import 'package:final_project/features/train/presentation/state/train_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -19,182 +22,563 @@ import '../../data/models/passenger_model.dart';
 import '../controller/train_controller.dart';
 import '../../../../core/data/model/country_code_model.dart';
 import '../../../../core/data/constants/country_code_data.dart';
+import '../state/train_data_state.dart';
 
 class InputPassengerForm extends StatefulWidget {
   const InputPassengerForm({super.key});
 
   @override
-  State<InputPassengerForm> createState() => _PassengerInfoFormState();
+  State<InputPassengerForm> createState() => _InputPassengerFormState();
 }
 
-class _PassengerInfoFormState extends State<InputPassengerForm> {
+class _InputPassengerFormState extends State<InputPassengerForm> {
+  final _formKey = GlobalKey<FormState>();
+
   // --- CONTROLLERS ---
   final Map<String, TextEditingController> _dateControllers = {};
   final Map<String, TextEditingController> _firstNameControllers = {};
   final Map<String, TextEditingController> _lastNameControllers = {};
   final Map<String, TextEditingController> _passportControllers = {};
+  final Map<String, String> _nationalityValues = {};
 
   final TextEditingController _customerName = TextEditingController();
   final TextEditingController _customerPhoneNumber = TextEditingController();
   final TextEditingController _customerEmail = TextEditingController();
   final TextEditingController _specialRequestController =
       TextEditingController();
-  final Map<String, String> _nationalityValues = {};
 
-  // Dịch vụ bổ sung
   final TextEditingController _hotelGoAddressController =
       TextEditingController();
   final TextEditingController _hotelReturnAddressController =
       TextEditingController();
 
-  String _customerCountryCode = '';
-  String? _selectedBusDeparture; // Chiều đi
-  String? _selectedBusReturn; // Chiều về
+  String _goServiceType = "none"; // "none" là không yêu cầu, "bus" là xe buýt
+  String _returnServiceType = "none";
 
+  String _customerCountryCode = 'VN';
   bool _showSpecialRequest = false;
+  bool _isProcessing = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Khởi tạo controllers 1 lần duy nhất dựa trên số lượng khách từ state
+    final state = context.read<TrainController>().state;
+    _initPassengerControllers('adults', state.form.adultCount);
+    _initPassengerControllers('children', state.form.childCount);
+    _initPassengerControllers('infant', state.form.infantCount);
+  }
+
+  void _initPassengerControllers(String type, int count) {
+    for (int i = 1; i <= count; i++) {
+      final key = "${type}_$i";
+      _dateControllers.putIfAbsent(key, () => TextEditingController());
+      _firstNameControllers.putIfAbsent(key, () => TextEditingController());
+      _lastNameControllers.putIfAbsent(key, () => TextEditingController());
+      _passportControllers.putIfAbsent(key, () => TextEditingController());
+      _nationalityValues.putIfAbsent(key, () => 'VN');
+    }
+  }
 
   @override
   void dispose() {
-    for (var c in _dateControllers.values) {
-      c.dispose();
+    // Giải phóng tất cả controllers để tránh leak bộ nhớ
+    final allControllers = [
+      ..._dateControllers.values,
+      ..._firstNameControllers.values,
+      ..._lastNameControllers.values,
+      ..._passportControllers.values,
+      _customerName,
+      _customerPhoneNumber,
+      _customerEmail,
+      _specialRequestController,
+      _hotelGoAddressController,
+      _hotelReturnAddressController,
+    ];
+    for (var controller in allControllers) {
+      controller.dispose();
     }
-    for (var c in _firstNameControllers.values) {
-      c.dispose();
-    }
-    for (var c in _lastNameControllers.values) {
-      c.dispose();
-    }
-    for (var c in _passportControllers.values) {
-      c.dispose();
-    }
-    _customerName.dispose();
-    _customerPhoneNumber.dispose();
-    _customerEmail.dispose();
-    _specialRequestController.dispose();
-    _hotelGoAddressController.dispose();
-    _hotelReturnAddressController.dispose();
     super.dispose();
-  }
-
-  TextEditingController _getController(String key) {
-    if (!_dateControllers.containsKey(key)) {
-      _dateControllers[key] = TextEditingController();
-    }
-    return _dateControllers[key]!;
   }
 
   @override
   Widget build(BuildContext context) {
     final trainController = context.watch<TrainController>();
     final state = trainController.state;
-    final int adultCount = state.form.adultCount;
-    final int childCount = state.form.childCount;
-    final int infantCount = state.form.infantCount;
     final l10n = AppLocalizations.of(context)!;
 
     return Container(
       color: kBackgroundColor,
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: context.padding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: context.rh(16)),
-
-              // 1. TÓM TẮT LỘ TRÌNH
-              Text(
-                l10n.trip_information,
-                style: TextStyle(
-                  fontSize: context.sp(18),
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF1D2939),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: context.padding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: context.rh(16)),
+                _buildTitle(l10n.trip_information),
+                _buildTripCard(
+                  state.data.SelectedDepartureTrain!,
+                  state.data.SelectedDepartureSeatClass!,
+                  state.data.SelectedReturnTrain,
+                  state.data.SelectedReturnSeatClass,
+                  l10n,
                 ),
-              ),
-              SizedBox(height: context.rh(12)),
-              _buildTripCard(
-                state.data.SelectedDepartureTrain!,
-                state.data.SelectedDepartureSeatClass!,
-                state.data.SelectedReturnTrain,
-                state.data.SelectedReturnSeatClass,
-                l10n,
-              ),
-
-              SizedBox(height: context.rh(24)),
-
-              // 2. NHẬP THÔNG TIN HÀNH KHÁCH
-              Text(
-                l10n.enter_passenger_info,
-                style: TextStyle(
-                  fontSize: context.sp(18),
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF1D2939),
-                ),
-              ),
-              SizedBox(height: context.rh(12)),
-
-              _buildInfoBox(
-                title: l10n.personal_info,
-                description: l10n.passenger_name_note,
-                child: Column(
-                  children: [
-                    for (int i = 1; i <= adultCount; i++)
-                      _buildPassengerInputGroup(
-                        context,
-                        '${l10n.adult} $i',
-                        i,
+                SizedBox(height: context.rh(24)),
+                _buildTitle(l10n.enter_passenger_info),
+                _buildInfoBox(
+                  title: l10n.personal_info,
+                  description: l10n.passenger_name_note,
+                  child: Column(
+                    children: [
+                      ..._buildPassengerGroups(
                         'adults',
+                        state.form.adultCount,
+                        l10n.adult,
                         l10n,
                       ),
-                    for (int i = 1; i <= childCount; i++)
-                      _buildPassengerInputGroup(
-                        context,
-                        '${l10n.child} $i',
-                        i,
+                      ..._buildPassengerGroups(
                         'children',
+                        state.form.childCount,
+                        l10n.child,
                         l10n,
                       ),
-                    for (int i = 1; i <= infantCount; i++)
-                      _buildPassengerInputGroup(
-                        context,
-                        '${l10n.infant} $i',
-                        i,
+                      ..._buildPassengerGroups(
                         'infant',
+                        state.form.infantCount,
+                        l10n.infant,
                         l10n,
                       ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-
-              SizedBox(height: context.rh(20)),
-
-              // 3. KHỐI THÔNG TIN LIÊN HỆ
-              _buildInfoBox(
-                title: l10n.contact_info,
-                description: l10n.contact_note,
-                child: _buildContactSection(context, l10n),
-              ),
-
-              SizedBox(height: context.rh(20)),
-
-              // 4. DỊCH VỤ BỔ SUNG (Logic mới)
-              _buildAdditionalServices(context, l10n),
-
-              SizedBox(height: context.rh(32)),
-
-              // 5. NÚT TIẾP TỤC
-              _buildContinueButton(context, l10n),
-
-              SizedBox(height: context.rh(40)),
-            ],
+                SizedBox(height: context.rh(20)),
+                _buildInfoBox(
+                  title: l10n.contact_info,
+                  description: l10n.contact_note,
+                  child: _buildContactSection(context, l10n),
+                ),
+                SizedBox(height: context.rh(20)),
+                _buildExtraServicesSection(state, l10n),
+                SizedBox(height: context.rh(32)),
+                _buildContinueButton(l10n),
+                SizedBox(height: context.rh(40)),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  // --- UI COMPONENTS ---
+  // --- WIDGET HELPER METHODS ---
+
+  Widget _buildTitle(String text) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: context.rh(12)),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: context.sp(18),
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFF1D2939),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildPassengerGroups(
+    String type,
+    int count,
+    String label,
+    AppLocalizations l10n,
+  ) {
+    return List.generate(
+      count,
+      (i) => _buildPassengerInputGroup(
+        context,
+        '$label ${i + 1}',
+        i + 1,
+        type,
+        l10n,
+      ),
+    );
+  }
+
+  Widget _buildPassengerInputGroup(
+    BuildContext context,
+    String label,
+    int index,
+    String type,
+    AppLocalizations l10n,
+  ) {
+    final key = "${type}_$index";
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: context.rh(12)),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: context.sp(15),
+            fontWeight: FontWeight.bold,
+            color: kPrimaryColor,
+          ),
+        ),
+        SizedBox(height: context.rh(16)),
+        _buildLabelField(
+          l10n.titleFirstName,
+          child: _buildTextFormField(
+            _firstNameControllers[key]!,
+            l10n.titleFirstName,
+            formatters: [RemoveDiacriticsFormatter()],
+          ),
+        ),
+        SizedBox(height: context.rh(12)),
+        _buildLabelField(
+          l10n.last_name,
+          child: _buildTextFormField(
+            _lastNameControllers[key]!,
+            l10n.last_name,
+            formatters: [RemoveDiacriticsFormatter()],
+          ),
+        ),
+        SizedBox(height: context.rh(12)),
+        _buildLabelField(
+          l10n.passport_number,
+          child: _buildTextFormField(
+            _passportControllers[key]!,
+            l10n.passport_number,
+          ),
+        ),
+        SizedBox(height: context.rh(12)),
+        _buildLabelField(
+          l10n.birthday,
+          child: _buildTextFormField(
+            _dateControllers[key]!,
+            'dd/mm/yyyy',
+            keyboardType: TextInputType.number,
+            formatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(8),
+              DateInputFormatter(),
+            ],
+          ),
+        ),
+        SizedBox(height: context.rh(12)),
+        _buildLabelField(
+          "Quốc tịch",
+          child: DropdownButtonFormField<String>(
+            value: _nationalityValues[key],
+            decoration: _inputDecoration(context, "Chọn quốc tịch"),
+            items: CountryCodeData.countries
+                .map(
+                  (c) => DropdownMenuItem(
+                    value: c.code,
+                    child: Text(
+                      "${c.flag} ${c.name}",
+                      style: TextStyle(fontSize: context.sp(13)),
+                    ),
+                  ),
+                )
+                .toList(),
+            onChanged: (val) => setState(() => _nationalityValues[key] = val!),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: context.rh(16)),
+          child: const Divider(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildContactSection(BuildContext context, AppLocalizations l10n) {
+    return Column(
+      children: [
+        _buildLabelField(
+          l10n.country_code,
+          child: _buildCountryPicker(context, l10n),
+        ),
+        SizedBox(height: context.rh(12)),
+        _buildLabelField(
+          "Tên khách hàng liên hệ",
+          child: _buildTextFormField(
+            _customerName,
+            "Nhập họ tên",
+            formatters: [RemoveDiacriticsFormatter()],
+          ),
+        ),
+        SizedBox(height: context.rh(12)),
+        _buildLabelField(
+          l10n.phone_number,
+          child: _buildTextFormField(
+            _customerPhoneNumber,
+            l10n.phone_number,
+            keyboardType: TextInputType.phone,
+          ),
+        ),
+        SizedBox(height: context.rh(12)),
+        _buildLabelField(
+          l10n.email,
+          child: _buildTextFormField(
+            _customerEmail,
+            l10n.email,
+            keyboardType: TextInputType.emailAddress,
+          ),
+        ),
+        _buildSpecialRequestToggle(),
+      ],
+    );
+  }
+
+  Widget _buildSpecialRequestToggle() {
+    return Column(
+      children: [
+        Row(
+          // Căn lề trái cho cả Row
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              // Bọc trong SizedBox để kiểm soát chính xác chiều rộng
+              width: 24, // Chiều rộng bằng đúng kích thước cái hộp
+              height: 48, // Giữ chiều cao để dễ bấm
+              child: Checkbox(
+                value: _showSpecialRequest,
+                activeColor: kPrimaryColor,
+                // 1. Loại bỏ khoảng trống thừa của Material Design
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                // 2. Thu hẹp mật độ hiển thị để đẩy sát ra biên
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                onChanged: (v) => setState(() => _showSpecialRequest = v!),
+              ),
+            ),
+            SizedBox(width: context.rw(8)), // Khoảng cách giữa box và chữ
+            Expanded( // Dùng Expanded để tránh lỗi tràn dòng nếu chữ dài
+              child: GestureDetector(
+                onTap: () =>
+                    setState(() => _showSpecialRequest = !_showSpecialRequest),
+                child: Text(
+                  "Tôi có yêu cầu đặc biệt",
+                  style: TextStyle(
+                    fontSize: context.sp(14),
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (_showSpecialRequest)
+          _buildTextFormField(
+            _specialRequestController,
+            "Nội dung yêu cầu",
+            maxLines: 3,
+          ),
+      ],
+    );
+  }
+
+  // --- CORE UI COMPONENTS ---
+
+  Widget _buildTextFormField(
+    TextEditingController controller,
+    String hint, {
+    List<TextInputFormatter>? formatters,
+    TextInputType? keyboardType,
+    int maxLines = 1,
+  }) {
+    return TextFormField(
+      controller: controller,
+      inputFormatters: formatters,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      validator: (v) =>
+          (v == null || v.trim().isEmpty) ? "Trường này là bắt buộc" : null,
+      decoration: _inputDecoration(context, hint),
+      style: TextStyle(fontSize: context.sp(14)),
+    );
+  }
+
+  Widget _buildLabelField(String label, {required Widget child}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontSize: context.sp(12), color: kTextColor),
+        ),
+        SizedBox(height: context.rh(6)),
+        child,
+      ],
+    );
+  }
+
+  Widget _buildInfoBox({
+    required String title,
+    required String description,
+    required Widget child,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(context.radius),
+        border: Border.all(color: kBorderColor.withOpacity(0.5)),
+      ),
+      padding: EdgeInsets.all(context.padding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: context.sp(16),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            description,
+            style: TextStyle(
+              fontSize: context.sp(11),
+              color: Colors.grey,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          const Divider(height: 24),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContinueButton(AppLocalizations l10n) {
+    return SizedBox(
+      width: double.infinity,
+      height: context.rh(50),
+      child: ElevatedButton(
+        onPressed: _isProcessing ? null : _handleBookingSubmit,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: kPrimaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(context.radius),
+          ),
+        ),
+        child: _isProcessing
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(
+                l10n.continue_button,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+      ),
+    );
+  }
+
+  // --- LOGIC HANDLERS ---
+
+  Future<void> _handleBookingSubmit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isProcessing = true);
+    try {
+      final controller = context.read<TrainController>();
+      final state = controller.state;
+
+      List<PassengerModel> passengers = [];
+      _collectData(passengers, 'adults', state.form.adultCount);
+      _collectData(passengers, 'children', state.form.childCount);
+      _collectData(passengers, 'infant', state.form.infantCount);
+
+      await controller.CreateBooking(
+        passengers: passengers,
+        CustomerName: _customerName.text.trim(),
+        CustomerPhonNumber: _customerPhoneNumber.text.trim(),
+        CustomerEmail: _customerEmail.text.trim(),
+        CustomerCountryCode: _customerCountryCode,
+        extraService: [
+          if (_hotelGoAddressController.text.isNotEmpty)
+            SpecialRequestModel(
+              index: 1,
+              address: _hotelGoAddressController.text.trim(),
+            ),
+          if (_hotelReturnAddressController.text.isNotEmpty)
+            SpecialRequestModel(
+              index: 2,
+              address: _hotelReturnAddressController.text.trim(),
+            ),
+        ],
+        customerNote: _showSpecialRequest ? _specialRequestController.text : '',
+      );
+
+      if (mounted && controller.state.data.summaryTrainResponseData != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const TrainBookingSummaryScreen()),
+        );
+      }
+    } catch (e) {
+      debugPrint("Booking Error: $e");
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
+    }
+  }
+
+  void _collectData(List<PassengerModel> list, String type, int count) {
+    for (int i = 1; i <= count; i++) {
+      final key = "${type}_$i";
+      list.add(
+        PassengerModel(
+          name:
+              "${_lastNameControllers[key]?.text.trim()} ${_firstNameControllers[key]?.text.trim()}"
+                  .toUpperCase(),
+          type: type,
+          birthday: _dateControllers[key]?.text ?? '',
+          passportNumber: _passportControllers[key]?.text ?? '',
+          nationnality: _nationalityValues[key] ?? 'VN',
+        ),
+      );
+    }
+  }
+
+  // --- REMAINING UI (Trip Card, Decoration, etc.) ---
+  // ... (Giữ nguyên các hàm _buildTripCard, _buildTripSection, _buildCountryPicker, _inputDecoration của bạn) ...
+
+  InputDecoration _inputDecoration(BuildContext context, String hint) {
+    return InputDecoration(
+      hintText: hint,
+      filled: true,
+      fillColor: const Color(0xFFF9FAFB),
+      hintStyle: TextStyle(color: Colors.grey, fontSize: context.sp(13)),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: context.rw(12),
+        vertical: context.rh(10),
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(context.radius * 0.6),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(context.radius * 0.6),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(context.radius * 0.6),
+        borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
+      ),
+    );
+  }
 
   Widget _buildTripCard(
     TrainModel depT,
@@ -236,7 +620,8 @@ class _PassengerInfoFormState extends State<InputPassengerForm> {
             arrCode: depT.destinationStationObject?.code ?? '',
             duration: FormatDuration.formatDuration(depT.duration!, l10n),
             trainInfo: '${depT.trainCode} - ${depT.carrier?.name ?? ''}',
-            price: '${depS.price}',
+            price: depS.price ?? 0,
+            currency: depT.currency ?? "",
           ),
           if (retT != null && retS != null) ...[
             const Divider(height: 1),
@@ -252,7 +637,8 @@ class _PassengerInfoFormState extends State<InputPassengerForm> {
               arrCode: retT.destinationStationObject?.code ?? '',
               duration: FormatDuration.formatDuration(retT.duration!, l10n),
               trainInfo: '${retT.trainCode} - ${retT.carrier?.name ?? ''}',
-              price: '${retS.price}',
+              price: retS.price ?? 0,
+              currency: retT.currency ?? "",
             ),
           ],
         ],
@@ -270,8 +656,10 @@ class _PassengerInfoFormState extends State<InputPassengerForm> {
     required String arrCode,
     required String duration,
     required String trainInfo,
-    required String price,
+    required num price,
+    required String currency
   }) {
+
     return Padding(
       padding: EdgeInsets.all(context.padding),
       child: Column(
@@ -333,7 +721,7 @@ class _PassengerInfoFormState extends State<InputPassengerForm> {
                 margin: EdgeInsets.symmetric(horizontal: context.rw(12)),
               ),
               Text(
-                price,
+                "${FormatPrice.formatPrice(price).toString()} $currency",
                 style: TextStyle(
                   color: kPrimaryColor,
                   fontWeight: FontWeight.bold,
@@ -365,563 +753,191 @@ class _PassengerInfoFormState extends State<InputPassengerForm> {
     );
   }
 
-  Widget _buildContactSection(BuildContext context, AppLocalizations l10n) {
-    return Column(
-      children: [
-        _buildInputField(
-          l10n.country_code,
-          child: _buildCountryPicker(context, l10n),
-        ),
-
-        SizedBox(width: context.rh(12)),
-        _buildInputField(
-          l10n.phone_number,
-          child: TextField(
-            controller: _customerPhoneNumber,
-            decoration: _inputDecoration(context, l10n.phone_number),
-            keyboardType: TextInputType.phone,
-            style: TextStyle(fontSize: context.sp(14)),
-          ),
-        ),
-
-        SizedBox(height: context.rh(12)),
-        _buildInputField(
-          'Tên khách hàng liên hệ',
-          child: TextField(
-            controller: _customerName,
-            decoration: _inputDecoration(context, "Nhập họ tên"),
-            style: TextStyle(fontSize: context.sp(14)),
-          ),
-        ),
-        SizedBox(height: context.rh(12)),
-        _buildInputField(
-          l10n.email,
-          child: TextField(
-            controller: _customerEmail,
-            decoration: _inputDecoration(context, l10n.email),
-            keyboardType: TextInputType.emailAddress,
-            style: TextStyle(fontSize: context.sp(14)),
-          ),
-        ),
-        SizedBox(height: context.rh(8)),
-        Row(
-          children: [
-            SizedBox(
-              height: 24,
-              width: 24,
-              child: Checkbox(
-                value: _showSpecialRequest,
-                activeColor: kPrimaryColor,
-                onChanged: (bool? value) {
-                  setState(() {
-                    _showSpecialRequest = value ?? false;
-                  });
-                },
-              ),
-            ),
-            SizedBox(width: context.rw(8)),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _showSpecialRequest = !_showSpecialRequest;
-                });
-              },
-              child: Text(
-                "Tôi có yêu cầu đặc biệt", // Bạn có thể thêm vào l10n nếu cần
-                style: TextStyle(
-                  fontSize: context.sp(13),
-                  color: Colors.black87,
-                ),
-              ),
-            ),
-          ],
-        ),
-        if (_showSpecialRequest) ...[
-          SizedBox(height: context.rh(12)),
-
-          _buildInputField(
-            l10n.special_request,
-            child: TextField(
-              controller: _specialRequestController,
-              decoration: _inputDecoration(context, l10n.request_content),
-              maxLines: 3,
-              style: TextStyle(fontSize: context.sp(14)),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildAdditionalServices(BuildContext context, AppLocalizations l10n) {
-    return _buildInfoBox(
-      title: "Dịch vụ bổ sung",
-      description: "Dịch vụ đưa đón bằng xe buýt",
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // CHIỀU ĐI
-          Text(
-            "Ga Lào Cai đến Trung tâm Sapa (hoặc bán kính 2km)",
-            style: TextStyle(fontSize: context.sp(13), color: Colors.black87),
-          ),
-          SizedBox(height: context.rh(8)),
-          _buildDropdownField(
-            context,
-            value: _selectedBusDeparture,
-            hint: "Chọn dịch vụ chiều đi",
-            items: ["Ga Lào Cai đi Trung tâm Sapa - 5.00 USD/khách"],
-            onChanged: (val) => setState(() => _selectedBusDeparture = val),
-          ),
-
-          // Logic: Chỉ hiện ô nhập khi đã chọn dịch vụ
-          if (_selectedBusDeparture != null) ...[
-            SizedBox(height: context.rh(16)),
-            _buildLabelWithAsterisk(
-              "Tên hoặc địa chỉ khách sạn ở Sapa (Chiều đi)",
-            ),
-            SizedBox(height: context.rh(8)),
-            TextField(
-              controller: _hotelGoAddressController,
-              maxLines: 2,
-              decoration: _inputDecoration(
-                context,
-                "Nhập địa chỉ khách sạn tại Sapa",
-              ),
-              style: TextStyle(fontSize: context.sp(13)),
-            ),
-          ],
-
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: context.rh(20)),
-            child: const Divider(thickness: 1, color: Color(0xFFEEEEEE)),
-          ),
-
-          // CHIỀU VỀ
-          Text(
-            "Trung tâm Sapa đến Ga Lào Cai",
-            style: TextStyle(fontSize: context.sp(13), color: Colors.black87),
-          ),
-          SizedBox(height: context.rh(8)),
-          _buildDropdownField(
-            context,
-            value: _selectedBusReturn,
-            hint: "Chọn dịch vụ chiều về",
-            items: ["Trung tâm Sapa đi Ga Lào Cai - 5.00 USD/khách"],
-            onChanged: (val) => setState(() => _selectedBusReturn = val),
-          ),
-
-          // Logic: Chỉ hiện ô nhập khi đã chọn dịch vụ
-          if (_selectedBusReturn != null) ...[
-            SizedBox(height: context.rh(16)),
-            _buildLabelWithAsterisk(
-              "Tên hoặc địa chỉ khách sạn ở Sapa (Chiều về)",
-            ),
-            SizedBox(height: context.rh(8)),
-            TextField(
-              controller: _hotelReturnAddressController,
-              maxLines: 2,
-              decoration: _inputDecoration(
-                context,
-                "Nhập địa chỉ khách sạn tại Sapa",
-              ),
-              style: TextStyle(fontSize: context.sp(13)),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLabelWithAsterisk(String text) {
-    return Text.rich(
-      TextSpan(
-        text: "$text ",
-        style: TextStyle(fontSize: context.sp(13), color: Colors.black87),
-        children: const [
-          TextSpan(
-            text: "*",
-            style: TextStyle(color: Colors.red),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPassengerInputGroup(
-    BuildContext context,
-    String label,
-    int index,
-    String passengerType,
-    AppLocalizations l10n,
-  ) {
-    final String key = "${passengerType}_${index}";
-    if (!_firstNameControllers.containsKey(key))
-      _firstNameControllers[key] = TextEditingController();
-    if (!_lastNameControllers.containsKey(key))
-      _lastNameControllers[key] = TextEditingController();
-    if (!_passportControllers.containsKey(key))
-      _passportControllers[key] = TextEditingController();
-    if (!_nationalityValues.containsKey(key))
-      _nationalityValues[key] = 'VN'; // Mặc định là Việt Nam
-    final dateController = _getController(key);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: context.rh(12)),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: context.sp(15),
-            fontWeight: FontWeight.bold,
-            color: kPrimaryColor,
-          ),
-        ),
-        SizedBox(height: context.rh(16)),
-        _buildInputField(
-          l10n.select_salutation,
-          child: DropdownButtonFormField<String>(
-            decoration: _inputDecoration(context, l10n.salutationMr),
-            items: l10n.titles
-                .split(',')
-                .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                .toList(),
-            onChanged: (v) {},
-          ),
-        ),
-        SizedBox(height: context.rh(12)),
-        _buildInputField(
-          l10n.titleFirstName,
-          child: TextField(
-            controller: _firstNameControllers[key],
-            inputFormatters: [RemoveDiacriticsFormatter()],
-            decoration: _inputDecoration(context, l10n.titleFirstName),
-          ),
-        ),
-        SizedBox(height: context.rh(12)),
-        _buildInputField(
-          l10n.last_name,
-          child: TextField(
-            controller: _lastNameControllers[key],
-            decoration: _inputDecoration(context, l10n.last_name),
-            inputFormatters: [RemoveDiacriticsFormatter()],
-          ),
-        ),
-        SizedBox(height: context.rh(12)),
-        _buildInputField(
-          l10n.passport_number,
-          child: TextField(
-            controller: _passportControllers[key],
-            decoration: _inputDecoration(context, l10n.passport_number),
-          ),
-        ),
-        SizedBox(height: context.rh(12)),
-        _buildInputField(
-          l10n.birthday,
-          child: TextField(
-            controller: dateController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(8),
-              DateInputFormatter(),
-            ],
-            decoration: _inputDecoration(context, 'dd/mm/yyyy').copyWith(
-              suffixIcon: Icon(
-                Icons.calendar_today_outlined,
-                size: context.icon(18),
-                color: Colors.grey,
-              ),
-            ),
-          ),
-        ),
-        SizedBox(height: context.rh(12)),
-
-        // 5. QUỐC TỊCH (MỚI THÊM)
-        _buildInputField(
-          "Quốc tịch",
-          child: DropdownButtonFormField<String>(
-            value: _nationalityValues[key],
-            isExpanded: true,
-            decoration: _inputDecoration(context, "Chọn quốc tịch"),
-            icon: Icon(Icons.keyboard_arrow_down, size: context.icon(20)),
-            items: CountryCodeData.countries.map((country) {
-              return DropdownMenuItem<String>(
-                value: country.code, // Lưu mã quốc gia (VN, US, JP...)
-                child: Text(
-                  "${country.flag} ${country.name}",
-                  style: TextStyle(fontSize: context.sp(13)),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              );
-            }).toList(),
-            onChanged: (val) {
-              setState(() {
-                _nationalityValues[key] = val!;
-              });
-            },
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: context.rh(16)),
-          child: const Divider(height: 1),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInputField(String label, {required Widget child}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: context.sp(12), color: Colors.grey),
-        ),
-        SizedBox(height: context.rh(6)),
-        child,
-      ],
-    );
-  }
-
-  Widget _buildInfoBox({
-    required String title,
-    required String description,
-    required Widget child,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(context.radius),
-        border: Border.all(color: kBorderColor.withOpacity(0.5)),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(context.padding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: context.sp(16),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: context.rh(4)),
-            Text(
-              description,
-              style: TextStyle(
-                fontSize: context.sp(11),
-                color: Colors.grey,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-            const Divider(height: 24),
-            child,
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContinueButton(BuildContext context, AppLocalizations l10n) {
-    return SizedBox(
-      width: double.infinity,
-      height: context.rh(48).clamp(45.0, 55.0),
-      child: ElevatedButton(
-        onPressed: () async {
-          final trainController = context.read<TrainController>();
-          final state = trainController.state;
-
-          // 1. Thu thập danh sách hành khách
-          List<PassengerModel> passengers = [];
-          void addPassengers(String type, int count) {
-            for (int i = 1; i <= count; i++) {
-              final key = "${type}_${i}";
-              String fullName =
-                  "${_lastNameControllers[key]?.text.trim() ?? ''} ${_firstNameControllers[key]?.text.trim() ?? ''}"
-                      .toUpperCase();
-              passengers.add(
-                PassengerModel(
-                  name: fullName,
-                  type: type,
-                  birthday: _dateControllers[key]?.text ?? '',
-                  passportNumber: _passportControllers[key]?.text ?? '',
-                  nationnality: _nationalityValues[key] ?? '',
-                ),
-              );
-            }
-          }
-
-          addPassengers('adults', state.form.adultCount);
-          addPassengers('children', state.form.childCount);
-          addPassengers('infant', state.form.infantCount);
-
-          // 2. Thu thập dịch vụ bổ sung
-          List<SpecialRequestModel> extraServices = [
-            SpecialRequestModel(
-              index: 1,
-              address: _hotelGoAddressController.text,
-            ),
-            SpecialRequestModel(
-              index: 2,
-              address: _hotelReturnAddressController.text,
-            ),
-          ];
-
-          // 3. Thực hiện đặt chỗ (Ví dụ logic gọi controller)
-          await trainController.CreateBooking(
-            passengers: passengers,
-            CustomerName: _customerName.text,
-            CustomerPhonNumber: _customerPhoneNumber.text,
-            CustomerEmail: _customerEmail.text,
-            CustomerCountryCode: _customerCountryCode,
-            extraService: extraServices,
-            customerNote: _showSpecialRequest == true
-                ? _specialRequestController.text
-                : '',
-          );
-          final updatedState = trainController.state;
-
-          if (updatedState.data.summaryTrainResponseData != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const TrainBookingSummaryScreen(),
-              ),
-            );
-          }
-          else{
-            debugPrint('Lỗi tạo booking !!!');
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: kPrimaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(context.radius),
-          ),
-          elevation: 0,
-        ),
-        child: Text(
-          l10n.continue_button,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: context.sp(16),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  InputDecoration _inputDecoration(BuildContext context, String hint) {
-    return InputDecoration(
-      hintText: hint,
-      filled: true,
-      fillColor: const Color(0xFFF9FAFB),
-      hintStyle: TextStyle(color: Colors.grey, fontSize: context.sp(13)),
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: context.rw(12),
-        vertical: context.rh(10),
-      ),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(context.radius * 0.6),
-        borderSide: BorderSide(color: Colors.grey.shade300),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(context.radius * 0.6),
-        borderSide: BorderSide(color: Colors.grey.shade300),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(context.radius * 0.6),
-        borderSide: const BorderSide(color: kPrimaryColor, width: 1.5),
-      ),
-    );
-  }
-
-  Widget _buildDropdownField(
-    BuildContext context, {
-    required String hint,
-    required List<String> items,
-    String? value,
-    required Function(String?) onChanged,
-  }) {
-    return DropdownButtonFormField<String>(
-      value: value,
-      isExpanded: true,
-      decoration: _inputDecoration(context, hint),
-      icon: Icon(Icons.keyboard_arrow_down, size: context.icon(20)),
-      items: items
-          .map(
-            (s) => DropdownMenuItem(
-              value: s,
-              child: Text(s, style: TextStyle(fontSize: context.sp(13))),
-            ),
-          )
-          .toList(),
-      onChanged: onChanged,
-    );
-  }
-
   Widget _buildCountryPicker(BuildContext context, AppLocalizations l10n) {
     return SizedBox(
-      height: context.rh(45).clamp(45.0, 55.0),
+      height: context.rh(45),
       child: DropdownSearch<CountryCodeModel>(
-        items: (f, p) {
-          if (f.isEmpty) return CountryCodeData.countries;
-          final filteredList = CountryCodeData.countries.where((country) {
-            final name = country.name.toLowerCase();
-            final dialCode = country.dialCode.toLowerCase();
-            final query = f.toLowerCase();
-            return name.contains(query) || dialCode.contains(query);
-          }).toList();
-          return filteredList;
-        },
-        filterFn: (instance, filter) => true,
-        compareFn: (i, s) => i.code == s.code,
-        dropdownBuilder: (context, s) => Text(
-          s != null ? "${s.flag} ${s.name} (${s.code})" : l10n.select,
+        // Thuộc tính bắt buộc khi dùng Object: So sánh qua thuộc tính 'code'
+        compareFn: (item1, item2) => item1.code == item2.code,
+
+        // Logic tìm kiếm/lọc
+        items: (filter, props) => CountryCodeData.countries
+            .where(
+              (c) =>
+                  c.name.toLowerCase().contains(filter.toLowerCase()) ||
+                  c.dialCode.contains(filter),
+            )
+            .toList(),
+
+        // Hiển thị item đã chọn trên thanh dropdown
+        dropdownBuilder: (context, selectedItem) => Text(
+          selectedItem != null
+              ? "${selectedItem.flag} ${selectedItem.name} (${selectedItem.code})"
+              : l10n.select,
           style: TextStyle(fontSize: context.sp(14)),
         ),
+
+        // Cấu hình menu chọn (thêm ô search và cách hiển thị từng dòng)
         popupProps: PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
             decoration: InputDecoration(
               hintText: l10n.search,
-              prefixIcon: const Icon(Icons.search),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-              border: const OutlineInputBorder(),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12),
             ),
           ),
-          itemBuilder: (context, c, s, h) => Padding(
+          itemBuilder: (context, item, isSelected, isHovered) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Row(
-              children: [
-                Text(c.flag),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    c.name,
-                    style: TextStyle(fontSize: context.sp(14)),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(c.dialCode),
-              ],
-            ),
+            child: Text("${item.flag} ${item.name} (${item.dialCode})"),
           ),
         ),
-        onChanged: (v) {
-          if (v != null) setState(() => _customerCountryCode = v.code);
+
+        onChanged: (value) {
+          if (value != null) {
+            setState(() => _customerCountryCode = value.code);
+          }
         },
       ),
     );
   }
 
-  String formatTime(String time) {
-    List<String> parts = time.split(':');
-    return "${parts[0]}:${parts[1]}";
+  String formatTime(String time) => time.split(':').take(2).join(':');
+
+  Widget _buildExtraServicesSection(TrainState state, AppLocalizations l10n) {
+    final depTrain = state.data.SelectedDepartureTrain;
+    final retTrain = state.data.SelectedReturnTrain;
+    final bool isGoFromSapa = state.form.DepartureCode == "S2";
+    // Kiểm tra xem chuyến đi hoặc chuyến về có liên quan đến Sapa (S2) không
+    final bool hasSapaGo =
+        depTrain?.originStationObject?.code == "S2" ||
+        depTrain?.destinationStationObject?.code == "S2";
+    final bool hasSapaReturn =
+        retTrain?.originStationObject?.code == "S2" ||
+        retTrain?.destinationStationObject?.code == "S2";
+
+    if (!hasSapaGo && !hasSapaReturn) return const SizedBox.shrink();
+
+    return _buildInfoBox(
+      title: "Dịch vụ bổ sung",
+      description: "Dịch vụ xe buýt đưa đón tại Sapa (Ga Lào Cai)",
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // CHIỀU ĐI
+          if (hasSapaGo)
+            _buildDirectionalServiceItem(
+              isGoFromSapa: isGoFromSapa,
+              currentValue: _goServiceType,
+              // Đã sửa: dùng _goServiceType
+              controller: _hotelGoAddressController,
+              onChanged: (val) => setState(() => _goServiceType = val!),
+              l10n: l10n,
+            ),
+
+          // CHIỀU VỀ
+          if (retTrain != null && hasSapaReturn) ...[
+            const Divider(height: 32),
+            _buildDirectionalServiceItem(
+              isGoFromSapa: !isGoFromSapa,
+              currentValue: _returnServiceType,
+              // Đã sửa: dùng _returnServiceType
+              controller: _hotelReturnAddressController,
+              onChanged: (val) => setState(() => _returnServiceType = val!),
+              l10n: l10n,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDirectionalServiceItem({
+    required bool isGoFromSapa,
+    required String currentValue,
+    required TextEditingController controller,
+    required ValueChanged<String?> onChanged,
+    required AppLocalizations l10n,
+  }) {
+    // LOGIC NHẬN DIỆN HƯỚNG TỰ ĐỘNG
+    String directionTitle = "";
+    String hotelLabel = "";
+    String hint = "";
+
+    if (isGoFromSapa) {
+      // Tàu đang ĐẾN Sapa
+      directionTitle = "Đón từ Khách sạn tại Sapa ra Ga Lào Cai";
+      hotelLabel = "Địa chỉ khách sạn để xe đến đón bạn ra ga *";
+      hint = "Nhập địa chỉ khách sạn đón khách";
+    } else {
+      // Tàu đang RỜI Sapa
+      directionTitle = "Đón từ Ga Lào Cai về Khách sạn tại Sapa";
+      hotelLabel = "Địa chỉ khách sạn tại Sapa để xe đưa bạn về *";
+      hint = "Nhập tên và địa chỉ khách sạn";
+    }
+
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            directionTitle,
+            style: TextStyle(
+              fontSize: context.sp(13),
+              fontWeight: FontWeight.bold,
+              color: kTextColor,
+            ),
+          ),
+          SizedBox(height: context.rh(10)),
+
+          DropdownButtonFormField<String>(
+            isExpanded: true,
+            value: currentValue,
+            decoration: _inputDecoration(
+              context,
+              "",
+            ).copyWith(fillColor: Colors.white),
+            items: [
+              DropdownMenuItem(
+                value: "none",
+                child: Text(
+                  "Không yêu cầu",
+                  style: TextStyle(fontSize: context.sp(13)),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              DropdownMenuItem(
+                value: "bus",
+                child: Text(
+                  "Xe buýt trung chuyển: 130.000VND/khách/chuyến",
+                  style: TextStyle(fontSize: context.sp(13)),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+
+                ),
+              ),
+            ],
+            onChanged: onChanged,
+          ),
+
+          if (currentValue == "bus") ...[
+            SizedBox(height: context.rh(16)),
+            Text(
+              hotelLabel,
+              style: TextStyle(
+                fontSize: context.sp(12),
+                fontWeight: FontWeight.bold,
+                color: Colors.grey.shade800,
+              ),
+            ),
+            SizedBox(height: context.rh(8)),
+            _buildTextFormField(controller, hint, maxLines: 2),
+          ],
+        ],
+      ),
+    );
   }
 }
 

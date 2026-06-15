@@ -1058,6 +1058,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get email => 'Email';
 
   @override
+  String get confirm_email => 'Xác nhận email';
+
+  @override
   String get special_request => 'Yêu cầu đặc biệt';
 
   @override
@@ -1289,6 +1292,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get login => 'Đăng nhập';
 
   @override
+  String get logout => 'Đăng xuất';
+
+  @override
   String get passWord => 'Mật khẩu';
 
   @override
@@ -1383,4 +1389,183 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get errorSameDate => 'Ngày đi và ngày về không được trùng nhau !!!';
+
+  @override
+  String get summary_title => 'Xem lại đặt chỗ của bạn';
+
+  @override
+  String get summary_booking_info => 'Thông tin đặt vé';
+
+  @override
+  String get summary_booking_code => 'Mã đặt chỗ:';
+
+  @override
+  String get summary_payment_deadline => 'Hạn thanh toán';
+
+  @override
+  String get summary_deadline_note =>
+      '(sau thời gian này, mã\nđặt chỗ sẽ bị hủy)';
+
+  @override
+  String get summary_general_info => 'Thông tin';
+
+  @override
+  String get summary_fullname => 'Họ tên';
+
+  @override
+  String get summary_phone => 'Số điện thoại';
+
+  @override
+  String get summary_booking_date => 'Ngày đặt';
+
+  @override
+  String get summary_email => 'Email';
+
+  @override
+  String get summary_total => 'Tổng';
+
+  @override
+  String get summary_base_fare => 'Giá cơ bản';
+
+  @override
+  String get summary_tax_fee => 'Thuế & Phí';
+
+  @override
+  String get summary_bus => 'Xe buýt';
+
+  @override
+  String get summary_itinerary => 'Hành trình';
+
+  @override
+  String get summary_itinerary_detail => 'Chi tiết hành trình';
+
+  @override
+  String get summary_departure_label => 'KHỞI HÀNH';
+
+  @override
+  String get summary_return_label => 'TRỞ VỀ';
+
+  @override
+  String get summary_passenger_info => 'Thông tin hành khách';
+
+  @override
+  String summary_passenger_count(Object index) {
+    return 'KHÁCH HÀNG $index';
+  }
+
+  @override
+  String get summary_dob => 'Ngày sinh';
+
+  @override
+  String get summary_passport => 'Số CCCD/ Passport';
+
+  @override
+  String get summary_nationality => 'Quốc tịch';
+
+  @override
+  String get summary_payment_method => 'Phương thức thanh toán';
+
+  @override
+  String get summary_card_method => 'Thanh toán bằng thẻ Tín dụng/Ghi nợ';
+
+  @override
+  String get summary_terms_prefix => 'Tôi đã đọc và đồng ý với tất cả ';
+
+  @override
+  String get summary_terms_link => 'Điều khoản sử dụng';
+
+  @override
+  String get summary_terms_suffix => ' được quy định.';
+
+  @override
+  String get summary_btn_continue => 'Tiếp tục';
+
+  @override
+  String get summary_apple_pay => 'Thanh toán bằng Apple Pay';
+
+  @override
+  String get flight_summary_booking_info => 'Thông tin đặt vé';
+
+  @override
+  String get flight_summary_booking_code => 'Mã đặt chỗ:';
+
+  @override
+  String get flight_summary_payment_deadline => 'Hạn thanh toán:';
+
+  @override
+  String get flight_summary_payment_note =>
+      '(sau thời gian này, mã đặt chỗ sẽ bị hủy)';
+
+  @override
+  String get flight_summary_customer_info => 'Thông tin';
+
+  @override
+  String get flight_summary_fullname => 'Họ tên:';
+
+  @override
+  String get flight_summary_phone => 'Số điện thoại:';
+
+  @override
+  String get flight_summary_booking_date => 'Ngày đặt:';
+
+  @override
+  String get flight_summary_email => 'Email:';
+
+  @override
+  String get flight_summary_total => 'Tổng cộng';
+
+  @override
+  String get flight_summary_base_fare => 'Giá cơ bản:';
+
+  @override
+  String get flight_summary_tax_charge => 'Thuế & Phí:';
+
+  @override
+  String get flight_summary_service_fee => 'Phí dịch vụ:';
+
+  @override
+  String get flight_summary_itinerary => 'Hành trình';
+
+  @override
+  String get flight_summary_itinerary_detail => 'Chi tiết hành trình';
+
+  @override
+  String get flight_summary_departure => 'KHỞI HÀNH';
+
+  @override
+  String get flight_summary_return => 'TRỞ VỀ';
+
+  @override
+  String get flight_summary_passenger_info => 'Thông tin hành khách';
+
+  @override
+  String flight_summary_passenger_label(int index) {
+    return 'HÀNH KHÁCH $index';
+  }
+
+  @override
+  String get flight_summary_birthday => 'Ngày sinh';
+
+  @override
+  String get flight_summary_passport => 'Số CCCD/Passport';
+
+  @override
+  String get flight_summary_nationality => 'Quốc tịch';
+
+  @override
+  String get flight_summary_payment_method => 'Phương thức thanh toán';
+
+  @override
+  String get flight_summary_card_method =>
+      'Thanh toán bằng thẻ Tín dụng/Ghi nợ';
+
+  @override
+  String get flight_summary_apple_pay => 'Thanh toán bằng Apple Pay';
+
+  @override
+  String get flight_summary_terms_agree =>
+      'Tôi đã đọc và đồng ý với các Điều khoản sử dụng được quy định.';
+
+  @override
+  String get flight_summary_pay_now => 'THANH TOÁN NGAY';
 }

@@ -12,7 +12,7 @@ class GetAccessKeyService {
   Future<String?> fetchGetAccessToken() async {
     try {
       final response = await _dio.post(
-        '/auth/get-access-token',
+        '/account/get-access-token',
         queryParameters: {
           'timestamp': DateTime.now().toString()
         },

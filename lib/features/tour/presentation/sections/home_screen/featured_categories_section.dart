@@ -1,9 +1,7 @@
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:final_project/core/design/tour/tour_sizes.dart';
-import 'package:final_project/core/design/tour/tour_styles.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../controller/travel_booking_controller.dart';
 import '../../widgets/destination_card.dart';
 
@@ -39,16 +37,21 @@ class _FeaturedDestinationSectionState extends State<FeaturedDestinationSection>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: TourLayoutSpacing.paddingDestinationSection(context),
+          padding: EdgeInsets.only(
+            left: context.rw(32),
+            right: context.rw(32),
+            top: context.rh(24),
+            bottom: context.rh(8),
+          ),
           child: Center(
             child: Text(
               l10n.home_destinationsTitle,
-              style: AppStyles.titleCategory(context),
+              style: TextStyle(fontSize: context.sp(24), fontWeight: FontWeight.bold),
             ),
           ),
         ),
         SizedBox(
-          height: AppSizes.destinationListHeight(context),
+          height: context.rh(200),
           child: PageView.builder(
             controller: _pageController,
             onPageChanged: (index) {
@@ -83,7 +86,7 @@ class _FeaturedDestinationSectionState extends State<FeaturedDestinationSection>
         ),
 
         // 4. Indicator có khả năng tương tác (Click để chuyển trang)
-        SizedBox(height: TourLayoutSpacing.itemAndPagination(context)),
+        SizedBox(height: context.rh(16)),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(

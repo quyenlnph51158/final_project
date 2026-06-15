@@ -1,4 +1,6 @@
 import 'package:final_project/app/l10n/app_localizations.dart';
+import 'package:final_project/core/data/constants/list_city_data.dart';
+import 'package:final_project/core/data/model/location_model.dart';
 import 'package:final_project/core/navigation/navigation_service.dart';
 import 'package:final_project/core/utils/format_date.dart';
 import 'package:final_project/features/train/data/models/cheap_journey.dart';
@@ -37,7 +39,7 @@ class TrainController extends ChangeNotifier {
   final GlobalKey continueButton = GlobalKey();
 
   // --- KHỞI TẠO SERVICES (SINGLETON STYLE) ---
-  final _listCityService = ListCityService();
+  // final _listCityService = ListCityService();
   final _destinationService = DestinationService();
   final _cheapJourneyService = CheapJourneyService();
   final _searchTrainService = SearchTrainService();
@@ -76,12 +78,12 @@ class TrainController extends ChangeNotifier {
     if (_state.ui.isInitialized || _isInitializing) return;
 
     _isInitializing = true;
-    _updateState(_state.copyWith(ui: _state.ui.copyWith(isLoading: true)));
+    _updateState(_state.copyWith(ui: _state.ui.copyWith(isLoading: true, errorMessage: null)));
 
     try {
       debugPrint(">>> [Train] API Init starting...");
       final results = await Future.wait([
-        _listCityService.fetchListCity(),
+        // _listCityService.fetchListCity(),
         _destinationService.fetchDestinations(),
         _cheapJourneyService.fetchCheapJourneys(),
       ]);
@@ -89,9 +91,9 @@ class TrainController extends ChangeNotifier {
       _updateState(
         _state.copyWith(
           data: _state.data.copyWith(
-            cities: results[0] as List<ListCity>,
-            destinations: results[1] as List<Destination>,
-            cheapJourneys: results[2] as List<CheapJourney>,
+            // cities: results[0] as List<ListCity>,
+            destinations: results[0] as List<Destination>,
+            cheapJourneys: results[1] as List<CheapJourney>,
           ),
           ui: _state.ui.copyWith(isLoading: false, isInitialized: true),
         ),
@@ -140,7 +142,7 @@ class TrainController extends ChangeNotifier {
             DepartureListTrain: response.DepartureListTrain,
             ReturnListTrain: response.ReturnListTrain,
           ),
-          ui: _state.ui.copyWith(isLoading: false, errorMessage: ''),
+          ui: _state.ui.copyWith(isLoading: false),
         ),
       );
     } catch (e) {
@@ -169,6 +171,7 @@ class TrainController extends ChangeNotifier {
   }) async {
     if (_isBooking) return;
     _isBooking = true;
+    _updateState(_state.copyWith(ui: _state.ui.copyWith(errorMessage: null)));
 
     try {
       final indexGo = state.data.SelectedDepartureTrain?.seatClass!.indexWhere(
@@ -201,8 +204,13 @@ class TrainController extends ChangeNotifier {
           ),
         );
       }
+      else {
+        throw "Phản hồi đặt vé trống";
+      }
     } catch (e) {
-      debugPrint(">>> [Booking Error]: $e");
+      _updateState(_state.copyWith(
+        ui: _state.ui.copyWith(errorMessage: "Đặt vé thất bại: $e"),
+      ));
     } finally {
       _isBooking = false;
     }
@@ -231,7 +239,7 @@ class TrainController extends ChangeNotifier {
     );
   }
 
-  void selectCity({required bool isDeparture, required ListCity city}) {
+  void selectCity({required bool isDeparture, required LocationModel city}) {
     if (isDeparture) {
       _updateState(
         _state.copyWith(
@@ -253,13 +261,35 @@ class TrainController extends ChangeNotifier {
     }
   }
 
-  List<ListCity> FilteredCities(String query) {
-    String q = query.toLowerCase().trim();
-    if (q.isEmpty) return _state.data.cities;
-    return _state.data.cities.where((city) {
-      final String name = city.name!.toLowerCase().trim();
-      final String code = city.code!.toLowerCase().trim();
-      return name.contains(q) || code.contains(q);
+  String removeDiacritics(String str) {
+    const withDiacritics = 'áàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđ';
+    const withoutDiacritics = 'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd';
+    String result = str;
+    for (int i = 0; i < withDiacritics.length; i++) {
+      result = result.replaceAll(withDiacritics[i], withoutDiacritics[i]);
+    }
+    return result;
+  }
+
+  List<LocationModel> filteredCities(String query, String languageCode) {
+    final String q = query.toLowerCase().trim();
+
+    // 1. Nếu query rỗng, trả về toàn bộ danh sách theo ngôn ngữ
+    if (q.isEmpty) {
+      return ListCityData.getLocations(languageCode);
+    }
+
+    // Hàm phụ để loại bỏ dấu tiếng Việt (giúp tìm "hanoi" ra "Hà Nội")
+
+
+    final String qNoSign = removeDiacritics(q);
+
+    // 2. Lọc danh sách
+    return ListCityData.getLocations(languageCode).where((city) {
+      final String name = (city.name ?? "").toLowerCase();
+      final String code = (city.code ?? "").toLowerCase();
+      final String nameNoSign = removeDiacritics(name);
+      return name.contains(q) || nameNoSign.contains(qNoSign) || code.contains(q);
     }).toList();
   }
 
@@ -348,28 +378,35 @@ class TrainController extends ChangeNotifier {
   }
 
   void selectDepartureTrain(TrainModel train, SeatClass seat) {
-    state.ui.isViewingReturnTrain
-        ? _updateState(
-            _state.copyWith(
-              data: _state.data.copyWith(
-                SelectedReturnSeatClass: seat,
-                SelectedReturnTrain: train,
-              ),
-              ui: _state.ui.copyWith(isSelectedReturnTrain: true),
-            ),
-          )
-        : _updateState(
-            _state.copyWith(
-              data: _state.data.copyWith(
-                SelectedDepartureTrain: train,
-                SelectedDepartureSeatClass: seat,
-              ),
-              ui: _state.ui.copyWith(
-                isViewingReturnTrain: true,
-                isSelectedDepartureTrain: true,
-              ),
-            ),
-          );
+    if (state.ui.isViewingReturnTrain) {
+      // Đang chọn chiều về
+      _updateState(_state.copyWith(
+        data: _state.data.copyWith(
+          SelectedReturnSeatClass: seat,
+          SelectedReturnTrain: train,
+        ),
+        ui: _state.ui.copyWith(isSelectedReturnTrain: true),
+      ));
+    } else {
+      // Đang chọn chiều đi
+      bool shouldShowReturn = state.form.isRoundTrip; // Kiểm tra khứ hồi
+
+      _updateState(_state.copyWith(
+        data: _state.data.copyWith(
+          SelectedDepartureTrain: train,
+          SelectedDepartureSeatClass: seat,
+        ),
+        ui: _state.ui.copyWith(
+          isSelectedDepartureTrain: true,
+          isViewingReturnTrain: shouldShowReturn, // Chỉ hiện chiều về nếu cần
+        ),
+      ));
+
+      // Nếu chỉ đi một chiều, tự động cuộn tới nút tiếp tục
+      if (!shouldShowReturn) {
+        scrollToKey(continueButton);
+      }
+    }
   }
 
   void updateSelectedTrain(SeatClass seat) {
@@ -530,11 +567,10 @@ class TrainController extends ChangeNotifier {
 
   void validateForm(AppLocalizations l10n) {
     final f = state.form;
-    String error = '';
+    String? error;
+
     final DateTime? depDate = FormatDate.parseStringToDate(f.DepartureDate);
-    final DateTime? retDate = f.isRoundTrip
-        ? FormatDate.parseStringToDate(f.ReturnDate)
-        : null;
+    final DateTime? retDate = f.isRoundTrip ? FormatDate.parseStringToDate(f.ReturnDate) : null;
 
     if (f.DepartureCode.isEmpty) {
       error = l10n.errorDepartureEmpty;
@@ -544,17 +580,14 @@ class TrainController extends ChangeNotifier {
       error = l10n.errorSameLocation;
     } else if (f.isRoundTrip && f.ReturnDate.isEmpty) {
       error = l10n.errorReturnDateEmpty;
-    } else if (f.isRoundTrip &&
-        retDate != null &&
-        depDate != null &&
-        retDate.isBefore(depDate)) {
-      error = l10n.errorReturnBeforeDeparture;
-    } else if (f.isRoundTrip &&
-        retDate != null &&
-        depDate != null &&
-        retDate == depDate) {
-      error = l10n.errorSameDate;
+    } else if (f.isRoundTrip && retDate != null && depDate != null) {
+      if (retDate.isBefore(depDate)) {
+        error = l10n.errorReturnBeforeDeparture;
+      } else if (retDate.isAtSameMomentAs(depDate)) {
+        error = l10n.errorSameDate;
+      }
     }
+
     _updateState(_state.copyWith(ui: _state.ui.copyWith(errorMessage: error)));
   }
 

@@ -1,68 +1,121 @@
 import 'dart:ui';
-
 import 'package:dio/dio.dart';
-import 'package:final_project/features/auth/data/service/token_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:final_project/features/account/data/service/token_service.dart';
 import '../models/destination.dart';
-import '../models/response/train_response.dart'; // Import model của bạn
+import '../models/response/train_response.dart';
 
 class DestinationService {
-  final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: dotenv.env['BASE_URL'] ?? '',
-      connectTimeout: const Duration(seconds: 10),
-    ),
-  );
+  // 1. Singleton Pattern: Đảm bảo duy nhất 1 instance Dio và Interceptor toàn app
+  static final DestinationService _instance = DestinationService._internal();
+  factory DestinationService() => _instance;
 
+  late final Dio _dio;
+
+  // Biến static để theo dõi số lần gọi API thực tế (Giúp phát hiện Spam/Logic lặp)
+  static int _apiCallCount = 0;
+
+  DestinationService._internal() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: dotenv.env['BASE_URL'] ?? '',
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 15),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+
+    // 2. Thêm Logger để kiểm soát dữ liệu và phát hiện gọi trùng (chỉ chạy ở Debug)
+    if (kDebugMode) {
+      _dio.interceptors.add(
+        PrettyDioLogger(
+          requestHeader: true,
+          requestBody: true,
+          responseBody: false, // Để false vì danh sách điểm đến thường rất dài gây lag console
+          error: true,
+          compact: true,
+        ),
+      );
+    }
+  }
+
+  /// Hàm lấy danh sách điểm đến phổ biến
   Future<List<Destination>> fetchDestinations() async {
-    final token = await TokenService.getToken();
+    _apiCallCount++;
+    debugPrint('🚂 [DESTINATION API] Gọi lần thứ: $_apiCallCount');
+
     try {
+      final token = await TokenService.getToken();
+
       final response = await _dio.post(
         '/train/list-destinations',
-        options: Options(headers: {'Access-Token': token},
-        ),
-
         queryParameters: {
           "locale": PlatformDispatcher.instance.locale.languageCode,
-        }
-      );
-      print(response.data.runtimeType);
-      // 1. Khởi tạo TrainResponse (Đảm bảo data trong Model này là dynamic)
-      final trainRes = TrainResponse(
-        status: response.data['status'] ?? 0,
-        msg: response.data['msg'] ?? '',
-        data: response.data['data'],
+        },
+        options: Options(headers: {'Access-Token': token}),
       );
 
-      if (trainRes.isSuccess && trainRes.data != null) {
-        final dynamic rawData = trainRes.data['listDestinations'];
+      // 3. Parse qua model TrainResponse chung
+      if (response.data != null) {
+        final trainRes = TrainResponse(
+          status: response.data['status'] ?? 0,
+          msg: response.data['msg'] ?? '',
+          data: response.data['data'],
+        );
 
-        // ✅ TRƯỜNG HỢP 1: API trả về List [ {...}, {...} ]
-        if (rawData is List) {
-          return rawData
-              .whereType<Map>().map<Destination>(
-                (item) => Destination.fromJson(Map<String, dynamic>.from(item)),
-              )
-              .toList();
-        }
-        // ✅ TRƯỜNG HỢP 2: API trả về Map { "key": {...} }
-        else if (rawData is Map) {
-          return rawData.values
-              .whereType<Map>().map<Destination>(
-                (item) => Destination.fromJson(Map<String, dynamic>.from(item)),
-              )
-              .toList();
-        }
+        if (trainRes.status == 1 && trainRes.data != null) {
+          final dynamic rawData = trainRes.data['listDestinations'];
 
-        throw Exception('Định dạng "data" destinations không hợp lệ');
-      } else {
-        throw Exception(trainRes.msg ?? 'Lỗi không xác định');
+          // Logic xử lý linh hoạt cho cả List và Map (Tránh lỗi từ Backend)
+          List<dynamic> items = [];
+          if (rawData is List) {
+            items = rawData;
+          } else if (rawData is Map) {
+            items = rawData.values.toList();
+          }
+
+          final List<Destination> result = items
+              .whereType<Map>()
+              .map((item) => Destination.fromJson(Map<String, dynamic>.from(item)))
+              .toList();
+
+          debugPrint('✅ Tải thành công ${result.length} điểm đến.');
+          return result;
+        } else {
+          throw Exception(trainRes.msg ?? 'Lỗi không xác định từ API');
+        }
       }
+
+      return [];
+
     } on DioException catch (e) {
-      throw Exception("Lỗi kết nối: ${e.message}");
+      // 4. Xử lý lỗi Dio tập trung
+      String errorMsg = _handleDioError(e);
+      debugPrint('❌ [DESTINATION ERROR]: $errorMsg');
+      throw Exception(errorMsg);
     } catch (e) {
-      // Bắt lỗi ép kiểu hoặc lỗi từ hàm fromJson
-      throw Exception("Lỗi xử lý dữ liệu Destinations: $e");
+      debugPrint('❌ [DESTINATION LOGIC ERROR]: $e');
+      throw Exception("Lỗi xử lý dữ liệu điểm đến: $e");
+    }
+  }
+
+  // Helper phân loại lỗi để hiển thị lên UI
+  String _handleDioError(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+        return "Kết nối máy chủ quá hạn (15s)";
+      case DioExceptionType.badResponse:
+        final code = e.response?.statusCode;
+        if (code == 401) return "Phiên đăng nhập hết hạn";
+        if (code == 500) return "Lỗi hệ thống máy chủ (500)";
+        return "Lỗi máy chủ: $code";
+      default:
+        return "Lỗi kết nối mạng: ${e.message}";
     }
   }
 }

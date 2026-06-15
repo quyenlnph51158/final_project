@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/data/constants/international_destination_data.dart';
-import '../../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../../core/design/flight/flight_size.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../widgets/flight_screen/inter_destination_item.dart';
 
 class FlightDestinationGridSection extends StatelessWidget {
@@ -11,7 +10,7 @@ class FlightDestinationGridSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverPadding(
       padding: EdgeInsets.symmetric(
-        horizontal: FlightLayoutSpacing.gridHorizontalPadding(context),
+        horizontal: context.padding,
       ),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate((context, index) {
@@ -21,9 +20,9 @@ class FlightDestinationGridSection extends StatelessWidget {
         }, childCount: InternationalDestinationData.interDestination.length),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
-          crossAxisSpacing: FlightLayoutSpacing.gridGap(context),
-          mainAxisSpacing: FlightLayoutSpacing.gridGap(context),
-          childAspectRatio: FlightSize.destinationAspectRatio,
+          crossAxisSpacing: context.rw(12.0),
+          mainAxisSpacing: context.rw(12.0),
+          childAspectRatio: 2.0,
         ),
       ),
     );

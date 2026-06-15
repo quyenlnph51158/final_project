@@ -76,15 +76,31 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tourDetail = context
-        .watch<TravelBookingController>()
-        .state
-        .tour
-        .tourDetail;
+    // Lấy state từ controller
+    final tourState = context.watch<TravelBookingController>().state;
+    final tourDetail = tourState.tour.tourDetail;
+    final isLoading = tourState.ui.isLoading;
 
-    // Chiều cao TabBar cố định theo tỷ lệ thiết kế (Khoảng 50px)
+    final double topPadding = MediaQuery.of(context).padding.top;
     final double tabHeight = context.rh(50);
 
+    // --- SỬA LỖI: Kiểm tra nếu đang tải hoặc dữ liệu chưa có ---
+    if (isLoading || tourDetail == null) {
+      return Scaffold(
+        backgroundColor: kBackgroundColor,
+        appBar: AppBar(
+          title: Text(widget.name, style: TextStyle(fontSize: context.sp(16))),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 0,
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(color: kPrimaryColor),
+        ),
+      );
+    }
+
+    // Nếu đã có dữ liệu, mới render CustomScrollView
     return Scaffold(
       backgroundColor: kBackgroundColor,
       endDrawer: const AppDrawer(),
@@ -128,7 +144,7 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                   ),
                 ),
                 ImageCarousel(
-                  images: tourDetail.images,
+                  images: tourDetail.images ?? [], // Dùng ?? [] cho an toàn
                   height: context.rh(250).clamp(200.0, 350.0),
                 ),
               ],
@@ -140,6 +156,7 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
             pinned: true,
             delegate: _StickyTabBarDelegate(
               tabHeight: tabHeight,
+              topPadding: topPadding,
               child: _buildTabs(tabHeight),
             ),
           ),
@@ -161,31 +178,24 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                     ),
                   ),
                 ),
-
                 _buildDivider(context),
                 HighlightSection(detail: tourDetail),
-
                 _buildDivider(context),
                 ScheduleSection(key: _scheduleKey, detail: tourDetail),
-
                 _buildDivider(context),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: ConsultationFormScreen(),
                 ),
-
                 _buildDivider(context),
                 ReviewSection(key: _reviewKey, detail: tourDetail),
-
                 _buildDivider(context),
                 FaqSection(
                   key: _faqKey,
                   faqs: FaqsTourDetailData.faqs(context),
                 ),
-
                 _buildDivider(context),
                 RelatedTourSection(tourDetail: tourDetail),
-
                 const AppFooter(),
               ],
             ),
@@ -271,24 +281,22 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
     });
 
     final box = sectionContext.findRenderObject() as RenderBox;
-    final position = box.localToGlobal(
-      Offset.zero,
-      ancestor: context.findRenderObject(),
-    );
+    final position = box.localToGlobal(Offset.zero, ancestor: context.findRenderObject());
 
     final topPadding = MediaQuery.of(context).padding.top;
     final tabHeight = context.rh(50);
 
-    final targetOffset =
-        _scrollController.offset + position.dy - (tabHeight + topPadding);
+    // Tính toán vị trí cần cuộn đến: Vị trí hiện tại + khoảng cách đến đích - (chiều cao Header + Padding)
+    double targetOffset = _scrollController.offset + position.dy - (tabHeight + topPadding);
 
-    _scrollController
-        .animateTo(
-          targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-        )
-        .then((_) => _isAutoScrolling = false);
+    // Đảm bảo không cuộn quá giới hạn của danh sách
+    targetOffset = targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent);
+
+    _scrollController.animateTo(
+      targetOffset,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    ).then((_) => _isAutoScrolling = false);
 
     _scrollTabToCenter(index);
   }
@@ -317,23 +325,24 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
 
   void _onScroll() {
     if (_isAutoScrolling || !_scrollController.hasClients) return;
+
     final topPadding = MediaQuery.of(context).padding.top;
     final tabHeight = context.rh(50);
+    final threshold = tabHeight + topPadding + 10; // Ngưỡng nhận diện section
 
-    for (int i = 0; i < _sectionKeys.length; i++) {
+    for (int i = _sectionKeys.length - 1; i >= 0; i--) {
       final ctx = _sectionKeys[i].currentContext;
       if (ctx == null) continue;
-      final box = ctx.findRenderObject() as RenderBox;
-      final position = box.localToGlobal(
-        Offset.zero,
-        ancestor: context.findRenderObject(),
-      );
 
-      if (position.dy <= (tabHeight + topPadding + 20)) {
+      final box = ctx.findRenderObject() as RenderBox;
+      final position = box.localToGlobal(Offset.zero, ancestor: context.findRenderObject());
+
+      if (position.dy <= threshold) {
         if (_currentTab != i) {
           setState(() => _currentTab = i);
           _scrollTabToCenter(i);
         }
+        break; // Dừng lại ở section cao nhất đang chạm đỉnh
       }
     }
   }
@@ -342,16 +351,16 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
 class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
   final double tabHeight;
+  final double topPadding;
 
-  _StickyTabBarDelegate({required this.child, required this.tabHeight});
-
-  @override
-  double get minExtent => tabHeight + _topPadding;
+  _StickyTabBarDelegate({required this.child, required this.tabHeight, required this.topPadding,});
 
   @override
-  double get maxExtent => tabHeight + _topPadding;
+  double get minExtent => tabHeight + topPadding;
 
-  double _topPadding = 0;
+  @override
+  double get maxExtent => tabHeight + topPadding;
+
 
   @override
   Widget build(
@@ -359,13 +368,12 @@ class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    _topPadding = MediaQuery.of(context).padding.top;
     return Material(
       color: Colors.white,
       elevation: overlapsContent ? 2 : 0,
       child: Column(
         children: [
-          Container(height: _topPadding, color: Colors.white),
+          Container(height: topPadding, color: Colors.white),
           Expanded(child: child),
         ],
       ),
@@ -373,5 +381,9 @@ class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(_StickyTabBarDelegate oldDelegate) => true;
+  bool shouldRebuild(_StickyTabBarDelegate oldDelegate) {
+    return oldDelegate.tabHeight != tabHeight ||
+        oldDelegate.topPadding != topPadding ||
+        oldDelegate.child != child;
+  }
 }

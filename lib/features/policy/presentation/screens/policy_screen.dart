@@ -92,11 +92,7 @@ class _PolicyScreenState extends State<PolicyScreen> {
     final state = controller.state;
 
     return Scaffold(
-      endDrawer: AppDrawer(
-        onTabSelected: (_) {},
-        onHomeSelected: () {},
-        onTabFlightSelected: (_) {},
-      ),
+      endDrawer: AppDrawer(),
       body: SafeArea(
         child: SingleChildScrollView(
           controller: controller.scrollController,

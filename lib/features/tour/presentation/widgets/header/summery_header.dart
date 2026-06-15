@@ -1,9 +1,7 @@
 import 'package:final_project/core/constants/app_icons.dart';
-import 'package:final_project/core/design/tour/tour_layout_spacing.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/tour/tour_styles.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 
 class SummeryHeader extends StatelessWidget{
   final List<dynamic> reviews;
@@ -16,7 +14,7 @@ class SummeryHeader extends StatelessWidget{
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: TourLayoutSpacing.paddingSummaryHeaderTour(context),
+      padding: EdgeInsets.all(context.rw(16)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -25,13 +23,13 @@ class SummeryHeader extends StatelessWidget{
             children: [
               Text(
                 '${averageRating.toStringAsFixed(1)}',
-                style: AppStyles.averageRatingValue(context),
+                style: TextStyle(fontSize: context.sp(48), fontWeight: FontWeight.w300),
               ),
               Text(
                 '/5',
-                style: AppStyles.averageRatingSuffix(context),
+                style: TextStyle(fontSize: context.sp(30), color: Colors.grey),
               ),
-              SizedBox(height: TourLayoutSpacing.averageRatingAndInfo(context)),
+              SizedBox(height: context.rw(12)),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +37,7 @@ class SummeryHeader extends StatelessWidget{
                   _buildStarRating(averageRating,),
                   Text(
                     '${l10n.tour_detail_based_on} ${reviews.length} ${l10n.tour_detail_reviews_count}',
-                    style: AppStyles.textBasedOn(context),
+                    style: TextStyle(fontSize: context.sp(14), color: Colors.grey),
                   ),
                 ],
               ),

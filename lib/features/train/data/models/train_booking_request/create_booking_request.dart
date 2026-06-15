@@ -59,6 +59,4 @@ class SpecialRequestModel {
       "address": address
     };
   }
-
-
 }

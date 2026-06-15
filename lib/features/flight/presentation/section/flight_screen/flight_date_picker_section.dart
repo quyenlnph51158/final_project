@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../../../../app/l10n/app_localizations.dart';
-import '../../../../../core/design/flight/flight_layout_spacing.dart';
 import '../../../../../core/utils/date_picker.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../../../tour/presentation/booking/input/date_field.dart';
 import '../../../../flight/presentation/state/flight_state.dart';
 import 'package:final_project/features/flight/presentation/controller/flight_controller.dart';
@@ -31,7 +31,6 @@ class FlightDatePickerSection extends StatelessWidget {
             onTap: () => DatePicker.pickDate(
               context: context,
               onDateSelected: (formattedDate, originalDate) {
-                // Gọi hàm cập nhật date của Tour Controller
                 controller.setDate(
                   isReturnDate: false,
                   formattedDate: formattedDate,
@@ -43,7 +42,7 @@ class FlightDatePickerSection extends StatelessWidget {
 
         // Ô chọn ngày về (Chỉ hiện khi là Round Trip)
         if (state.criteria.roundTrip) ...[
-          SizedBox(width: FlightLayoutSpacing.gapInputHorizontal(context)),
+          SizedBox(width: context.rw(12.0)),
           Expanded(
             child: DateField(
               label: l10n.form_labelFlightReturnDate,

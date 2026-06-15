@@ -53,7 +53,7 @@ class TrainForm extends StatelessWidget {
           child: FlightTrainLocationInput(
             label: l10n.form_labelFlightDeparture,
             hint: l10n.form_labelFlightWhereGo,
-            value: "${state.form.Departure} (${state.form.DepartureCode})",
+            value: "${state.form.Departure}",
             icon: Icons.train_outlined,
             onTap: () => _showCityModal(context, controller, true),
           ),
@@ -66,7 +66,7 @@ class TrainForm extends StatelessWidget {
           child: FlightTrainLocationInput(
             label: l10n.form_labelFlightArrival,
             hint: l10n.form_labelFlightWhereArrive,
-            value: "${state.form.Destination} (${state.form.DestinationCode})",
+            value: "${state.form.Destination}",
             icon: Icons.train_outlined,
             onTap: () => _showCityModal(context, controller, false),
           ),

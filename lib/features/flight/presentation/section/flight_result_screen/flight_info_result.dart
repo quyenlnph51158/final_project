@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../app/l10n/app_localizations.dart';
 import '../../../../../core/constants/colors.dart';
-import '../../../../../core/design/flight/flight_divider.dart';
-import '../../../../../core/design/flight/flight_layout_spacing.dart';
-import '../../../../../core/design/flight/flight_size.dart';
-import '../../../../../core/design/flight/flight_style.dart';
+import '../../../../../core/utils/responsive_layout.dart';
 import '../../controller/flight_controller.dart';
 import '../../screens/flight_screen.dart';
 
@@ -20,19 +17,19 @@ class FlightInfoResult extends StatelessWidget {
     final criteria = state.criteria;
 
     return Padding(
-      padding: EdgeInsets.all(FlightLayoutSpacing.paddingAll(context)),
+      padding: EdgeInsets.all(context.padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 1. PHẦN MÃ SÂN BAY VÀ ICON MÁY BAY
           _buildAirportRoute(context, criteria.departureCode, criteria.destinationCode, criteria.roundTrip),
 
-          SizedBox(height: FlightLayoutSpacing.gapSmall(context)),
+          SizedBox(height: context.rw(8.0)),
 
           // 2. TÊN THÀNH PHỐ
-          _buildCityNames(context, criteria.departure, criteria.destination),
+          _buildCityNames(context, criteria.departureAirport.desc ?? '', criteria.destinationAirport.desc ?? ''),
 
-          SizedBox(height: FlightLayoutSpacing.gapMedium(context)),
+          SizedBox(height: context.rw(16.0)),
 
           // 3. THÔNG TIN KHỞI HÀNH & TRỞ VỀ
           Row(
@@ -43,18 +40,18 @@ class FlightInfoResult extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: FlightLayoutSpacing.gapMedium(context)),
+          SizedBox(height: context.rw(16.0)),
 
           // 4. THÔNG TIN HÀNH KHÁCH
           _buildInfoItem(context, l10n.general_passengerLabel, _getPassengerText(criteria, l10n)),
 
-          SizedBox(height: FlightLayoutSpacing.gapChangeBtn(context)),
+          SizedBox(height: context.rh(12.0)),
 
           // 5. NÚT THAY ĐỔI
           _buildChangeButton(context, l10n),
 
           const SizedBox(height: 16),
-          const Divider(height: FlightDivider.dashThickness, color: Color(0xFFE4E7E9)),
+          const Divider(height: 1.0, color: Color(0xFFE4E7E9)),
         ],
       ),
     );
@@ -64,7 +61,11 @@ class FlightInfoResult extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(from, style: FlightStyle.codeHighlight(context)),
+        Text(from, style: TextStyle(
+          color: const Color(0xFF01171B),
+          fontSize: context.sp(20),
+          fontWeight: FontWeight.w700,
+        )),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -72,14 +73,18 @@ class FlightInfoResult extends StatelessWidget {
               children: [
                 _buildFlightLine(context, isForward: true),
                 if (isRoundTrip) ...[
-                  SizedBox(height: FlightLayoutSpacing.gapLineVertical(context)),
+                  SizedBox(height: context.rh(6.0)),
                   _buildFlightLine(context, isForward: false),
                 ]
               ],
             ),
           ),
         ),
-        Text(to, style: FlightStyle.codeHighlight(context)),
+        Text(to, style: TextStyle(
+          color: const Color(0xFF01171B),
+          fontSize: context.sp(20),
+          fontWeight: FontWeight.w700,
+        )),
       ],
     );
   }
@@ -90,14 +95,14 @@ class FlightInfoResult extends StatelessWidget {
         if (!isForward) _flightIcon(context, quarterTurns: 3),
         Expanded(
           child: DottedLine(
-            dashLength: FlightSize.dashLength(context),
-            dashGapLength: FlightSize.dashGap(context),
-            lineThickness: FlightSize.dividerThin(context),
+            dashLength: context.rw(6),
+            dashGapLength: context.rw(4),
+            lineThickness: context.rh(1),
             dashColor: kPrimaryColor, // Sử dụng màu thương hiệu thay vì teal cứng
           ),
         ),
         if (isForward) ...[
-          SizedBox(width: FlightLayoutSpacing.gapIconText(context)),
+          SizedBox(width: context.rw(6.0)),
           _flightIcon(context, quarterTurns: 1),
         ]
       ],
@@ -107,7 +112,7 @@ class FlightInfoResult extends StatelessWidget {
   Widget _flightIcon(BuildContext context, {required int quarterTurns}) {
     return RotatedBox(
       quarterTurns: quarterTurns,
-      child: Icon(Icons.flight, color: kPrimaryColor, size: FlightSize.iconFlightSmall(context)),
+      child: Icon(Icons.flight, color: kPrimaryColor, size: context.icon(18)),
     );
   }
 
@@ -115,8 +120,16 @@ class FlightInfoResult extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(from, style: FlightStyle.labelSmallGrey(context)),
-        Text(to, style: FlightStyle.labelSmallGrey(context)),
+        Text(from, style: TextStyle(
+          color: const Color(0xFF555F65),
+          fontSize: context.sp(12),
+          fontWeight: FontWeight.w400,
+        )),
+        Text(to, style: TextStyle(
+          color: const Color(0xFF555F65),
+          fontSize: context.sp(12),
+          fontWeight: FontWeight.w400,
+        )),
       ],
     );
   }
@@ -125,9 +138,17 @@ class FlightInfoResult extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: FlightStyle.infoLabel(context)),
-        SizedBox(height: FlightLayoutSpacing.gapInfoLabel(context)),
-        Text(value, style: FlightStyle.infoValue(context)),
+        Text(label, style: TextStyle(
+          color: const Color(0xFF01171B),
+          fontSize: context.sp(12),
+          fontWeight: FontWeight.w600,
+        )),
+        SizedBox(height: context.rh(4.0)),
+        Text(value, style: TextStyle(
+          color: const Color(0xFF01171B),
+          fontSize: context.sp(16),
+          fontWeight: FontWeight.w600,
+        )),
       ],
     );
   }
@@ -142,7 +163,12 @@ class FlightInfoResult extends StatelessWidget {
           MaterialPageRoute(builder: (context) => const FlightScreen()),
         );
       },
-      child: Text(l10n.text_change_btn, style: FlightStyle.linkButton(context)),
+      child: Text(l10n.text_change_btn, style: TextStyle(
+        color: kPrimaryColor,
+        fontSize: context.sp(14),
+        fontWeight: FontWeight.w600,
+        decoration: TextDecoration.underline,
+      )),
     );
   }
 

@@ -4,12 +4,8 @@ import 'package:final_project/features/train/presentation/section/favorite_desti
 import 'package:final_project/features/train/presentation/section/train_header_section.dart';
 import 'package:final_project/shared/footer/app_footer.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../../core/constants/colors.dart';
 import '../../../../core/utils/responsive_layout.dart';
 import '../../../../shared/header/app_drawer.dart';
-import '../../../tour/presentation/controller/travel_booking_controller.dart';
-import '../controller/train_controller.dart';
 
 class TrainScreen extends StatefulWidget {
   const TrainScreen({super.key});
@@ -40,13 +36,7 @@ class _TrainScreenState extends State<TrainScreen> {
         // Màu nền đồng bộ để tránh lộ khoảng trắng khi cuộn trên máy thật
         backgroundColor: Colors.white,
 
-        endDrawer: AppDrawer(
-          onTabSelected: context.read<TravelBookingController>().updateTab,
-          onHomeSelected: context.read<TravelBookingController>().resetSearch,
-          onTabFlightSelected: (_) => context
-              .read<TravelBookingController>()
-              .updateTab(TravelTab.flight),
-        ),
+        endDrawer: AppDrawer(),
 
         body: CustomScrollView(
           controller: _scrollController,

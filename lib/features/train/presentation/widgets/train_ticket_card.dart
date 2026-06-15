@@ -2,6 +2,7 @@ import 'package:final_project/app/l10n/app_localizations.dart';
 import 'package:final_project/core/constants/colors.dart';
 import 'package:final_project/core/utils/format_date.dart';
 import 'package:final_project/core/utils/format_duration.dart';
+import 'package:final_project/core/utils/format_price.dart';
 import 'package:final_project/features/train/data/models/seat_class.dart';
 import 'package:final_project/features/train/data/models/train_model.dart';
 import 'package:final_project/features/train/presentation/controller/train_controller.dart';
@@ -193,6 +194,7 @@ class _TrainTicketCardState extends State<TrainTicketCard> {
                   }
                 },
                 child: _buildSeatOption(
+                  currency: widget.train.currency ?? "",
                   title: seat.title ?? l10n.seat_class_default,
                   price: seat.price!,
                   showInfoIcon: seat.title!.toLowerCase().contains("size"),
@@ -241,6 +243,7 @@ class _TrainTicketCardState extends State<TrainTicketCard> {
   }
 
   Widget _buildSeatOption({
+    required String currency,
     required String title,
     required num price,
     bool showInfoIcon = false,
@@ -281,7 +284,7 @@ class _TrainTicketCardState extends State<TrainTicketCard> {
             ),
           ),
           Text(
-            price.toString(),
+            "${FormatPrice.formatPrice(price).toString()} $currency",
             style: TextStyle(
               fontSize: context.sp(15),
               fontWeight: FontWeight.bold,

@@ -322,6 +322,7 @@
   "country_code": "Mã quốc gia",
   "phone_number": "Số điện thoại",
   "email": "Email",
+  "confirm_email": "Xác nhận email",
   "special_request": "Yêu cầu đặc biệt",
   "request_content": "Nội dung",
   "title": "Chọn danh xưng",
@@ -392,6 +393,7 @@
   "favorite_destinations": "Điểm đến yêu thích",
   "cheap_trips_offers": "Chuyến đi giá ưu đãi",
   "login": "Đăng nhập",
+  "logout": "Đăng xuất",
   "passWord": "Mật khẩu",
   "forgotPassword": "Quên mật khẩu?",
   "nonoAccountYet": "Chưa có tài khoản?",
@@ -420,5 +422,76 @@
   "errorSameLocation": "Điểm khởi hành và điểm đến không được trùng nhau !!!",
   "errorReturnDateEmpty": "Vui lòng chọn ngày trở về !!!",
   "errorReturnBeforeDeparture": "Ngày về không được trước ngày đi !!!",
-  "errorSameDate": "Ngày đi và ngày về không được trùng nhau !!!"
+  "errorSameDate": "Ngày đi và ngày về không được trùng nhau !!!",
+
+
+  "summary_title": "Xem lại đặt chỗ của bạn",
+  "summary_booking_info": "Thông tin đặt vé",
+  "summary_booking_code": "Mã đặt chỗ:",
+  "summary_payment_deadline": "Hạn thanh toán",
+  "summary_deadline_note": "(sau thời gian này, mã\nđặt chỗ sẽ bị hủy)",
+  "summary_general_info": "Thông tin",
+  "summary_fullname": "Họ tên",
+  "summary_phone": "Số điện thoại",
+  "summary_booking_date": "Ngày đặt",
+  "summary_email": "Email",
+  "summary_total": "Tổng",
+  "summary_base_fare": "Giá cơ bản",
+  "summary_tax_fee": "Thuế & Phí",
+  "summary_bus": "Xe buýt",
+  "summary_itinerary": "Hành trình",
+  "summary_itinerary_detail": "Chi tiết hành trình",
+  "summary_departure_label": "KHỞI HÀNH",
+  "summary_return_label": "TRỞ VỀ",
+  "summary_passenger_info": "Thông tin hành khách",
+  "summary_passenger_count": "KHÁCH HÀNG {index}",
+  "summary_dob": "Ngày sinh",
+  "summary_passport": "Số CCCD/ Passport",
+  "summary_nationality": "Quốc tịch",
+  "summary_payment_method": "Phương thức thanh toán",
+  "summary_card_method": "Thanh toán bằng thẻ Tín dụng/Ghi nợ",
+  "summary_terms_prefix": "Tôi đã đọc và đồng ý với tất cả ",
+  "summary_terms_link": "Điều khoản sử dụng",
+  "summary_terms_suffix": " được quy định.",
+  "summary_btn_continue": "Tiếp tục",
+  "summary_apple_pay": "Thanh toán bằng Apple Pay",
+
+
+
+  "flight_summary_booking_info": "Thông tin đặt vé",
+  "flight_summary_booking_code": "Mã đặt chỗ:",
+  "flight_summary_payment_deadline": "Hạn thanh toán:",
+  "flight_summary_payment_note": "(sau thời gian này, mã đặt chỗ sẽ bị hủy)",
+  "flight_summary_customer_info": "Thông tin",
+  "flight_summary_fullname": "Họ tên:",
+  "flight_summary_phone": "Số điện thoại:",
+  "flight_summary_booking_date": "Ngày đặt:",
+  "flight_summary_email": "Email:",
+  "flight_summary_total": "Tổng cộng",
+  "flight_summary_base_fare": "Giá cơ bản:",
+  "flight_summary_tax_charge": "Thuế & Phí:",
+  "flight_summary_service_fee": "Phí dịch vụ:",
+  "flight_summary_itinerary": "Hành trình",
+  "flight_summary_itinerary_detail": "Chi tiết hành trình",
+  "flight_summary_departure": "KHỞI HÀNH",
+  "flight_summary_return": "TRỞ VỀ",
+  "flight_summary_passenger_info": "Thông tin hành khách",
+  "flight_summary_passenger_label": "HÀNH KHÁCH {index}",
+  "@flight_summary_passenger_label": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "flight_summary_birthday": "Ngày sinh",
+  "flight_summary_passport": "Số CCCD/Passport",
+  "flight_summary_nationality": "Quốc tịch",
+  "flight_summary_payment_method": "Phương thức thanh toán",
+  "flight_summary_card_method": "Thanh toán bằng thẻ Tín dụng/Ghi nợ",
+  "flight_summary_apple_pay": "Thanh toán bằng Apple Pay",
+  "flight_summary_terms_agree": "Tôi đã đọc và đồng ý với các Điều khoản sử dụng được quy định.",
+  "flight_summary_pay_now": "THANH TOÁN NGAY"
+
+
 }

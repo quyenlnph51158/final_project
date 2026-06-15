@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:final_project/features/auth/data/service/token_service.dart';
+import 'package:final_project/features/account/data/service/token_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../model/payment_response.dart';
 
 class PaymentService {
   final Dio _dio = Dio(
-    BaseOptions(baseUrl: 'https://www.wonderingvietnam.com/api/v1'),
+    BaseOptions(baseUrl:  dotenv.env['BASE_URL'] ?? ''),
   );
 
   // 1. Lấy link thanh toán
@@ -32,18 +33,19 @@ class PaymentService {
 
   // 2. Kiểm tra trạng thái thực sự từ Server
   Future<bool> checkPaymentStatus(String transactionId) async {
-    final token = TokenService.getToken();
+    final token = await TokenService.getToken();
     try {
-      final response = await _dio.get(
+      final response = await _dio.post(
         '/payment/check-status',
         queryParameters: {"transaction_sid": transactionId},
         options: Options(
             headers: {
               'Access-Token' : token,
             }
-        )
+        ),
+
       );
-      return response.data['data']['status'] == 'success';
+      return response.data['data']['payment_status'] == 'success';
     } catch (e) {
       return false;
     }
